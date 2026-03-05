@@ -15,6 +15,7 @@ import useFilter from './useFilter';
 import MainToolbar from './MainToolbar';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
+import MapSideMenu from './MapSideMenu';
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -170,6 +171,7 @@ const MapPage = () => {
         </div>
       </div>
       <EventsDrawer open={eventsOpen} onClose={() => setEventsOpen(false)} />
+      {desktop && <MapSideMenu />}
       {selectedDeviceId && (
         <StatusCard
           deviceId={selectedDeviceId}

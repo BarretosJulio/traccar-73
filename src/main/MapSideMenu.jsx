@@ -18,19 +18,18 @@ import { useAdministrator } from '../common/util/permissions';
 const useStyles = makeStyles()((theme) => ({
   root: {
     position: 'fixed',
-    right: 0,
+    right: 10,
     top: '50%',
     transform: 'translateY(-50%)',
-    zIndex: 4,
+    zIndex: 1000,
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
     padding: '8px 4px',
-    borderRadius: '14px 0 0 14px',
+    borderRadius: 14,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: '-4px 0 20px rgba(0,0,0,0.1)',
+    boxShadow: '-4px 0 20px rgba(0,0,0,0.15)',
     border: `1px solid ${theme.palette.divider}`,
-    borderRight: 'none',
   },
   item: {
     display: 'flex',
