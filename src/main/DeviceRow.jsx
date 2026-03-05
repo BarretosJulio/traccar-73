@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 import {
-  IconButton,
   Tooltip,
   Avatar,
   Typography,
   Box,
   LinearProgress,
+  Chip,
 } from '@mui/material';
 import BatteryFullIcon from '@mui/icons-material/BatteryFull';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
@@ -14,28 +14,34 @@ import Battery60Icon from '@mui/icons-material/Battery60';
 import BatteryCharging60Icon from '@mui/icons-material/BatteryCharging60';
 import Battery20Icon from '@mui/icons-material/Battery20';
 import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
-import ErrorIcon from '@mui/icons-material/Error';
 import SpeedIcon from '@mui/icons-material/Speed';
-import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import AnchorIcon from '@mui/icons-material/Anchor';
+import PowerIcon from '@mui/icons-material/Power';
+import PowerOffIcon from '@mui/icons-material/PowerOff';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import ThermostatIcon from '@mui/icons-material/Thermostat';
+import NavigationIcon from '@mui/icons-material/Navigation';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import NightlightIcon from '@mui/icons-material/Nightlight';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { devicesActions } from '../store';
 import {
   formatAlarm,
   formatBoolean,
-  formatPercentage,
-  formatStatus,
-  getStatusColor,
 } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
 import { useAdministrator } from '../common/util/permissions';
 import EngineIcon from '../resources/images/data/engine.svg?react';
-import { useAttributePreference } from '../common/util/preferences';
 
 dayjs.extend(relativeTime);
 
@@ -49,11 +55,14 @@ const useStyles = makeStyles()((theme) => ({
   card: {
     borderRadius: 14,
     margin: '4px 6px',
-    padding: '12px',
+    padding: '10px 12px',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.divider}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6,
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
       transform: 'translateY(-1px)',
@@ -68,18 +77,17 @@ const useStyles = makeStyles()((theme) => ({
   topRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1.2),
-    marginBottom: theme.spacing(1),
+    gap: theme.spacing(1),
   },
   vehicleIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
+    width: 42,
+    height: 42,
+    borderRadius: 10,
     flexShrink: 0,
   },
   iconImg: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
     filter: 'brightness(0) invert(1)',
   },
   nameSection: {
@@ -88,7 +96,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   vehicleName: {
     fontWeight: 700,
-    fontSize: '0.9rem',
+    fontSize: '0.85rem',
     lineHeight: 1.2,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -97,11 +105,11 @@ const useStyles = makeStyles()((theme) => ({
   imeiRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: 4,
-    marginTop: 2,
+    gap: 3,
+    marginTop: 1,
   },
   imeiText: {
-    fontSize: '0.68rem',
+    fontSize: '0.65rem',
     color: theme.palette.text.secondary,
     fontFamily: 'monospace',
   },
@@ -111,90 +119,92 @@ const useStyles = makeStyles()((theme) => ({
     gap: 4,
     padding: '2px 8px',
     borderRadius: 20,
-    fontSize: '0.68rem',
+    fontSize: '0.65rem',
     fontWeight: 600,
     flexShrink: 0,
   },
-  rightIcons: {
+  featureChips: {
     display: 'flex',
     alignItems: 'center',
-    gap: 2,
-    flexShrink: 0,
-  },
-  infoGrid: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1.5),
+    gap: 4,
     flexWrap: 'wrap',
-    marginBottom: theme.spacing(0.8),
   },
-  infoItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 3,
-    fontSize: '0.72rem',
-    color: theme.palette.text.secondary,
-    whiteSpace: 'nowrap',
-  },
-  infoIcon: {
-    fontSize: '0.9rem !important',
-    opacity: 0.6,
+  chip: {
+    height: 20,
+    fontSize: '0.6rem',
+    fontWeight: 600,
+    borderRadius: 6,
+    '& .MuiChip-icon': {
+      fontSize: '0.75rem',
+      marginLeft: 4,
+    },
+    '& .MuiChip-label': {
+      padding: '0 5px',
+    },
   },
   addressRow: {
     display: 'flex',
     alignItems: 'flex-start',
-    gap: 4,
-    marginBottom: theme.spacing(0.8),
+    gap: 3,
   },
   addressText: {
-    fontSize: '0.7rem',
+    fontSize: '0.67rem',
     color: theme.palette.text.secondary,
     lineHeight: 1.3,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
+    whiteSpace: 'nowrap',
   },
-  speedBar: {
+  infoGrid: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
+    gap: theme.spacing(1.2),
+    flexWrap: 'wrap',
   },
-  speedProgress: {
-    flex: 1,
-    height: 5,
-    borderRadius: 3,
+  infoItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 2,
+    fontSize: '0.67rem',
+    color: theme.palette.text.secondary,
+    whiteSpace: 'nowrap',
   },
-  speedLabel: {
-    fontSize: '0.72rem',
-    fontWeight: 700,
-    minWidth: 52,
-    textAlign: 'right',
+  infoIcon: {
+    fontSize: '0.8rem !important',
+    opacity: 0.6,
   },
   bottomRow: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: theme.spacing(0.5),
+  },
+  speedBar: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.8),
+    flex: 1,
+    marginRight: 8,
+  },
+  speedProgress: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+  },
+  speedLabel: {
+    fontSize: '0.7rem',
+    fontWeight: 700,
+    minWidth: 48,
+    textAlign: 'right',
   },
   batteryInfo: {
     display: 'flex',
     alignItems: 'center',
     gap: 3,
   },
-  success: {
-    color: theme.palette.success.main,
-  },
-  warning: {
-    color: theme.palette.warning.main,
-  },
-  error: {
-    color: theme.palette.error.main,
-  },
-  neutral: {
-    color: theme.palette.neutral.main,
-  },
+  success: { color: theme.palette.success.main },
+  warning: { color: theme.palette.warning.main },
+  error: { color: theme.palette.error.main },
+  neutral: { color: theme.palette.neutral.main },
 }));
 
 const DeviceRow = ({ devices, index, style }) => {
@@ -208,14 +218,22 @@ const DeviceRow = ({ devices, index, style }) => {
   const item = devices[index];
   const position = useSelector((state) => state.session.positions[item.id]);
 
+  const attrs = position?.attributes || {};
   const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
-  const satellites = position?.attributes?.sat;
-  const batteryLevel = position?.attributes?.batteryLevel;
-  const ignition = position?.attributes?.ignition;
+  const satellites = attrs.sat;
+  const batteryLevel = attrs.batteryLevel;
+  const ignition = attrs.ignition;
+  const blocked = attrs.blocked;
+  const alarm = attrs.alarm;
+  const motion = attrs.motion;
   const lastUpdate = position?.fixTime || item.lastUpdate;
   const address = position?.address;
   const isOnline = item.status === 'online';
   const isSelected = selectedDeviceId === item.id;
+  const course = position?.course;
+  const totalDistance = attrs.totalDistance;
+  const fuel = attrs.fuel;
+  const temp = attrs.deviceTemp;
 
   const getSpeedColor = (speed) => {
     if (speed === 0) return '#94a3b8';
@@ -225,22 +243,82 @@ const DeviceRow = ({ devices, index, style }) => {
   };
 
   const getBatteryIcon = () => {
-    if (!batteryLevel && batteryLevel !== 0) return null;
-    const charge = position?.attributes?.charge;
+    if (batteryLevel == null) return null;
+    const charge = attrs.charge;
+    const size = 15;
     if (batteryLevel > 70) {
       return charge
-        ? <BatteryChargingFullIcon sx={{ fontSize: 16 }} className={classes.success} />
-        : <BatteryFullIcon sx={{ fontSize: 16 }} className={classes.success} />;
+        ? <BatteryChargingFullIcon sx={{ fontSize: size }} className={classes.success} />
+        : <BatteryFullIcon sx={{ fontSize: size }} className={classes.success} />;
     }
     if (batteryLevel > 30) {
       return charge
-        ? <BatteryCharging60Icon sx={{ fontSize: 16 }} className={classes.warning} />
-        : <Battery60Icon sx={{ fontSize: 16 }} className={classes.warning} />;
+        ? <BatteryCharging60Icon sx={{ fontSize: size }} className={classes.warning} />
+        : <Battery60Icon sx={{ fontSize: size }} className={classes.warning} />;
     }
     return charge
-      ? <BatteryCharging20Icon sx={{ fontSize: 16 }} className={classes.error} />
-      : <Battery20Icon sx={{ fontSize: 16 }} className={classes.error} />;
+      ? <BatteryCharging20Icon sx={{ fontSize: size }} className={classes.error} />
+      : <Battery20Icon sx={{ fontSize: size }} className={classes.error} />;
   };
+
+  // Build feature chips
+  const chips = [];
+
+  // Ignition
+  if (ignition !== undefined) {
+    chips.push({
+      key: 'ignition',
+      label: ignition ? 'Ligado' : 'Desligado',
+      icon: ignition
+        ? <PowerIcon sx={{ color: '#10b981' }} />
+        : <PowerOffIcon sx={{ color: '#94a3b8' }} />,
+      color: ignition ? '#10b981' : '#94a3b8',
+    });
+  }
+
+  // Motion
+  if (motion !== undefined) {
+    chips.push({
+      key: 'motion',
+      label: motion ? 'Movendo' : 'Parado',
+      icon: motion
+        ? <DirectionsRunIcon sx={{ color: '#3b82f6' }} />
+        : <NightlightIcon sx={{ color: '#94a3b8' }} />,
+      color: motion ? '#3b82f6' : '#94a3b8',
+    });
+  }
+
+  // Blocked
+  if (blocked !== undefined) {
+    chips.push({
+      key: 'blocked',
+      label: blocked ? 'Bloqueado' : 'Desbloq.',
+      icon: blocked
+        ? <LockIcon sx={{ color: '#ef4444' }} />
+        : <LockOpenIcon sx={{ color: '#10b981' }} />,
+      color: blocked ? '#ef4444' : '#10b981',
+    });
+  }
+
+  // Alarm
+  if (alarm) {
+    chips.push({
+      key: 'alarm',
+      label: formatAlarm(alarm, t),
+      icon: <NotificationsActiveIcon sx={{ color: '#ef4444' }} />,
+      color: '#ef4444',
+    });
+  }
+
+  // Disabled device
+  if (item.disabled) {
+    chips.push({
+      key: 'disabled',
+      label: 'Desativado',
+      icon: <WarningAmberIcon sx={{ color: '#f59e0b' }} />,
+      color: '#f59e0b',
+    });
+  }
 
   return (
     <div style={style}>
@@ -250,26 +328,16 @@ const DeviceRow = ({ devices, index, style }) => {
         role="button"
         tabIndex={0}
       >
-        {/* Top: Avatar + Name + Status + Icons */}
+        {/* Row 1: Avatar + Name + Status */}
         <div className={classes.topRow}>
           <Avatar className={classes.vehicleIcon}>
             <img className={classes.iconImg} src={mapIcons[mapIconKey(item.category)]} alt="" />
           </Avatar>
           <div className={classes.nameSection}>
-            <Typography className={classes.vehicleName}>
-              {item.name}
-            </Typography>
+            <Typography className={classes.vehicleName}>{item.name}</Typography>
             <div className={classes.imeiRow}>
-              <FingerprintIcon sx={{ fontSize: '0.72rem', opacity: 0.5, color: 'text.secondary' }} />
-              <Typography className={classes.imeiText}>
-                {item.uniqueId}
-              </Typography>
-              {item.phone && (
-                <>
-                  <Typography className={classes.imeiText} sx={{ mx: 0.3 }}>•</Typography>
-                  <Typography className={classes.imeiText}>{item.phone}</Typography>
-                </>
-              )}
+              <FingerprintIcon sx={{ fontSize: '0.68rem', opacity: 0.4, color: 'text.secondary' }} />
+              <Typography className={classes.imeiText}>{item.uniqueId}</Typography>
             </div>
           </div>
           <span
@@ -279,45 +347,40 @@ const DeviceRow = ({ devices, index, style }) => {
               color: statusColors[item.status] || statusColors.unknown,
             }}
           >
-            <Box
-              sx={{
-                width: 6, height: 6, borderRadius: '50%',
-                backgroundColor: statusColors[item.status] || statusColors.unknown,
-              }}
-            />
+            <Box sx={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: statusColors[item.status] || statusColors.unknown }} />
             {isOnline ? 'Online' : 'Offline'}
           </span>
-          <div className={classes.rightIcons}>
-            {position?.attributes?.hasOwnProperty('alarm') && (
-              <Tooltip title={`${t('eventAlarm')}: ${formatAlarm(position.attributes.alarm, t)}`}>
-                <ErrorIcon sx={{ fontSize: 18 }} className={classes.error} />
-              </Tooltip>
-            )}
-            {ignition !== undefined && (
-              <Tooltip title={`${t('positionIgnition')}: ${formatBoolean(ignition, t)}`}>
-                <Box sx={{ display: 'flex' }}>
-                  <EngineIcon
-                    width={16}
-                    height={16}
-                    className={ignition ? classes.success : classes.neutral}
-                  />
-                </Box>
-              </Tooltip>
-            )}
-          </div>
         </div>
 
-        {/* Address */}
-        {address && (
-          <div className={classes.addressRow}>
-            <LocationOnIcon sx={{ fontSize: '0.85rem', color: 'text.secondary', opacity: 0.6, mt: '1px' }} />
-            <Typography className={classes.addressText}>
-              {address}
-            </Typography>
+        {/* Row 2: Feature chips */}
+        {chips.length > 0 && (
+          <div className={classes.featureChips}>
+            {chips.map((c) => (
+              <Chip
+                key={c.key}
+                label={c.label}
+                icon={c.icon}
+                size="small"
+                className={classes.chip}
+                sx={{
+                  backgroundColor: `${c.color}14`,
+                  color: c.color,
+                  border: `1px solid ${c.color}30`,
+                }}
+              />
+            ))}
           </div>
         )}
 
-        {/* Info: GPS, Satellites, Time */}
+        {/* Row 3: Address */}
+        {address && (
+          <div className={classes.addressRow}>
+            <LocationOnIcon sx={{ fontSize: '0.78rem', color: 'text.secondary', opacity: 0.5, mt: '1px', flexShrink: 0 }} />
+            <Typography className={classes.addressText}>{address}</Typography>
+          </div>
+        )}
+
+        {/* Row 4: Info grid */}
         <div className={classes.infoGrid}>
           {satellites != null && (
             <span className={classes.infoItem}>
@@ -325,23 +388,48 @@ const DeviceRow = ({ devices, index, style }) => {
               {satellites} sat
             </span>
           )}
-          {lastUpdate && (
+          {course != null && (
+            <Tooltip title={`Direção: ${Math.round(course)}°`}>
+              <span className={classes.infoItem}>
+                <NavigationIcon className={classes.infoIcon} sx={{ transform: `rotate(${course}deg)` }} />
+                {Math.round(course)}°
+              </span>
+            </Tooltip>
+          )}
+          {totalDistance != null && (
             <span className={classes.infoItem}>
-              <AccessTimeIcon className={classes.infoIcon} />
-              {dayjs(lastUpdate).format('DD/MM/YYYY, HH:mm:ss')}
+              🛣️ {Math.round(totalDistance / 1000).toLocaleString()} km
+            </span>
+          )}
+          {fuel != null && (
+            <span className={classes.infoItem}>
+              <LocalGasStationIcon className={classes.infoIcon} />
+              {Math.round(fuel)}%
+            </span>
+          )}
+          {temp != null && (
+            <span className={classes.infoItem}>
+              <ThermostatIcon className={classes.infoIcon} />
+              {temp.toFixed(1)}°C
             </span>
           )}
           {lastUpdate && (
-            <span className={classes.infoItem} style={{ opacity: 0.7 }}>
+            <span className={classes.infoItem}>
+              <AccessTimeIcon className={classes.infoIcon} />
+              {dayjs(lastUpdate).format('DD/MM, HH:mm:ss')}
+            </span>
+          )}
+          {lastUpdate && (
+            <span className={classes.infoItem} style={{ opacity: 0.6 }}>
               {dayjs(lastUpdate).fromNow()}
             </span>
           )}
         </div>
 
-        {/* Speed bar + Battery */}
+        {/* Row 5: Speed bar + Battery */}
         <div className={classes.bottomRow}>
-          <div className={classes.speedBar} style={{ flex: 1, marginRight: 12 }}>
-            <SpeedIcon sx={{ fontSize: 16, color: getSpeedColor(speedKmh), opacity: 0.8 }} />
+          <div className={classes.speedBar}>
+            <SpeedIcon sx={{ fontSize: 14, color: getSpeedColor(speedKmh), opacity: 0.8 }} />
             <LinearProgress
               variant="determinate"
               value={Math.min(speedKmh, 120) / 1.2}
@@ -350,22 +438,18 @@ const DeviceRow = ({ devices, index, style }) => {
                 backgroundColor: 'action.hover',
                 '& .MuiLinearProgress-bar': {
                   backgroundColor: getSpeedColor(speedKmh),
-                  borderRadius: 3,
+                  borderRadius: 2,
                 },
               }}
             />
-            <Typography
-              className={classes.speedLabel}
-              sx={{ color: getSpeedColor(speedKmh) }}
-            >
+            <Typography className={classes.speedLabel} sx={{ color: getSpeedColor(speedKmh) }}>
               {speedKmh} km/h
             </Typography>
           </div>
-
           {batteryLevel != null && (
             <div className={classes.batteryInfo}>
               {getBatteryIcon()}
-              <Typography sx={{ fontSize: '0.7rem', fontWeight: 600, color: 'text.secondary' }}>
+              <Typography sx={{ fontSize: '0.67rem', fontWeight: 600, color: 'text.secondary' }}>
                 {Math.round(batteryLevel)}%
               </Typography>
             </div>
