@@ -17,6 +17,10 @@ import BatteryCharging60Icon from '@mui/icons-material/BatteryCharging60';
 import Battery20Icon from '@mui/icons-material/Battery20';
 import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
 import ErrorIcon from '@mui/icons-material/Error';
+import SpeedIcon from '@mui/icons-material/Speed';
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { devicesActions } from '../store';
@@ -35,6 +39,7 @@ import { useAttributePreference } from '../common/util/preferences';
 import GeofencesValue from '../common/components/GeofencesValue';
 import DriverValue from '../common/components/DriverValue';
 import MotionBar from './components/MotionBar';
+import AddressValue from '../common/components/AddressValue';
 
 dayjs.extend(relativeTime);
 
@@ -64,6 +69,7 @@ const useStyles = makeStyles()((theme) => ({
   row: {
     borderRadius: 14,
     margin: '2px 6px',
+    padding: '10px 12px',
     transition: 'all 0.15s ease',
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
@@ -79,6 +85,39 @@ const useStyles = makeStyles()((theme) => ({
     borderRadius: '50%',
     display: 'inline-block',
     marginRight: theme.spacing(0.5),
+  },
+  detailsRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1.5),
+    marginTop: theme.spacing(0.5),
+    flexWrap: 'wrap',
+  },
+  detailItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 3,
+    fontSize: '0.7rem',
+    color: theme.palette.text.secondary,
+    whiteSpace: 'nowrap',
+  },
+  detailIcon: {
+    fontSize: '0.85rem !important',
+    opacity: 0.7,
+  },
+  addressRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 3,
+    marginTop: 2,
+    fontSize: '0.7rem',
+    color: theme.palette.text.secondary,
+  },
+  iconsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 2,
   },
 }));
 
@@ -120,6 +159,11 @@ const DeviceRow = ({ devices, index, style }) => {
     unknown: '#94a3b8',
   };
 
+  const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : null;
+  const satellites = position?.attributes?.sat;
+  const lastUpdate = position?.fixTime || item.lastUpdate;
+  const hasAddress = position?.address;
+
   const secondaryText = () => {
     let status;
     if (item.status === 'online' || !item.lastUpdate) {
@@ -128,18 +172,50 @@ const DeviceRow = ({ devices, index, style }) => {
       status = dayjs(item.lastUpdate).fromNow();
     }
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-        {secondaryValue && (
-          <>
-            {secondaryValue}
-            {' • '}
-          </>
+      <Box component="div">
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {secondaryValue && (
+            <>
+              {secondaryValue}
+              {' • '}
+            </>
+          )}
+          <Box
+            className={classes.statusDot}
+            sx={{ backgroundColor: statusColor[item.status] || statusColor.unknown }}
+          />
+          <span className={classes[getStatusColor(item.status)]}>{status}</span>
+        </Box>
+        {/* Extra details row */}
+        <Box className={classes.detailsRow}>
+          {speedKmh !== null && (
+            <Box className={classes.detailItem}>
+              <SpeedIcon className={classes.detailIcon} />
+              <span>{speedKmh} km/h</span>
+            </Box>
+          )}
+          {satellites != null && (
+            <Box className={classes.detailItem}>
+              <GpsFixedIcon className={classes.detailIcon} />
+              <span>{satellites} sat</span>
+            </Box>
+          )}
+          {lastUpdate && (
+            <Box className={classes.detailItem}>
+              <AccessTimeIcon className={classes.detailIcon} />
+              <span>{dayjs(lastUpdate).fromNow()}</span>
+            </Box>
+          )}
+        </Box>
+        {/* Address row */}
+        {hasAddress && (
+          <Box className={classes.addressRow}>
+            <LocationOnIcon className={classes.detailIcon} sx={{ fontSize: '0.8rem !important' }} />
+            <Typography noWrap sx={{ fontSize: '0.68rem', color: 'text.secondary', maxWidth: 220 }}>
+              {position.address}
+            </Typography>
+          </Box>
         )}
-        <Box
-          className={classes.statusDot}
-          sx={{ backgroundColor: statusColor[item.status] || statusColor.unknown }}
-        />
-        <span className={classes[getStatusColor(item.status)]}>{status}</span>
       </Box>
     );
   };
@@ -169,62 +245,71 @@ const DeviceRow = ({ devices, index, style }) => {
           secondary={secondaryText()}
           slots={{
             primary: Typography,
-            secondary: Typography,
+            secondary: 'div',
           }}
           slotProps={{
             primary: { noWrap: true, sx: { fontWeight: 600, fontSize: '0.875rem' } },
-            secondary: { noWrap: true, component: 'div', sx: { fontSize: '0.75rem' } },
+            secondary: { sx: { fontSize: '0.75rem' } },
           }}
         />
-        {position && (
-          <>
-            {position.attributes.hasOwnProperty('alarm') && (
-              <Tooltip title={`${t('eventAlarm')}: ${formatAlarm(position.attributes.alarm, t)}`}>
-                <IconButton size="small">
-                  <ErrorIcon fontSize="small" className={classes.error} />
-                </IconButton>
-              </Tooltip>
-            )}
-            {position.attributes.hasOwnProperty('ignition') && (
-              <Tooltip
-                title={`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`}
-              >
-                <IconButton size="small">
-                  {position.attributes.ignition ? (
-                    <EngineIcon width={18} height={18} className={classes.success} />
-                  ) : (
-                    <EngineIcon width={18} height={18} className={classes.neutral} />
-                  )}
-                </IconButton>
-              </Tooltip>
-            )}
-            {position.attributes.hasOwnProperty('batteryLevel') && (
-              <Tooltip
-                title={`${t('positionBatteryLevel')}: ${formatPercentage(position.attributes.batteryLevel)}`}
-              >
-                <IconButton size="small">
-                  {(position.attributes.batteryLevel > 70 &&
-                    (position.attributes.charge ? (
-                      <BatteryChargingFullIcon fontSize="small" className={classes.success} />
-                    ) : (
-                      <BatteryFullIcon fontSize="small" className={classes.success} />
-                    ))) ||
-                    (position.attributes.batteryLevel > 30 &&
-                      (position.attributes.charge ? (
-                        <BatteryCharging60Icon fontSize="small" className={classes.warning} />
+        <Box className={classes.iconsContainer}>
+          <Box sx={{ display: 'flex', gap: 0 }}>
+            {position && (
+              <>
+                {position.attributes.hasOwnProperty('alarm') && (
+                  <Tooltip title={`${t('eventAlarm')}: ${formatAlarm(position.attributes.alarm, t)}`}>
+                    <IconButton size="small">
+                      <ErrorIcon fontSize="small" className={classes.error} />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {position.attributes.hasOwnProperty('ignition') && (
+                  <Tooltip
+                    title={`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`}
+                  >
+                    <IconButton size="small">
+                      {position.attributes.ignition ? (
+                        <EngineIcon width={18} height={18} className={classes.success} />
                       ) : (
-                        <Battery60Icon fontSize="small" className={classes.warning} />
-                      ))) ||
-                    (position.attributes.charge ? (
-                      <BatteryCharging20Icon fontSize="small" className={classes.error} />
-                    ) : (
-                      <Battery20Icon fontSize="small" className={classes.error} />
-                    ))}
-                </IconButton>
-              </Tooltip>
+                        <EngineIcon width={18} height={18} className={classes.neutral} />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {position.attributes.hasOwnProperty('batteryLevel') && (
+                  <Tooltip
+                    title={`${t('positionBatteryLevel')}: ${formatPercentage(position.attributes.batteryLevel)}`}
+                  >
+                    <IconButton size="small">
+                      {(position.attributes.batteryLevel > 70 &&
+                        (position.attributes.charge ? (
+                          <BatteryChargingFullIcon fontSize="small" className={classes.success} />
+                        ) : (
+                          <BatteryFullIcon fontSize="small" className={classes.success} />
+                        ))) ||
+                        (position.attributes.batteryLevel > 30 &&
+                          (position.attributes.charge ? (
+                            <BatteryCharging60Icon fontSize="small" className={classes.warning} />
+                          ) : (
+                            <Battery60Icon fontSize="small" className={classes.warning} />
+                          ))) ||
+                        (position.attributes.charge ? (
+                          <BatteryCharging20Icon fontSize="small" className={classes.error} />
+                        ) : (
+                          <Battery20Icon fontSize="small" className={classes.error} />
+                        ))}
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </>
             )}
-          </>
-        )}
+          </Box>
+          {position?.attributes?.batteryLevel != null && (
+            <Typography sx={{ fontSize: '0.6rem', color: 'text.secondary', lineHeight: 1 }}>
+              {Math.round(position.attributes.batteryLevel)}%
+            </Typography>
+          )}
+        </Box>
       </ListItemButton>
     </div>
   );
