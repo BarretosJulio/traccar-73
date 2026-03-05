@@ -32,7 +32,7 @@ const ErrorHandler = () => {
 
   return (
     <>
-      <Snackbar open={Boolean(error) && !expanded}>
+      <Snackbar open={Boolean(error) && !expanded} autoHideDuration={6000} onClose={() => dispatch(errorsActions.pop())}>
         <Alert
           elevation={6}
           onClose={() => dispatch(errorsActions.pop())}

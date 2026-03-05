@@ -24,13 +24,18 @@ const useStyles = makeStyles()((theme) => ({
   },
   backButton: {
     position: 'fixed',
-    top: theme.spacing(1.5),
+    top: theme.spacing(8),
     left: theme.spacing(1.5),
     zIndex: 10,
     background: theme.palette.background.paper,
     boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
+    [theme.breakpoints.down('md')]: {
+      top: 'auto',
+      bottom: theme.spacing(10),
+      left: theme.spacing(1),
+    },
     '&:hover': {
       background: theme.palette.background.paper,
     },
@@ -129,8 +134,8 @@ const MapPage = () => {
   return (
     <div className={classes.root}>
       <Tooltip title="Voltar ao Dashboard">
-        <IconButton className={classes.backButton} onClick={() => navigate('/')}>
-          <ArrowBackIcon />
+        <IconButton className={classes.backButton} onClick={() => navigate('/')} size="small">
+          <ArrowBackIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       {desktop && (
