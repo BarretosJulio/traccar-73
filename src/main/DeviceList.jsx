@@ -41,7 +41,7 @@ const DeviceList = ({ devices }) => {
       className={classes.list}
       rowComponent={DeviceRow}
       rowCount={devices.length}
-      rowHeight={155}
+      rowHeight={190}
       rowProps={{ devices }}
       overscanCount={5}
     />
