@@ -58,16 +58,16 @@ import fetchOrThrow from '../util/fetchOrThrow';
 const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
     pointerEvents: 'auto',
-    borderRadius: 16,
     overflow: 'hidden',
     [theme.breakpoints.down('md')]: {
       width: 360,
+      borderRadius: 16,
       boxShadow: '0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08)',
     },
     [theme.breakpoints.up('md')]: {
       width: '100%',
-      borderRadius: '16px 16px 0 0',
-      boxShadow: '0 -8px 40px rgba(0,0,0,0.25), 0 -2px 12px rgba(0,0,0,0.1)',
+      borderRadius: 14,
+      boxShadow: '0 -6px 30px rgba(0,0,0,0.2), 0 4px 20px rgba(0,0,0,0.08)',
     },
   },
   media: {
@@ -83,13 +83,13 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   header: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1.2),
-    padding: theme.spacing(1, 1.5, 0, 1.5),
+    gap: theme.spacing(1),
+    padding: theme.spacing(0.8, 1.5, 0, 1.5),
   },
   headerIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 8,
     backgroundColor: theme.palette.primary.main,
     display: 'flex',
     alignItems: 'center',
@@ -97,8 +97,8 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     flexShrink: 0,
   },
   headerIconImg: {
-    width: 18,
-    height: 18,
+    width: 16,
+    height: 16,
     filter: 'brightness(0) invert(1)',
   },
   headerInfo: {
@@ -106,65 +106,68 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     minWidth: 0,
   },
   content: {
-    padding: theme.spacing(0.8, 1.5, 0.8, 1.5),
-    maxHeight: 350,
+    padding: theme.spacing(0.5, 1.5, 0.5, 1.5),
     overflow: 'auto',
+    [theme.breakpoints.down('md')]: {
+      maxHeight: 350,
+    },
     [theme.breakpoints.up('md')]: {
       maxHeight: 'none',
       display: 'flex',
       flexDirection: 'column',
-      gap: 4,
+      gap: 2,
     },
   },
   chipsRow: {
     display: 'flex',
     flexWrap: 'wrap',
     gap: 4,
-    marginBottom: theme.spacing(0.5),
+    marginBottom: 4,
   },
   chip: {
-    height: 22,
-    fontSize: '0.62rem',
+    height: 20,
+    fontSize: '0.6rem',
     fontWeight: 600,
     borderRadius: 6,
-    '& .MuiChip-icon': { fontSize: '0.78rem', marginLeft: 4 },
+    '& .MuiChip-icon': { fontSize: '0.72rem', marginLeft: 4 },
     '& .MuiChip-label': { padding: '0 5px' },
   },
   dataGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '4px 12px',
+    gap: '3px 10px',
     [theme.breakpoints.up('md')]: {
-      gridTemplateColumns: 'repeat(4, 1fr)',
-      gap: '4px 16px',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+      gap: '2px 16px',
     },
   },
   dataItem: {
     display: 'flex',
     alignItems: 'center',
-    gap: 5,
+    gap: 4,
   },
   dataIcon: {
-    fontSize: '0.9rem !important',
+    fontSize: '0.82rem !important',
     opacity: 0.5,
     color: theme.palette.text.secondary,
   },
   dataLabel: {
-    fontSize: '0.62rem',
+    fontSize: '0.58rem',
     color: theme.palette.text.secondary,
     lineHeight: 1,
   },
   dataValue: {
-    fontSize: '0.75rem',
+    fontSize: '0.72rem',
     fontWeight: 600,
-    lineHeight: 1.2,
+    lineHeight: 1.1,
   },
   fullWidthItem: {
     gridColumn: '1 / -1',
   },
   actions: {
     justifyContent: 'space-between',
-    padding: theme.spacing(0.3, 1),
+    padding: theme.spacing(0, 1),
+    minHeight: 36,
     borderTop: `1px solid ${theme.palette.divider}`,
   },
   root: {
@@ -172,9 +175,9 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     position: 'fixed',
     zIndex: 5,
     [theme.breakpoints.up('md')]: {
-      left: desktopPadding || 0,
-      right: 0,
-      bottom: 0,
+      left: `calc(${desktopPadding || '0px'} + 16px)`,
+      right: 60,
+      bottom: 12,
     },
     [theme.breakpoints.down('md')]: {
       left: '50%',
