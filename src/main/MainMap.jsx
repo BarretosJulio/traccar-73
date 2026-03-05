@@ -61,8 +61,6 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
         <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
       )}
       <MapWhatsApp />
-        <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
-      )}
       {desktop && (
         <MapPadding
           start={
