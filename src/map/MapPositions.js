@@ -1,4 +1,4 @@
-import { useId, useCallback, useEffect } from 'react';
+import { useId, useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -20,6 +20,8 @@ const MapPositions = ({
   const id = useId();
   const clusters = `${id}-clusters`;
   const selected = `${id}-selected`;
+  const selectedCircle = `${id}-selected-circle`;
+  const animationRef = useRef(null);
 
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -155,6 +157,25 @@ const MapPositions = ({
       map.on('mouseleave', source, onMouseLeave);
       map.on('click', source, onMarkerClickCallback);
     });
+
+    // Pulsing circle around selected device
+    map.addSource(selectedCircle, {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    });
+    map.addLayer({
+      id: selectedCircle,
+      type: 'circle',
+      source: selectedCircle,
+      paint: {
+        'circle-radius': 28,
+        'circle-color': '#3b82f6',
+        'circle-opacity': 0.25,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#3b82f6',
+        'circle-stroke-opacity': 0.6,
+      },
+    }, id); // Insert below the main markers layer
     map.addLayer({
       id: clusters,
       type: 'symbol',
@@ -175,6 +196,7 @@ const MapPositions = ({
     map.on('click', onMapClickCallback);
 
     return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
       map.off('mouseenter', clusters, onMouseEnter);
       map.off('mouseleave', clusters, onMouseLeave);
       map.off('click', clusters, onClusterClick);
@@ -182,6 +204,12 @@ const MapPositions = ({
 
       if (map.getLayer(clusters)) {
         map.removeLayer(clusters);
+      }
+      if (map.getLayer(selectedCircle)) {
+        map.removeLayer(selectedCircle);
+      }
+      if (map.getSource(selectedCircle)) {
+        map.removeSource(selectedCircle);
       }
 
       [id, selected].forEach((source) => {
@@ -221,7 +249,41 @@ const MapPositions = ({
           })),
       });
     });
-  }, [mapCluster, clusters, onMarkerClick, onClusterClick, devices, positions, selectedPosition]);
+
+    // Update pulsing circle for selected device
+    const selectedPos = selectedDeviceId
+      ? positions.find((p) => p.deviceId === selectedDeviceId)
+      : null;
+    map.getSource(selectedCircle)?.setData({
+      type: 'FeatureCollection',
+      features: selectedPos
+        ? [{
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [selectedPos.longitude, selectedPos.latitude],
+            },
+            properties: {},
+          }]
+        : [],
+    });
+
+    // Animate pulsing
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    if (selectedPos) {
+      const animate = () => {
+        const t = (Date.now() % 2000) / 2000;
+        const radius = 20 + Math.sin(t * Math.PI * 2) * 10;
+        const opacity = 0.3 - Math.sin(t * Math.PI * 2) * 0.15;
+        if (map.getLayer(selectedCircle)) {
+          map.setPaintProperty(selectedCircle, 'circle-radius', radius);
+          map.setPaintProperty(selectedCircle, 'circle-opacity', opacity);
+        }
+        animationRef.current = requestAnimationFrame(animate);
+      };
+      animate();
+    }
+  }, [mapCluster, clusters, onMarkerClick, onClusterClick, devices, positions, selectedPosition, selectedDeviceId]);
 
   return null;
 };
