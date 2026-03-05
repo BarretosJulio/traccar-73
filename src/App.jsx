@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery, useTheme } from '@mui/material';
@@ -9,6 +10,7 @@ import { useCatch, useEffectAsync } from './reactHelper';
 import { sessionActions } from './store';
 import UpdateController from './UpdateController';
 import MotionController from './main/MotionController';
+import DemoController from './main/DemoController';
 import TermsDialog from './common/components/TermsDialog';
 import Loader from './common/components/Loader';
 import fetchOrThrow from './common/util/fetchOrThrow';
@@ -35,6 +37,7 @@ const App = () => {
   const { pathname, search } = useLocation();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
+  const [demoMode, setDemoMode] = useState(false);
 
   const newServer = useSelector((state) => state.session.server.newServer);
   const termsUrl = useSelector((state) => state.session.server.attributes.termsUrl);
@@ -74,8 +77,9 @@ const App = () => {
       <CachingController />
       <UpdateController />
       <MotionController />
+      <DemoController active={demoMode} />
       <div className={classes.page}>
-        <Outlet />
+        <Outlet context={{ demoMode, setDemoMode }} />
       </div>
       {!desktop && (
         <div className={classes.menu}>

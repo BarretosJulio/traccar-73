@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -45,6 +45,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ScienceIcon from '@mui/icons-material/Science';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
@@ -344,6 +345,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const t = useTranslation();
   const admin = useAdministrator();
+  const { demoMode, setDemoMode } = useOutletContext() || {};
 
   const user = useSelector((state) => state.session.user);
   const devices = useSelector((state) => state.devices.items);
@@ -501,11 +503,48 @@ const DashboardPage = () => {
               : 'Painel de controle de frota'}
           </Typography>
         </div>
-        <button className={classes.mapButton} onClick={() => navigate('/map')}>
-          <MapIcon fontSize="small" />
-          Mapa Geral
-        </button>
+        <Box sx={{ display: 'flex', gap: 1, zIndex: 1 }}>
+          {admin && (
+            <Tooltip title={demoMode ? 'Desativar Demo' : 'Ativar Demo (5 veículos fictícios)'}>
+              <IconButton
+                onClick={() => setDemoMode?.(!demoMode)}
+                sx={{
+                  background: demoMode ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.15)',
+                  color: '#fff',
+                  borderRadius: 3,
+                  border: demoMode ? '1px solid rgba(239,68,68,0.5)' : '1px solid rgba(255,255,255,0.25)',
+                  '&:hover': { background: demoMode ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.25)' },
+                }}
+              >
+                <ScienceIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+          <button className={classes.mapButton} onClick={() => navigate('/map')}>
+            <MapIcon fontSize="small" />
+            Mapa Geral
+          </button>
+        </Box>
       </div>
+
+      {demoMode && (
+        <Box sx={{
+          mx: 3, mt: -1, mb: 0, p: 1.5, borderRadius: 3,
+          background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1,
+        }}>
+          <ScienceIcon sx={{ color: '#fff', fontSize: 18 }} />
+          <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.8rem' }}>
+            MODO DEMO ATIVO — 5 veículos fictícios simulando em tempo real
+          </Typography>
+          <Chip
+            label="Desativar"
+            size="small"
+            onClick={() => setDemoMode?.(false)}
+            sx={{ ml: 1, bgcolor: 'rgba(255,255,255,0.25)', color: '#fff', fontWeight: 700, cursor: 'pointer', '&:hover': { bgcolor: 'rgba(255,255,255,0.4)' } }}
+          />
+        </Box>
+      )}
 
       <div className={classes.content}>
         {/* Stats Cards - Elevated over top bar */}
