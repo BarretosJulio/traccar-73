@@ -81,6 +81,9 @@ const useStyles = makeStyles()((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: theme.spacing(2, 3),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1.5, 2),
+    },
     background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
     color: '#fff',
     position: 'relative',
@@ -111,6 +114,21 @@ const useStyles = makeStyles()((theme) => ({
     fontSize: '1.6rem',
     color: '#fff',
     letterSpacing: '-0.02em',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1.15rem',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      maxWidth: '55vw',
+    },
+  },
+  subtitle: {
+    color: 'rgba(255,255,255,0.75)',
+    fontSize: '0.85rem',
+    fontWeight: 400,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.7rem',
+    },
   },
   subtitle: {
     color: 'rgba(255,255,255,0.75)',
@@ -132,6 +150,11 @@ const useStyles = makeStyles()((theme) => ({
     border: '1px solid rgba(255,255,255,0.25)',
     transition: 'all 0.25s ease',
     zIndex: 1,
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(0.8, 1.5),
+      fontSize: '0.75rem',
+      borderRadius: 10,
+    },
     '&:hover': {
       background: 'rgba(255,255,255,0.25)',
       transform: 'translateY(-2px)',
@@ -141,9 +164,15 @@ const useStyles = makeStyles()((theme) => ({
   content: {
     flex: 1,
     padding: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2, 1.5),
+    },
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      gap: theme.spacing(2),
+    },
     maxWidth: 1400,
     width: '100%',
     margin: '0 auto',
@@ -151,6 +180,11 @@ const useStyles = makeStyles()((theme) => ({
   statsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: theme.spacing(1),
+      marginTop: theme.spacing(-3),
+    },
     gap: theme.spacing(2),
     marginTop: theme.spacing(-5),
     position: 'relative',
@@ -159,6 +193,11 @@ const useStyles = makeStyles()((theme) => ({
   statCard: {
     borderRadius: 20,
     padding: theme.spacing(2.5),
+    [theme.breakpoints.down('sm')]: {
+      borderRadius: 14,
+      padding: theme.spacing(1.5),
+      gap: theme.spacing(1.2),
+    },
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(2),
@@ -181,6 +220,11 @@ const useStyles = makeStyles()((theme) => ({
     width: 56,
     height: 56,
     borderRadius: 16,
+    [theme.breakpoints.down('sm')]: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+    },
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -191,6 +235,9 @@ const useStyles = makeStyles()((theme) => ({
     fontWeight: 900,
     lineHeight: 1,
     letterSpacing: '-0.03em',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1.5rem',
+    },
   },
   statLabel: {
     fontSize: '0.78rem',
@@ -199,6 +246,10 @@ const useStyles = makeStyles()((theme) => ({
     marginTop: 4,
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.65rem',
+      marginTop: 2,
+    },
   },
   statPercent: {
     fontSize: '0.7rem',
@@ -535,7 +586,7 @@ const DashboardPage = () => {
           )}
           <button className={classes.mapButton} onClick={() => navigate('/map')}>
             <MapIcon fontSize="small" />
-            Mapa Geral
+            Mapa
           </button>
         </Box>
       </div>
