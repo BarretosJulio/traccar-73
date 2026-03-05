@@ -278,9 +278,10 @@ const useStyles = makeStyles()((theme) => ({
     fontWeight: 700,
   },
   menuGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
-    gap: theme.spacing(2.5),
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: theme.spacing(3),
     padding: theme.spacing(1, 0),
   },
   menuItem: {
