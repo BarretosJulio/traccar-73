@@ -511,7 +511,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     )}
                     {position.serverTime && (
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora Servidor</Typography>
+                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora GPRS</Typography>
                         <Typography sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
                           {dayjs(position.serverTime).format('DD/MM/YYYY, HH:mm:ss')}
                         </Typography>
