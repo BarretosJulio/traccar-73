@@ -227,6 +227,8 @@ const DeviceRow = ({ devices, index, style }) => {
   const alarm = attrs.alarm;
   const motion = attrs.motion;
   const lastUpdate = position?.fixTime || item.lastUpdate;
+  const deviceTime = position?.deviceTime;
+  const serverTime = position?.serverTime;
   const address = position?.address;
   const geofenceIds = position?.geofenceIds;
   const isOnline = item.status === 'online';
@@ -425,10 +427,26 @@ const DeviceRow = ({ devices, index, style }) => {
             </span>
           )}
           {lastUpdate && (
-            <span className={classes.infoItem}>
-              <AccessTimeIcon className={classes.infoIcon} />
-              {dayjs(lastUpdate).format('DD/MM, HH:mm:ss')}
-            </span>
+            <Tooltip title="Hora GPS">
+              <span className={classes.infoItem}>
+                <AccessTimeIcon className={classes.infoIcon} />
+                GPS {dayjs(lastUpdate).format('HH:mm:ss')}
+              </span>
+            </Tooltip>
+          )}
+          {deviceTime && (
+            <Tooltip title="Hora GSM (dispositivo)">
+              <span className={classes.infoItem}>
+                📶 GSM {dayjs(deviceTime).format('HH:mm:ss')}
+              </span>
+            </Tooltip>
+          )}
+          {serverTime && (
+            <Tooltip title="Hora GPRS (servidor)">
+              <span className={classes.infoItem}>
+                🌐 GPRS {dayjs(serverTime).format('HH:mm:ss')}
+              </span>
+            </Tooltip>
           )}
           {lastUpdate && (
             <span className={classes.infoItem} style={{ opacity: 0.6 }}>
