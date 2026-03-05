@@ -18,6 +18,7 @@ import {
   Divider,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
+import { useTheme, useMediaQuery } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RouteIcon from '@mui/icons-material/Route';
 import SendIcon from '@mui/icons-material/Send';
@@ -57,10 +58,17 @@ import fetchOrThrow from '../util/fetchOrThrow';
 const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
     pointerEvents: 'auto',
-    width: 360,
     borderRadius: 16,
-    boxShadow: '0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08)',
     overflow: 'hidden',
+    [theme.breakpoints.down('md')]: {
+      width: 360,
+      boxShadow: '0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08)',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '100%',
+      borderRadius: '16px 16px 0 0',
+      boxShadow: '0 -8px 40px rgba(0,0,0,0.25), 0 -2px 12px rgba(0,0,0,0.1)',
+    },
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -76,11 +84,11 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(1.2),
-    padding: theme.spacing(1.5, 1.5, 0, 1.5),
+    padding: theme.spacing(1, 1.5, 0, 1.5),
   },
   headerIcon: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     borderRadius: 10,
     backgroundColor: theme.palette.primary.main,
     display: 'flex',
@@ -89,8 +97,8 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     flexShrink: 0,
   },
   headerIconImg: {
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     filter: 'brightness(0) invert(1)',
   },
   headerInfo: {
@@ -98,15 +106,21 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     minWidth: 0,
   },
   content: {
-    padding: theme.spacing(1, 1.5, 1, 1.5),
-    maxHeight: 400,
+    padding: theme.spacing(0.8, 1.5, 0.8, 1.5),
+    maxHeight: 350,
     overflow: 'auto',
+    [theme.breakpoints.up('md')]: {
+      maxHeight: 'none',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 4,
+    },
   },
   chipsRow: {
     display: 'flex',
     flexWrap: 'wrap',
     gap: 4,
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(0.5),
   },
   chip: {
     height: 22,
@@ -119,7 +133,11 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   dataGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '6px 12px',
+    gap: '4px 12px',
+    [theme.breakpoints.up('md')]: {
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: '4px 16px',
+    },
   },
   dataItem: {
     display: 'flex',
@@ -132,12 +150,12 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     color: theme.palette.text.secondary,
   },
   dataLabel: {
-    fontSize: '0.65rem',
+    fontSize: '0.62rem',
     color: theme.palette.text.secondary,
     lineHeight: 1,
   },
   dataValue: {
-    fontSize: '0.78rem',
+    fontSize: '0.75rem',
     fontWeight: 600,
     lineHeight: 1.2,
   },
@@ -146,23 +164,23 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   },
   actions: {
     justifyContent: 'space-between',
-    padding: theme.spacing(0.5, 1),
+    padding: theme.spacing(0.3, 1),
     borderTop: `1px solid ${theme.palette.divider}`,
   },
   root: {
     pointerEvents: 'none',
     position: 'fixed',
     zIndex: 5,
-    left: '50%',
     [theme.breakpoints.up('md')]: {
-      left: `calc(50% + ${desktopPadding} / 2)`,
-      bottom: theme.spacing(3),
+      left: desktopPadding || 0,
+      right: 0,
+      bottom: 0,
     },
     [theme.breakpoints.down('md')]: {
       left: '50%',
       bottom: `calc(${theme.spacing(3)} + ${theme.dimensions.bottomBarHeight}px)`,
+      transform: 'translateX(-50%)',
     },
-    transform: 'translateX(-50%)',
   },
 }));
 
@@ -182,6 +200,8 @@ const DataItem = ({ icon, label, value, fullWidth, color }) => {
 };
 
 const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPadding = 0 }) => {
+  const theme = useTheme();
+  const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const { classes } = useStyles({ desktopPadding });
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -295,8 +315,9 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
           <Rnd
             default={{ x: 0, y: 0, width: 'auto', height: 'auto' }}
             enableResizing={false}
+            disableDragging={desktop}
             dragHandleClassName="draggable-header"
-            style={{ position: 'relative' }}
+            style={{ position: 'relative', width: desktop ? '100%' : 'auto' }}
           >
             <Card elevation={3} className={classes.card}>
               {deviceImage ? (
@@ -489,10 +510,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     )}
                   </div>
 
-                  <Divider sx={{ my: 0.8 }} />
+                  <Divider sx={{ my: 0.5 }} />
 
                   {/* Timestamps */}
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3 }}>
+                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 0.3, md: 2 }, flexWrap: 'wrap' }}>
                     {position.fixTime && (
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora GPS</Typography>
