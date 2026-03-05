@@ -127,27 +127,52 @@ const BottomMenu = () => {
   };
 
   return (
-    <Paper square elevation={0} sx={{ borderTop: '1px solid', borderColor: 'divider', pb: 'env(safe-area-inset-bottom)' }}>
+    <Paper
+      square
+      elevation={0}
+      sx={{
+        background: 'linear-gradient(180deg, rgba(30,40,50,0.97) 0%, rgba(20,28,36,1) 100%)',
+        backdropFilter: 'blur(12px)',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        pb: 'env(safe-area-inset-bottom)',
+      }}
+    >
       <BottomNavigation
         value={currentSelection()}
         onChange={handleSelection}
         showLabels
         sx={{
-          height: { xs: 56, sm: 64 },
+          height: { xs: 60, sm: 68 },
+          background: 'transparent',
           '& .MuiBottomNavigationAction-root': {
             minWidth: 'auto',
-            padding: { xs: '4px 0', sm: '6px 0' },
+            padding: '6px 0 4px',
+            color: 'rgba(255,255,255,0.45)',
+            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
             '&.Mui-selected': {
-              color: 'primary.main',
+              color: '#2dd4bf',
+            },
+            '&:hover': {
+              color: 'rgba(255,255,255,0.7)',
             },
           },
           '& .MuiBottomNavigationAction-label': {
-            fontSize: { xs: '0.62rem', sm: '0.7rem' },
+            fontSize: '0.65rem',
             fontWeight: 500,
+            letterSpacing: '0.02em',
+            marginTop: '2px',
             '&.Mui-selected': {
-              fontSize: { xs: '0.62rem', sm: '0.7rem' },
-              fontWeight: 600,
+              fontSize: '0.65rem',
+              fontWeight: 700,
             },
+          },
+          '& .MuiSvgIcon-root': {
+            fontSize: '1.35rem',
+            transition: 'transform 0.2s ease',
+          },
+          '& .Mui-selected .MuiSvgIcon-root': {
+            transform: 'scale(1.1)',
+            filter: 'drop-shadow(0 0 6px rgba(45,212,191,0.4))',
           },
         }}
       >
