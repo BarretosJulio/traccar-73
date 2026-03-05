@@ -37,10 +37,10 @@ const MapSelectedDevice = ({ mapReady }) => {
         (mapFollow && positionChanged)) &&
       position
     ) {
-      // On phone: StatusCard is at the bottom, shift map center up
+      // On phone: StatusCard is at the bottom, shift map center up significantly
       // On desktop: sidebar is on the left, shift map center right
       const offset = isPhone
-        ? [0, -dimensions.popupMapOffset]
+        ? [0, -Math.round(window.innerHeight * 0.25)]
         : [dimensions.popupMapOffset / 2, 0];
 
       map.easeTo({
