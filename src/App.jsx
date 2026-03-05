@@ -12,6 +12,7 @@ import MotionController from './main/MotionController';
 import TermsDialog from './common/components/TermsDialog';
 import Loader from './common/components/Loader';
 import fetchOrThrow from './common/util/fetchOrThrow';
+import { apiUrl } from './common/util/apiUrl';
 
 const useStyles = makeStyles()(() => ({
   page: {
@@ -50,7 +51,7 @@ const App = () => {
 
   useEffectAsync(async () => {
     if (!user) {
-      const response = await fetch('/api/session');
+      const response = await fetch(apiUrl('/api/session'));
       if (response.ok) {
         dispatch(sessionActions.updateUser(await response.json()));
       } else {

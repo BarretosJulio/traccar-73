@@ -39,6 +39,7 @@ import { sessionActions } from '../store';
 import { useAdministrator, useRestriction } from '../common/util/permissions';
 import useSettingsStyles from './common/useSettingsStyles';
 import fetchOrThrow from '../common/util/fetchOrThrow';
+import { apiUrl } from '../common/util/apiUrl';
 
 const deviceFields = [
   { id: 'name', name: 'sharedName' },
@@ -104,7 +105,7 @@ const PreferencesPage = () => {
   });
 
   const handleReboot = useCatch(async () => {
-    const response = await fetch('/api/server/reboot', { method: 'POST' });
+    const response = await fetch(apiUrl('/api/server/reboot'), { method: 'POST' });
     throw Error(response.statusText);
   });
 

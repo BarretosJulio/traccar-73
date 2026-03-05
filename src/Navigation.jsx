@@ -58,6 +58,7 @@ import Loader from './common/components/Loader';
 import { generateLoginToken } from './common/components/NativeInterface';
 import { useLocalization } from './common/components/LocalizationProvider';
 import fetchOrThrow from './common/util/fetchOrThrow';
+import { apiUrl } from './common/util/apiUrl';
 import AuditPage from './reports/AuditPage';
 
 const Navigation = () => {
@@ -84,7 +85,7 @@ const Navigation = () => {
 
     if (searchParams.has('token')) {
       const token = searchParams.get('token');
-      await fetch(`/api/session?token=${encodeURIComponent(token)}`);
+      await fetch(apiUrl(`/api/session?token=${encodeURIComponent(token)}`));
       newParams.delete('token');
     }
 
