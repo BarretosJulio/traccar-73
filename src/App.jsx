@@ -37,7 +37,14 @@ const App = () => {
   const { pathname, search } = useLocation();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
-  const [demoMode, setDemoMode] = useState(false);
+  const [demoMode, setDemoMode] = useState(() => {
+    const saved = window.sessionStorage.getItem('demoMode');
+    if (saved === 'true') {
+      window.sessionStorage.removeItem('demoMode');
+      return true;
+    }
+    return false;
+  });
 
   const newServer = useSelector((state) => state.session.server.newServer);
   const termsUrl = useSelector((state) => state.session.server.attributes.termsUrl);

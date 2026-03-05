@@ -120,6 +120,22 @@ const LoginPage = () => {
   const [announcementShown, setAnnouncementShown] = useState(false);
   const announcement = useSelector((state) => state.session.server.announcement);
 
+  const handleDemoLogin = () => {
+    const demoUser = {
+      id: 99999,
+      name: 'Cliente Demo',
+      email: 'demo@mabtracker.com.br',
+      administrator: false,
+      readonly: false,
+      deviceReadonly: false,
+      userLimit: 0,
+      attributes: {},
+    };
+    dispatch(sessionActions.updateUser(demoUser));
+    window.sessionStorage.setItem('demoMode', 'true');
+    navigate('/', { replace: true });
+  };
+
   const handlePasswordLogin = async (event) => {
     event.preventDefault();
     setFailed(false);
@@ -303,6 +319,23 @@ const LoginPage = () => {
             {t('loginOpenId')}
           </Button>
         )}
+        <Button
+          onClick={handleDemoLogin}
+          variant="outlined"
+          sx={{
+            py: 1.2,
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            borderColor: 'primary.main',
+            color: 'primary.main',
+            '&:hover': {
+              bgcolor: 'primary.main',
+              color: 'white',
+            },
+          }}
+        >
+          Entrar como Cliente Demo
+        </Button>
         {!openIdForced && (
           <div className={classes.extraContainer}>
             {registrationEnabled && (
