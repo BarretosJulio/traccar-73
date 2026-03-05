@@ -228,9 +228,9 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     position: 'fixed',
     zIndex: 5,
     [theme.breakpoints.up('md')]: {
-      left: `calc(${desktopPadding || '0px'} + 8px)`,
-      right: 68,
-      bottom: 8,
+      left: `calc(${desktopPadding || '0px'} + 16px)`,
+      right: 16,
+      bottom: 12,
     },
     [theme.breakpoints.down('md')]: {
       left: '50%',
