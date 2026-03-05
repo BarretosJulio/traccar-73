@@ -337,11 +337,11 @@ const DeviceRow = ({ devices, index, style }) => {
     <div style={style}>
       <div
         className={`${classes.card} ${isSelected ? classes.cardSelected : ''}`}
-        onClick={() => dispatch(devicesActions.selectId(item.id))}
+        onClick={() => dispatch(devicesActions.selectId(isSelected ? null : item.id))}
         role="button"
         tabIndex={0}
       >
-        {/* Row 1: Avatar + Name + Status */}
+        {/* Row 1: Avatar + Name + Status + compact speed */}
         <div className={classes.topRow}>
           <Avatar className={classes.vehicleIcon}>
             <img className={classes.iconImg} src={mapIcons[mapIconKey(item.category)]} alt="" />
@@ -353,6 +353,19 @@ const DeviceRow = ({ devices, index, style }) => {
               <Typography className={classes.imeiText}>{item.uniqueId}</Typography>
             </div>
           </div>
+          {/* Compact: show speed + time inline */}
+          {!isSelected && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mr: 1 }}>
+              <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, color: getSpeedColor(speedKmh) }}>
+                {speedKmh} km/h
+              </Typography>
+              {lastUpdate && (
+                <Typography sx={{ fontSize: '0.62rem', color: 'text.secondary', opacity: 0.7 }}>
+                  {dayjs(lastUpdate).fromNow()}
+                </Typography>
+              )}
+            </Box>
+          )}
           <span
             className={classes.statusBadge}
             style={{
@@ -365,125 +378,130 @@ const DeviceRow = ({ devices, index, style }) => {
           </span>
         </div>
 
-        {/* Row 2: Feature chips */}
-        {chips.length > 0 && (
-          <div className={classes.featureChips}>
-            {chips.map((c) => (
-              <Chip
-                key={c.key}
-                label={c.label}
-                icon={c.icon}
-                size="small"
-                className={classes.chip}
-                sx={{
-                  backgroundColor: `${c.color}14`,
-                  color: c.color,
-                  border: `1px solid ${c.color}30`,
-                }}
-              />
-            ))}
-          </div>
-        )}
+        {/* Expanded content */}
+        {isSelected && (
+          <>
+            {/* Feature chips */}
+            {chips.length > 0 && (
+              <div className={classes.featureChips}>
+                {chips.map((c) => (
+                  <Chip
+                    key={c.key}
+                    label={c.label}
+                    icon={c.icon}
+                    size="small"
+                    className={classes.chip}
+                    sx={{
+                      backgroundColor: `${c.color}14`,
+                      color: c.color,
+                      border: `1px solid ${c.color}30`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
 
-        {/* Row 3: Address */}
-        {address && (
-          <div className={classes.addressRow}>
-            <LocationOnIcon sx={{ fontSize: '0.78rem', color: 'text.secondary', opacity: 0.5, mt: '1px', flexShrink: 0 }} />
-            <Typography className={classes.addressText}>{address}</Typography>
-          </div>
-        )}
+            {/* Address */}
+            {address && (
+              <div className={classes.addressRow}>
+                <LocationOnIcon sx={{ fontSize: '0.78rem', color: 'text.secondary', opacity: 0.5, mt: '1px', flexShrink: 0 }} />
+                <Typography className={classes.addressText}>{address}</Typography>
+              </div>
+            )}
 
-        {/* Row 4: Info grid */}
-        <div className={classes.infoGrid}>
-          {satellites != null && (
-            <span className={classes.infoItem}>
-              <SignalCellularAltIcon className={classes.infoIcon} />
-              {satellites} sat
-            </span>
-          )}
-          {course != null && (
-            <Tooltip title={`Direção: ${Math.round(course)}°`}>
-              <span className={classes.infoItem}>
-                <NavigationIcon className={classes.infoIcon} sx={{ transform: `rotate(${course}deg)` }} />
-                {Math.round(course)}°
-              </span>
-            </Tooltip>
-          )}
-          {totalDistance != null && (
-            <span className={classes.infoItem}>
-              🛣️ {Math.round(totalDistance / 1000).toLocaleString()} km
-            </span>
-          )}
-          {fuel != null && (
-            <span className={classes.infoItem}>
-              <LocalGasStationIcon className={classes.infoIcon} />
-              {Math.round(fuel)}%
-            </span>
-          )}
-          {temp != null && (
-            <span className={classes.infoItem}>
-              <ThermostatIcon className={classes.infoIcon} />
-              {temp.toFixed(1)}°C
-            </span>
-          )}
-          {lastUpdate && (
-            <Tooltip title="Hora GPS">
-              <span className={classes.infoItem}>
-                <AccessTimeIcon className={classes.infoIcon} />
-                GPS {dayjs(lastUpdate).format('HH:mm:ss')}
-              </span>
-            </Tooltip>
-          )}
-          {deviceTime && (
-            <Tooltip title="Hora GSM (dispositivo)">
-              <span className={classes.infoItem}>
-                📶 GSM {dayjs(deviceTime).format('HH:mm:ss')}
-              </span>
-            </Tooltip>
-          )}
-          {serverTime && (
-            <Tooltip title="Hora GPRS (servidor)">
-              <span className={classes.infoItem}>
-                🌐 GPRS {dayjs(serverTime).format('HH:mm:ss')}
-              </span>
-            </Tooltip>
-          )}
-          {lastUpdate && (
-            <span className={classes.infoItem} style={{ opacity: 0.6 }}>
-              {dayjs(lastUpdate).fromNow()}
-            </span>
-          )}
-        </div>
-
-        {/* Row 5: Speed bar + Battery */}
-        <div className={classes.bottomRow}>
-          <div className={classes.speedBar}>
-            <SpeedIcon sx={{ fontSize: 14, color: getSpeedColor(speedKmh), opacity: 0.8 }} />
-            <LinearProgress
-              variant="determinate"
-              value={Math.min(speedKmh, 120) / 1.2}
-              className={classes.speedProgress}
-              sx={{
-                backgroundColor: 'action.hover',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: getSpeedColor(speedKmh),
-                  borderRadius: 2,
-                },
-              }}
-            />
-            <Typography className={classes.speedLabel} sx={{ color: getSpeedColor(speedKmh) }}>
-              {speedKmh} km/h
-            </Typography>
-          </div>
-          {batteryLevel != null && (
-            <div className={classes.batteryInfo}>
-              {getBatteryIcon()}
-              <Typography sx={{ fontSize: '0.67rem', fontWeight: 600, color: 'text.secondary' }}>
-                {Math.round(batteryLevel)}%
-              </Typography>
+            {/* Info grid */}
+            <div className={classes.infoGrid}>
+              {satellites != null && (
+                <span className={classes.infoItem}>
+                  <SignalCellularAltIcon className={classes.infoIcon} />
+                  {satellites} sat
+                </span>
+              )}
+              {course != null && (
+                <Tooltip title={`Direção: ${Math.round(course)}°`}>
+                  <span className={classes.infoItem}>
+                    <NavigationIcon className={classes.infoIcon} sx={{ transform: `rotate(${course}deg)` }} />
+                    {Math.round(course)}°
+                  </span>
+                </Tooltip>
+              )}
+              {totalDistance != null && (
+                <span className={classes.infoItem}>
+                  🛣️ {Math.round(totalDistance / 1000).toLocaleString()} km
+                </span>
+              )}
+              {fuel != null && (
+                <span className={classes.infoItem}>
+                  <LocalGasStationIcon className={classes.infoIcon} />
+                  {Math.round(fuel)}%
+                </span>
+              )}
+              {temp != null && (
+                <span className={classes.infoItem}>
+                  <ThermostatIcon className={classes.infoIcon} />
+                  {temp.toFixed(1)}°C
+                </span>
+              )}
+              {lastUpdate && (
+                <Tooltip title="Hora GPS">
+                  <span className={classes.infoItem}>
+                    <AccessTimeIcon className={classes.infoIcon} />
+                    GPS {dayjs(lastUpdate).format('HH:mm:ss')}
+                  </span>
+                </Tooltip>
+              )}
+              {deviceTime && (
+                <Tooltip title="Hora GSM (dispositivo)">
+                  <span className={classes.infoItem}>
+                    📶 GSM {dayjs(deviceTime).format('HH:mm:ss')}
+                  </span>
+                </Tooltip>
+              )}
+              {serverTime && (
+                <Tooltip title="Hora GPRS (servidor)">
+                  <span className={classes.infoItem}>
+                    🌐 GPRS {dayjs(serverTime).format('HH:mm:ss')}
+                  </span>
+                </Tooltip>
+              )}
+              {lastUpdate && (
+                <span className={classes.infoItem} style={{ opacity: 0.6 }}>
+                  {dayjs(lastUpdate).fromNow()}
+                </span>
+              )}
             </div>
-          )}
-        </div>
+
+            {/* Speed bar + Battery */}
+            <div className={classes.bottomRow}>
+              <div className={classes.speedBar}>
+                <SpeedIcon sx={{ fontSize: 14, color: getSpeedColor(speedKmh), opacity: 0.8 }} />
+                <LinearProgress
+                  variant="determinate"
+                  value={Math.min(speedKmh, 120) / 1.2}
+                  className={classes.speedProgress}
+                  sx={{
+                    backgroundColor: 'action.hover',
+                    '& .MuiLinearProgress-bar': {
+                      backgroundColor: getSpeedColor(speedKmh),
+                      borderRadius: 2,
+                    },
+                  }}
+                />
+                <Typography className={classes.speedLabel} sx={{ color: getSpeedColor(speedKmh) }}>
+                  {speedKmh} km/h
+                </Typography>
+              </div>
+              {batteryLevel != null && (
+                <div className={classes.batteryInfo}>
+                  {getBatteryIcon()}
+                  <Typography sx={{ fontSize: '0.67rem', fontWeight: 600, color: 'text.secondary' }}>
+                    {Math.round(batteryLevel)}%
+                  </Typography>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
