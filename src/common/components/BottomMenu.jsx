@@ -48,7 +48,7 @@ const BottomMenu = () => {
     if (location.pathname.startsWith('/reports')) {
       return 'reports';
     }
-    if (location.pathname === '/') {
+    if (location.pathname === '/' || location.pathname === '/map') {
       return 'map';
     }
     return null;
@@ -94,7 +94,7 @@ const BottomMenu = () => {
   const handleSelection = (event, value) => {
     switch (value) {
       case 'map':
-        navigate('/');
+        navigate('/map');
         break;
       case 'reports': {
         let id = selectedDeviceId;

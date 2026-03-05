@@ -660,10 +660,6 @@ const DashboardPage = () => {
               </IconButton>
             </Tooltip>
           )}
-          <button className={classes.mapButton} onClick={() => navigate('/map')}>
-            <MapIcon fontSize="small" />
-            Mapa
-          </button>
         </Box>
       </div>
 
