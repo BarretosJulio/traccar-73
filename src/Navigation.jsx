@@ -1,6 +1,7 @@
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import MainPage from './main/MainPage';
+import DashboardPage from './main/DashboardPage';
+import MapPage from './main/MapPage';
 import CombinedReportPage from './reports/CombinedReportPage';
 import PositionsReportPage from './reports/PositionsReportPage';
 import ServerPage from './settings/ServerPage';
@@ -118,7 +119,8 @@ const Navigation = () => {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/change-server" element={<ChangeServerPage />} />
       <Route path="/" element={<App />}>
-        <Route index element={<MainPage />} />
+        <Route index element={<DashboardPage />} />
+        <Route path="map" element={<MapPage />} />
 
         <Route path="position/:id" element={<PositionPage />} />
         <Route path="network/:positionId" element={<NetworkPage />} />
