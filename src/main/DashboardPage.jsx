@@ -824,19 +824,8 @@ const DashboardPage = () => {
                   </ListItemButton>
                 </Paper>
               );
-            })}
-                            fontSize: '0.68rem',
-                            height: 24,
-                            bgcolor: '#f59e0b18',
-                            color: '#f59e0b',
-                          }}
-                        />
-                      )}
-                    </Box>
-                  </ListItemButton>
-                </Paper>
-              );
-            })}
+
+
 
             {filteredDevices.length === 0 && (
               <Paper elevation={0} className={classes.vehicleCard}>
