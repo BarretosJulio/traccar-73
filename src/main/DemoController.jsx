@@ -57,6 +57,7 @@ const DemoController = ({ active }) => {
       speed: pos.speed / 1.852, // convert km/h to knots
       course: pos.course,
       address: BASE_POSITIONS[idx].address,
+      geofenceIds: [99901, 99903, 99905].includes(deviceId) ? [1001] : [],
       attributes: {
         batteryLevel: 40 + Math.random() * 60,
         ignition: deviceId !== 99904,
