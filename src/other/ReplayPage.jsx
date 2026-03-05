@@ -53,6 +53,10 @@ const useStyles = makeStyles()((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      flexWrap: 'wrap',
+      gap: theme.spacing(0.5),
+    },
   },
   formControlLabel: {
     height: '100%',
@@ -67,6 +71,7 @@ const useStyles = makeStyles()((theme) => ({
     padding: theme.spacing(2),
     [theme.breakpoints.down('md')]: {
       margin: theme.spacing(1),
+      padding: theme.spacing(1),
     },
     [theme.breakpoints.up('md')]: {
       marginTop: theme.spacing(1),

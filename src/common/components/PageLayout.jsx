@@ -14,6 +14,7 @@ import { makeStyles } from 'tss-react/mui';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from './LocalizationProvider';
 import BackIcon from './BackIcon';
@@ -55,6 +56,9 @@ const useStyles = makeStyles()((theme, { miniVariant }) => ({
     display: 'flex',
     flexDirection: 'column',
     overflowY: 'auto',
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: theme.spacing(2),
+    },
   },
 }));
 
@@ -74,11 +78,11 @@ const PageTitle = ({ breadcrumbs }) => {
   return (
     <Breadcrumbs>
       {breadcrumbs.slice(0, -1).map((breadcrumb) => (
-        <Typography variant="h6" color="inherit" key={breadcrumb}>
+        <Typography variant="h6" color="inherit" key={breadcrumb} sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
           {t(breadcrumb)}
         </Typography>
       ))}
-      <Typography variant="h6" color="textPrimary" sx={{ fontWeight: 700 }}>
+      <Typography variant="h6" color="textPrimary" sx={{ fontWeight: 700, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
         {t(breadcrumbs[breadcrumbs.length - 1])}
       </Typography>
     </Breadcrumbs>
@@ -155,17 +159,26 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
         </Drawer>
       )}
       {!desktop && (
-        <AppBar className={classes.mobileToolbar} position="static" color="inherit" elevation={0}>
-          <Toolbar>
+        <AppBar className={classes.mobileToolbar} position="static" color="inherit" elevation={0}
+          sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
+        >
+          <Toolbar sx={{ minHeight: { xs: 52, sm: 64 }, px: { xs: 1, sm: 2 } }}>
             <IconButton
               color="inherit"
               edge="start"
-              sx={{ mr: 2 }}
+              sx={{ mr: 1 }}
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <PageTitle breadcrumbs={breadcrumbs} />
+            <IconButton
+              color="inherit"
+              sx={{ ml: 'auto' }}
               onClick={() => setOpenDrawer(true)}
             >
               <MenuIcon />
             </IconButton>
-            <PageTitle breadcrumbs={breadcrumbs} />
           </Toolbar>
         </AppBar>
       )}
