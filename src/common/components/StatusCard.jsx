@@ -66,8 +66,11 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     },
     [theme.breakpoints.up('md')]: {
       width: '100%',
-      borderRadius: 14,
-      boxShadow: '0 -6px 30px rgba(0,0,0,0.2), 0 4px 20px rgba(0,0,0,0.08)',
+      borderRadius: 12,
+      boxShadow: '0 -4px 24px rgba(0,0,0,0.2), 0 2px 12px rgba(0,0,0,0.08)',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'stretch',
     },
   },
   media: {
@@ -80,25 +83,64 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     color: theme.palette.common.white,
     mixBlendMode: 'difference',
   },
+  vehicleImageSection: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: theme.spacing(1, 1.5),
+      borderRight: `1px solid ${theme.palette.divider}`,
+      flexShrink: 0,
+    },
+  },
+  vehicleImageAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    backgroundColor: theme.palette.primary.main,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vehicleImageImg: {
+    width: 28,
+    height: 28,
+    filter: 'brightness(0) invert(1)',
+  },
+  desktopBody: {
+    [theme.breakpoints.up('md')]: {
+      flex: 1,
+      minWidth: 0,
+      display: 'flex',
+      flexDirection: 'column',
+    },
+  },
   header: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
-    padding: theme.spacing(0.8, 1.5, 0, 1.5),
+    gap: theme.spacing(0.8),
+    padding: theme.spacing(0.5, 1.5, 0, 1.5),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(0.5, 1.5, 0, 1),
+    },
   },
   headerIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 7,
     backgroundColor: theme.palette.primary.main,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
   },
   headerIconImg: {
-    width: 16,
-    height: 16,
+    width: 14,
+    height: 14,
     filter: 'brightness(0) invert(1)',
   },
   headerInfo: {
@@ -106,58 +148,57 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     minWidth: 0,
   },
   content: {
-    padding: theme.spacing(0.5, 1.5, 0.5, 1.5),
+    padding: theme.spacing(0.3, 1.5, 0.3, 1.5),
     overflow: 'auto',
     [theme.breakpoints.down('md')]: {
       maxHeight: 350,
     },
     [theme.breakpoints.up('md')]: {
       maxHeight: 'none',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 2,
+      padding: theme.spacing(0.3, 1.5, 0.3, 1),
+      flex: 1,
     },
   },
   chipsRow: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: 4,
-    marginBottom: 4,
+    gap: 3,
+    marginBottom: 3,
   },
   chip: {
-    height: 20,
-    fontSize: '0.6rem',
+    height: 18,
+    fontSize: '0.58rem',
     fontWeight: 600,
-    borderRadius: 6,
-    '& .MuiChip-icon': { fontSize: '0.72rem', marginLeft: 4 },
-    '& .MuiChip-label': { padding: '0 5px' },
+    borderRadius: 5,
+    '& .MuiChip-icon': { fontSize: '0.68rem', marginLeft: 3 },
+    '& .MuiChip-label': { padding: '0 4px' },
   },
   dataGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '3px 10px',
+    gap: '2px 10px',
     [theme.breakpoints.up('md')]: {
-      gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-      gap: '2px 16px',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+      gap: '1px 14px',
     },
   },
   dataItem: {
     display: 'flex',
     alignItems: 'center',
-    gap: 4,
+    gap: 3,
   },
   dataIcon: {
-    fontSize: '0.82rem !important',
+    fontSize: '0.78rem !important',
     opacity: 0.5,
     color: theme.palette.text.secondary,
   },
   dataLabel: {
-    fontSize: '0.58rem',
+    fontSize: '0.55rem',
     color: theme.palette.text.secondary,
     lineHeight: 1,
   },
   dataValue: {
-    fontSize: '0.72rem',
+    fontSize: '0.68rem',
     fontWeight: 600,
     lineHeight: 1.1,
   },
@@ -167,17 +208,20 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   actions: {
     justifyContent: 'space-between',
     padding: theme.spacing(0, 1),
-    minHeight: 36,
+    minHeight: 32,
     borderTop: `1px solid ${theme.palette.divider}`,
+    '& .MuiIconButton-root': {
+      padding: 5,
+    },
   },
   root: {
     pointerEvents: 'none',
     position: 'fixed',
     zIndex: 5,
     [theme.breakpoints.up('md')]: {
-      left: `calc(${desktopPadding || '0px'} + 16px)`,
-      right: 60,
-      bottom: 12,
+      left: `calc(${desktopPadding || '0px'} + 8px)`,
+      right: 52,
+      bottom: 8,
     },
     [theme.breakpoints.down('md')]: {
       left: '50%',
@@ -323,6 +367,18 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
             style={{ position: 'relative', width: desktop ? '100%' : 'auto' }}
           >
             <Card elevation={3} className={classes.card}>
+              {/* Vehicle image on desktop */}
+              <div className={classes.vehicleImageSection}>
+                <div className={classes.vehicleImageAvatar}>
+                  <img
+                    className={classes.vehicleImageImg}
+                    src={mapIcons[mapIconKey(device.category)]}
+                    alt=""
+                  />
+                </div>
+              </div>
+
+              <div className={classes.desktopBody}>
               {deviceImage ? (
                 <CardMedia
                   className={`${classes.media} draggable-header`}
@@ -342,10 +398,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     />
                   </div>
                   <div className={classes.headerInfo}>
-                    <Typography sx={{ fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.2 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', lineHeight: 1.2 }}>
                       {device.name}
                     </Typography>
-                    <Typography sx={{ fontSize: '0.68rem', color: 'text.secondary', fontFamily: 'monospace' }}>
+                    <Typography sx={{ fontSize: '0.6rem', color: 'text.secondary', fontFamily: 'monospace' }}>
                       ID: {device.uniqueId}
                       {device.phone && ` • ${device.phone}`}
                     </Typography>
@@ -354,16 +410,16 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     size="small"
                     label={device.status === 'online' ? 'Online' : 'Offline'}
                     sx={{
-                      height: 22,
-                      fontSize: '0.65rem',
+                      height: 20,
+                      fontSize: '0.6rem',
                       fontWeight: 700,
                       backgroundColor: `${device.status === 'online' ? '#10b981' : '#ef4444'}18`,
                       color: device.status === 'online' ? '#10b981' : '#ef4444',
                       border: `1px solid ${device.status === 'online' ? '#10b981' : '#ef4444'}30`,
                     }}
                   />
-                  <IconButton size="small" onClick={onClose} onTouchStart={onClose}>
-                    <CloseIcon fontSize="small" />
+                  <IconButton size="small" onClick={onClose} onTouchStart={onClose} sx={{ padding: '4px' }}>
+                    <CloseIcon sx={{ fontSize: '1rem' }} />
                   </IconButton>
                 </div>
               )}
@@ -401,7 +457,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     </Box>
                   )}
 
-                  <Divider sx={{ my: 0.8 }} />
+                  <Divider sx={{ my: 0.4 }} />
 
                   {/* Data grid */}
                   <div className={classes.dataGrid}>
@@ -550,8 +606,8 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                   </Box>
 
                   {/* More details link */}
-                  <Box sx={{ mt: 1 }}>
-                    <Typography variant="body2">
+                  <Box sx={{ mt: 0.3 }}>
+                    <Typography sx={{ fontSize: '0.7rem' }}>
                       <Link component={RouterLink} to={`/position/${position.id}`}>
                         {t('sharedShowDetails')}
                       </Link>
@@ -604,6 +660,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                   </IconButton>
                 </Tooltip>
               </CardActions>
+              </div>{/* end desktopBody */}
             </Card>
           </Rnd>
         )}
