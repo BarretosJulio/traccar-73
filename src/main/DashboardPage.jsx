@@ -824,9 +824,7 @@ const DashboardPage = () => {
                   </ListItemButton>
                 </Paper>
               );
-
-
-
+            })}
             {filteredDevices.length === 0 && (
               <Paper elevation={0} className={classes.vehicleCard}>
                 <Box className={classes.emptyState}>
