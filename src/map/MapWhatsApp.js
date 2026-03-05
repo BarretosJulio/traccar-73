@@ -9,7 +9,10 @@ class WhatsAppControl {
 
   onAdd() {
     this.button = document.createElement('button');
-    this.button.className = 'maplibregl-ctrl-icon maplibre-ctrl-whatsapp';
+    this.button.className = 'maplibregl-ctrl-whatsapp';
+    this.icon = document.createElement('span');
+    this.icon.className = 'maplibregl-ctrl-icon';
+    this.button.appendChild(this.icon);
     this.button.type = 'button';
     this.button.title = 'WhatsApp';
     this.button.onclick = () => {
