@@ -37,11 +37,11 @@ const MapSelectedDevice = ({ mapReady }) => {
         (mapFollow && positionChanged)) &&
       position
     ) {
-      // On phone: StatusCard is at the bottom, shift map center up significantly
-      // On desktop: sidebar is on the left, shift map center right
+      // Shift map center up so vehicle appears above the StatusCard
+      const verticalOffset = -Math.round(window.innerHeight * 0.25);
       const offset = isPhone
-        ? [0, -Math.round(window.innerHeight * 0.25)]
-        : [dimensions.popupMapOffset / 2, 0];
+        ? [0, verticalOffset]
+        : [0, verticalOffset];
 
       map.easeTo({
         center: [position.longitude, position.latitude],
