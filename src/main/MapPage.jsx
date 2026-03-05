@@ -24,7 +24,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   backButton: {
     position: 'fixed',
-    top: theme.spacing(1.5),
+    top: theme.spacing(8.5),
     left: theme.spacing(1.5),
     zIndex: 10,
     background: theme.palette.background.paper,
