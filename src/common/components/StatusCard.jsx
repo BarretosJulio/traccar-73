@@ -501,6 +501,14 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                         </Typography>
                       </Box>
                     )}
+                    {position.deviceTime && (
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora GSM</Typography>
+                        <Typography sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                          {dayjs(position.deviceTime).format('DD/MM/YYYY, HH:mm:ss')}
+                        </Typography>
+                      </Box>
+                    )}
                     {position.serverTime && (
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora Servidor</Typography>
