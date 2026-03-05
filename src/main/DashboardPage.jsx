@@ -4,12 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import {
   Box,
-  Card,
-  CardContent,
   Typography,
-  Grid,
-  IconButton,
-  Tooltip,
   List,
   ListItemButton,
   ListItemIcon,
@@ -19,6 +14,11 @@ import {
   Avatar,
   Chip,
 } from '@mui/material';
+import {
+  PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RTooltip,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  AreaChart, Area,
+} from 'recharts';
 import MapIcon from '@mui/icons-material/Map';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import WifiIcon from '@mui/icons-material/Wifi';
@@ -36,11 +36,11 @@ import TuneIcon from '@mui/icons-material/Tune';
 import GroupsIcon from '@mui/icons-material/Groups';
 import EventIcon from '@mui/icons-material/Event';
 import StorageIcon from '@mui/icons-material/Storage';
-import SpeedIcon from '@mui/icons-material/Speed';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useAdministrator } from '../common/util/permissions';
 import BottomMenu from '../common/components/BottomMenu';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
+import { deviceCategories } from '../common/util/deviceCategories';
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -136,6 +136,23 @@ const useStyles = makeStyles()((theme) => ({
     color: theme.palette.text.primary,
     marginBottom: theme.spacing(1),
   },
+  chartsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+    gap: theme.spacing(2),
+  },
+  chartCard: {
+    borderRadius: 18,
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(2.5),
+    overflow: 'hidden',
+  },
+  chartTitle: {
+    fontWeight: 700,
+    fontSize: '0.95rem',
+    color: theme.palette.text.primary,
+    marginBottom: theme.spacing(2),
+  },
   menuGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -161,7 +178,14 @@ const useStyles = makeStyles()((theme) => ({
       display: 'none',
     },
   },
+  pieCenter: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
 }));
+
+const COLORS_STATUS = ['#10b981', '#ef4444', '#94a3b8', '#f59e0b'];
 
 const DashboardPage = () => {
   const { classes } = useStyles();
@@ -190,6 +214,103 @@ const DashboardPage = () => {
       offlineDevices: offline,
     };
   }, [devices]);
+
+  // Pie chart data - Status distribution
+  const statusPieData = useMemo(() => [
+    { name: 'Online', value: deviceStats.online, color: '#10b981' },
+    { name: 'Offline', value: deviceStats.offline, color: '#ef4444' },
+    { name: 'Desconhecido', value: deviceStats.unknown, color: '#94a3b8' },
+    { name: 'Bloqueado', value: deviceStats.blocked, color: '#f59e0b' },
+  ].filter((d) => d.value > 0), [deviceStats]);
+
+  // Bar chart data - Vehicles by category
+  const categoryData = useMemo(() => {
+    const allDevices = Object.values(devices);
+    const counts = {};
+    allDevices.forEach((d) => {
+      const cat = d.category || 'default';
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    const categoryLabels = {
+      car: 'Carro',
+      truck: 'Caminhão',
+      motorcycle: 'Moto',
+      bus: 'Ônibus',
+      van: 'Van',
+      boat: 'Barco',
+      bicycle: 'Bicicleta',
+      person: 'Pessoa',
+      animal: 'Animal',
+      tractor: 'Trator',
+      trailer: 'Reboque',
+      default: 'Outros',
+      scooter: 'Scooter',
+      plane: 'Avião',
+      ship: 'Navio',
+      helicopter: 'Helicóptero',
+      train: 'Trem',
+      tram: 'Tram',
+      camper: 'Camper',
+      crane: 'Guindaste',
+    };
+    return Object.entries(counts)
+      .map(([cat, count]) => ({
+        name: categoryLabels[cat] || cat,
+        quantidade: count,
+      }))
+      .sort((a, b) => b.quantidade - a.quantidade)
+      .slice(0, 8);
+  }, [devices]);
+
+  // Simulated hourly activity (based on lastUpdate timestamps)
+  const hourlyData = useMemo(() => {
+    const hours = Array.from({ length: 24 }, (_, i) => ({
+      hora: `${String(i).padStart(2, '0')}:00`,
+      online: 0,
+      offline: 0,
+    }));
+    const allDevices = Object.values(devices);
+    const now = new Date();
+    const currentHour = now.getHours();
+
+    // Distribute devices across hours based on their status
+    allDevices.forEach((d) => {
+      if (d.lastUpdate) {
+        const updateDate = new Date(d.lastUpdate);
+        const hour = updateDate.getHours();
+        if (d.status === 'online') {
+          hours[hour].online += 1;
+        } else {
+          hours[hour].offline += 1;
+        }
+      }
+    });
+
+    // If no data, show current status at current hour
+    if (allDevices.length > 0 && hours.every((h) => h.online === 0 && h.offline === 0)) {
+      hours[currentHour].online = deviceStats.online;
+      hours[currentHour].offline = deviceStats.offline;
+    }
+
+    return hours;
+  }, [devices, deviceStats]);
+
+  // Speed distribution of online vehicles
+  const speedData = useMemo(() => {
+    const ranges = [
+      { name: 'Parado', min: 0, max: 1, count: 0 },
+      { name: '1-30', min: 1, max: 30, count: 0 },
+      { name: '30-60', min: 30, max: 60, count: 0 },
+      { name: '60-100', min: 60, max: 100, count: 0 },
+      { name: '100+', min: 100, max: Infinity, count: 0 },
+    ];
+    Object.values(positions).forEach((pos) => {
+      const speedKmh = (pos.speed || 0) * 1.852; // knots to km/h
+      const range = ranges.find((r) => speedKmh >= r.min && speedKmh < r.max);
+      if (range) range.count += 1;
+    });
+    return ranges.map((r) => ({ name: r.name, veículos: r.count }));
+  }, [positions]);
 
   const stats = [
     {
@@ -238,7 +359,7 @@ const DashboardPage = () => {
   ].filter((item) => item.show);
 
   const recentDevices = useMemo(() => {
-    return deviceStats.devices
+    return [...deviceStats.devices]
       .sort((a, b) => {
         const posA = positions[a.id];
         const posB = positions[b.id];
@@ -249,13 +370,27 @@ const DashboardPage = () => {
       .slice(0, 8);
   }, [deviceStats.devices, positions]);
 
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <Paper sx={{ p: 1.5, borderRadius: 2, boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}>
+          <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', mb: 0.5 }}>{label}</Typography>
+          {payload.map((entry, index) => (
+            <Typography key={index} sx={{ fontSize: '0.75rem', color: entry.color }}>
+              {entry.name}: {entry.value}
+            </Typography>
+          ))}
+        </Paper>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.topBar}>
         <div>
-          <Typography className={classes.greeting}>
-            Dashboard
-          </Typography>
+          <Typography className={classes.greeting}>Dashboard</Typography>
           <Typography variant="body2" color="textSecondary">
             {user?.name ? `Olá, ${user.name}` : 'Painel de controle'}
           </Typography>
@@ -284,6 +419,130 @@ const DashboardPage = () => {
           ))}
         </div>
 
+        {/* Charts */}
+        <div className={classes.chartsGrid}>
+          {/* Status Distribution Pie */}
+          <Paper className={classes.chartCard} elevation={0}>
+            <Typography className={classes.chartTitle}>Distribuição por Status</Typography>
+            <Box sx={{ height: 260, display: 'flex', alignItems: 'center' }}>
+              {statusPieData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={statusPieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={65}
+                      outerRadius={100}
+                      paddingAngle={4}
+                      dataKey="value"
+                      strokeWidth={0}
+                    >
+                      {statusPieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <RTooltip
+                      content={({ active, payload }) =>
+                        active && payload?.length ? (
+                          <Paper sx={{ p: 1, borderRadius: 2, boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}>
+                            <Typography sx={{ fontSize: '0.8rem', fontWeight: 600 }}>
+                              {payload[0].name}: {payload[0].value}
+                            </Typography>
+                          </Paper>
+                        ) : null
+                      }
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <Box sx={{ width: '100%', textAlign: 'center' }}>
+                  <Typography color="textSecondary" sx={{ fontSize: '0.85rem' }}>Sem dados</Typography>
+                </Box>
+              )}
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mt: 1, justifyContent: 'center' }}>
+              {statusPieData.map((item) => (
+                <Box key={item.name} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: item.color }} />
+                  <Typography sx={{ fontSize: '0.72rem', fontWeight: 500, color: 'text.secondary' }}>
+                    {item.name} ({item.value})
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </Paper>
+
+          {/* Hourly Activity Area Chart */}
+          <Paper className={classes.chartCard} elevation={0}>
+            <Typography className={classes.chartTitle}>Atividade por Hora</Typography>
+            <Box sx={{ height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={hourlyData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorOnline" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorOffline" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb40" />
+                  <XAxis dataKey="hora" tick={{ fontSize: 10 }} interval={2} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <RTooltip content={<CustomTooltip />} />
+                  <Area type="monotone" dataKey="online" name="Online" stroke="#10b981" fillOpacity={1} fill="url(#colorOnline)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="offline" name="Offline" stroke="#ef4444" fillOpacity={1} fill="url(#colorOffline)" strokeWidth={2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Box>
+          </Paper>
+
+          {/* Category Bar Chart */}
+          <Paper className={classes.chartCard} elevation={0}>
+            <Typography className={classes.chartTitle}>Veículos por Categoria</Typography>
+            <Box sx={{ height: 280 }}>
+              {categoryData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={categoryData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb40" />
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                    <RTooltip content={<CustomTooltip />} />
+                    <Bar dataKey="quantidade" name="Quantidade" fill="#6366f1" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Typography color="textSecondary" sx={{ fontSize: '0.85rem' }}>Sem dados</Typography>
+                </Box>
+              )}
+            </Box>
+          </Paper>
+
+          {/* Speed Distribution */}
+          <Paper className={classes.chartCard} elevation={0}>
+            <Typography className={classes.chartTitle}>Distribuição de Velocidade (km/h)</Typography>
+            <Box sx={{ height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={speedData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb40" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                  <RTooltip content={<CustomTooltip />} />
+                  <Bar dataKey="veículos" name="Veículos" radius={[6, 6, 0, 0]}>
+                    {speedData.map((_, index) => (
+                      <Cell key={index} fill={['#94a3b8', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'][index]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+          </Paper>
+        </div>
+
         {/* Recent Devices */}
         <div>
           <Typography className={classes.sectionTitle}>Últimos Veículos Atualizados</Typography>
@@ -291,36 +550,14 @@ const DashboardPage = () => {
             <List disablePadding>
               {recentDevices.map((device, idx) => {
                 const position = positions[device.id];
-                const statusColors = {
-                  online: '#10b981',
-                  offline: '#ef4444',
-                  unknown: '#94a3b8',
-                };
-                const statusLabels = {
-                  online: 'Online',
-                  offline: 'Offline',
-                  unknown: 'Desconhecido',
-                };
+                const statusColors = { online: '#10b981', offline: '#ef4444', unknown: '#94a3b8' };
+                const statusLabels = { online: 'Online', offline: 'Offline', unknown: 'Desconhecido' };
                 return (
                   <Box key={device.id}>
-                    <ListItemButton
-                      onClick={() => navigate(`/settings/device/${device.id}`)}
-                      sx={{ py: 1.5, px: 2 }}
-                    >
+                    <ListItemButton onClick={() => navigate(`/settings/device/${device.id}`)} sx={{ py: 1.5, px: 2 }}>
                       <ListItemIcon>
-                        <Avatar
-                          sx={{
-                            width: 38,
-                            height: 38,
-                            borderRadius: '10px',
-                            bgcolor: statusColors[device.status] + '18',
-                          }}
-                        >
-                          <img
-                            src={mapIcons[mapIconKey(device.category)]}
-                            alt=""
-                            style={{ width: 20, height: 20, filter: 'brightness(0) invert(0.4)' }}
-                          />
+                        <Avatar sx={{ width: 38, height: 38, borderRadius: '10px', bgcolor: (statusColors[device.status] || '#94a3b8') + '18' }}>
+                          <img src={mapIcons[mapIconKey(device.category)]} alt="" style={{ width: 20, height: 20, filter: 'brightness(0) invert(0.4)' }} />
                         </Avatar>
                       </ListItemIcon>
                       <ListItemText
@@ -331,22 +568,10 @@ const DashboardPage = () => {
                           secondary: { sx: { fontSize: '0.75rem' }, noWrap: true },
                         }}
                       />
-                      <Chip
-                        label={statusLabels[device.status] || 'N/A'}
-                        size="small"
-                        className={classes.deviceChip}
-                        sx={{
-                          bgcolor: statusColors[device.status] + '18',
-                          color: statusColors[device.status],
-                        }}
-                      />
+                      <Chip label={statusLabels[device.status] || 'N/A'} size="small" className={classes.deviceChip}
+                        sx={{ bgcolor: (statusColors[device.status] || '#94a3b8') + '18', color: statusColors[device.status] || '#94a3b8' }} />
                       {device.disabled && (
-                        <Chip
-                          label="Bloqueado"
-                          size="small"
-                          className={classes.deviceChip}
-                          sx={{ bgcolor: '#f59e0b18', color: '#f59e0b', ml: 1 }}
-                        />
+                        <Chip label="Bloqueado" size="small" className={classes.deviceChip} sx={{ bgcolor: '#f59e0b18', color: '#f59e0b', ml: 1 }} />
                       )}
                     </ListItemButton>
                     {idx < recentDevices.length - 1 && <Divider />}
@@ -369,15 +594,8 @@ const DashboardPage = () => {
             {menuItems.map((item) => (
               <Paper key={item.label} className={classes.menuCard} elevation={0}>
                 <ListItemButton onClick={() => navigate(item.path)} sx={{ py: 2, px: 2.5 }}>
-                  <ListItemIcon sx={{ minWidth: 42, color: 'primary.main' }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.label}
-                    slotProps={{
-                      primary: { sx: { fontWeight: 600, fontSize: '0.875rem' } },
-                    }}
-                  />
+                  <ListItemIcon sx={{ minWidth: 42, color: 'primary.main' }}>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.label} slotProps={{ primary: { sx: { fontWeight: 600, fontSize: '0.875rem' } } }} />
                 </ListItemButton>
               </Paper>
             ))}
