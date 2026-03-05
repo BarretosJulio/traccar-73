@@ -1009,9 +1009,7 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <div className={classes.footer}>
-        <BottomMenu />
-      </div>
+
     </div>
   );
 };
