@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 import { List } from 'react-window';
 import { devicesActions } from '../store';
@@ -18,9 +18,13 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
+const COMPACT_HEIGHT = 82;
+const EXPANDED_HEIGHT = 210;
+
 const DeviceList = ({ devices }) => {
   const { classes } = useStyles();
   const dispatch = useDispatch();
+  const selectedId = useSelector((state) => state.devices.selectedId);
 
   const [, setTime] = useState(Date.now());
 
@@ -36,12 +40,17 @@ const DeviceList = ({ devices }) => {
     dispatch(devicesActions.refresh(await response.json()));
   }, []);
 
+  const getRowHeight = (index) => {
+    const device = devices[index];
+    return device && device.id === selectedId ? EXPANDED_HEIGHT : COMPACT_HEIGHT;
+  };
+
   return (
     <List
       className={classes.list}
       rowComponent={DeviceRow}
       rowCount={devices.length}
-      rowHeight={190}
+      rowHeight={getRowHeight}
       rowProps={{ devices }}
       overscanCount={5}
     />
