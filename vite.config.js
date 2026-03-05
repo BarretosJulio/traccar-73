@@ -9,12 +9,12 @@ export default defineConfig(() => ({
     port: 3000,
     proxy: {
       '/api/socket': {
-        target: 'wss://demo.traccar.org',
+        target: 'wss://web.mabtracker.com.br',
         changeOrigin: true,
         ws: true,
       },
       '/api': {
-        target: 'https://demo.traccar.org',
+        target: 'https://web.mabtracker.com.br',
         changeOrigin: true,
       },
     },
