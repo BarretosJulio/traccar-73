@@ -228,6 +228,7 @@ const DeviceRow = ({ devices, index, style }) => {
   const motion = attrs.motion;
   const lastUpdate = position?.fixTime || item.lastUpdate;
   const address = position?.address;
+  const geofenceIds = position?.geofenceIds;
   const isOnline = item.status === 'online';
   const isSelected = selectedDeviceId === item.id;
   const course = position?.course;
@@ -307,6 +308,16 @@ const DeviceRow = ({ devices, index, style }) => {
       label: formatAlarm(alarm, t),
       icon: <NotificationsActiveIcon sx={{ color: '#ef4444' }} />,
       color: '#ef4444',
+    });
+  }
+
+  // Anchor / Geofence
+  if (geofenceIds?.length > 0) {
+    chips.push({
+      key: 'anchor',
+      label: `Âncora Ativa (${geofenceIds.length})`,
+      icon: <AnchorIcon sx={{ color: '#8b5cf6' }} />,
+      color: '#8b5cf6',
     });
   }
 
