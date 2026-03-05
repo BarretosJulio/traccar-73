@@ -17,6 +17,7 @@ import MapOverlay from '../map/overlay/MapOverlay';
 import MapGeocoder from '../map/geocoder/MapGeocoder';
 import MapScale from '../map/MapScale';
 import MapNotification from '../map/notification/MapNotification';
+import MapWhatsApp from '../map/MapWhatsApp';
 import useFeatures from '../common/util/useFeatures';
 
 const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
@@ -57,6 +58,9 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
       <MapCurrentLocation />
       <MapGeocoder />
       {!features.disableEvents && (
+        <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
+      )}
+      <MapWhatsApp />
         <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
       )}
       {desktop && (
