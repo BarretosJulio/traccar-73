@@ -14,11 +14,6 @@ import {
   Avatar,
   Chip,
 } from '@mui/material';
-import {
-  PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RTooltip,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  AreaChart, Area,
-} from 'recharts';
 import MapIcon from '@mui/icons-material/Map';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import WifiIcon from '@mui/icons-material/Wifi';
@@ -135,23 +130,6 @@ const useStyles = makeStyles()((theme) => ({
     color: theme.palette.text.primary,
     marginBottom: theme.spacing(1),
   },
-  chartsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-    gap: theme.spacing(2),
-  },
-  chartCard: {
-    borderRadius: 18,
-    border: `1px solid ${theme.palette.divider}`,
-    padding: theme.spacing(2.5),
-    overflow: 'hidden',
-  },
-  chartTitle: {
-    fontWeight: 700,
-    fontSize: '0.95rem',
-    color: theme.palette.text.primary,
-    marginBottom: theme.spacing(2),
-  },
   menuGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -177,14 +155,7 @@ const useStyles = makeStyles()((theme) => ({
       display: 'none',
     },
   },
-  pieCenter: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
 }));
-
-const COLORS_STATUS = ['#10b981', '#ef4444', '#94a3b8', '#f59e0b'];
 
 const DashboardPage = () => {
   const { classes } = useStyles();
@@ -200,116 +171,15 @@ const DashboardPage = () => {
     const allDevices = Object.values(devices);
     const online = allDevices.filter((d) => d.status === 'online');
     const offline = allDevices.filter((d) => d.status === 'offline');
-    const unknown = allDevices.filter((d) => d.status === 'unknown');
     const disabled = allDevices.filter((d) => d.disabled);
     return {
       total: allDevices.length,
       online: online.length,
       offline: offline.length,
-      unknown: unknown.length,
       blocked: disabled.length,
       devices: allDevices,
-      onlineDevices: online,
-      offlineDevices: offline,
     };
   }, [devices]);
-
-  // Pie chart data - Status distribution
-  const statusPieData = useMemo(() => [
-    { name: 'Online', value: deviceStats.online, color: '#10b981' },
-    { name: 'Offline', value: deviceStats.offline, color: '#ef4444' },
-    { name: 'Desconhecido', value: deviceStats.unknown, color: '#94a3b8' },
-    { name: 'Bloqueado', value: deviceStats.blocked, color: '#f59e0b' },
-  ].filter((d) => d.value > 0), [deviceStats]);
-
-  // Bar chart data - Vehicles by category
-  const categoryData = useMemo(() => {
-    const allDevices = Object.values(devices);
-    const counts = {};
-    allDevices.forEach((d) => {
-      const cat = d.category || 'default';
-      counts[cat] = (counts[cat] || 0) + 1;
-    });
-    const categoryLabels = {
-      car: 'Carro',
-      truck: 'Caminhão',
-      motorcycle: 'Moto',
-      bus: 'Ônibus',
-      van: 'Van',
-      boat: 'Barco',
-      bicycle: 'Bicicleta',
-      person: 'Pessoa',
-      animal: 'Animal',
-      tractor: 'Trator',
-      trailer: 'Reboque',
-      default: 'Outros',
-      scooter: 'Scooter',
-      plane: 'Avião',
-      ship: 'Navio',
-      helicopter: 'Helicóptero',
-      train: 'Trem',
-      tram: 'Tram',
-      camper: 'Camper',
-      crane: 'Guindaste',
-    };
-    return Object.entries(counts)
-      .map(([cat, count]) => ({
-        name: categoryLabels[cat] || cat,
-        quantidade: count,
-      }))
-      .sort((a, b) => b.quantidade - a.quantidade)
-      .slice(0, 8);
-  }, [devices]);
-
-  // Simulated hourly activity (based on lastUpdate timestamps)
-  const hourlyData = useMemo(() => {
-    const hours = Array.from({ length: 24 }, (_, i) => ({
-      hora: `${String(i).padStart(2, '0')}:00`,
-      online: 0,
-      offline: 0,
-    }));
-    const allDevices = Object.values(devices);
-    const now = new Date();
-    const currentHour = now.getHours();
-
-    // Distribute devices across hours based on their status
-    allDevices.forEach((d) => {
-      if (d.lastUpdate) {
-        const updateDate = new Date(d.lastUpdate);
-        const hour = updateDate.getHours();
-        if (d.status === 'online') {
-          hours[hour].online += 1;
-        } else {
-          hours[hour].offline += 1;
-        }
-      }
-    });
-
-    // If no data, show current status at current hour
-    if (allDevices.length > 0 && hours.every((h) => h.online === 0 && h.offline === 0)) {
-      hours[currentHour].online = deviceStats.online;
-      hours[currentHour].offline = deviceStats.offline;
-    }
-
-    return hours;
-  }, [devices, deviceStats]);
-
-  // Speed distribution of online vehicles
-  const speedData = useMemo(() => {
-    const ranges = [
-      { name: 'Parado', min: 0, max: 1, count: 0 },
-      { name: '1-30', min: 1, max: 30, count: 0 },
-      { name: '30-60', min: 30, max: 60, count: 0 },
-      { name: '60-100', min: 60, max: 100, count: 0 },
-      { name: '100+', min: 100, max: Infinity, count: 0 },
-    ];
-    Object.values(positions).forEach((pos) => {
-      const speedKmh = (pos.speed || 0) * 1.852; // knots to km/h
-      const range = ranges.find((r) => speedKmh >= r.min && speedKmh < r.max);
-      if (range) range.count += 1;
-    });
-    return ranges.map((r) => ({ name: r.name, veículos: r.count }));
-  }, [positions]);
 
   const stats = [
     {
@@ -369,22 +239,6 @@ const DashboardPage = () => {
       .slice(0, 8);
   }, [deviceStats.devices, positions]);
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <Paper sx={{ p: 1.5, borderRadius: 2, boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}>
-          <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', mb: 0.5 }}>{label}</Typography>
-          {payload.map((entry, index) => (
-            <Typography key={index} sx={{ fontSize: '0.75rem', color: entry.color }}>
-              {entry.name}: {entry.value}
-            </Typography>
-          ))}
-        </Paper>
-      );
-    }
-    return null;
-  };
-
   return (
     <div className={classes.root}>
       <div className={classes.topBar}>
@@ -416,130 +270,6 @@ const DashboardPage = () => {
               </div>
             </Paper>
           ))}
-        </div>
-
-        {/* Charts */}
-        <div className={classes.chartsGrid}>
-          {/* Status Distribution Pie */}
-          <Paper className={classes.chartCard} elevation={0}>
-            <Typography className={classes.chartTitle}>Distribuição por Status</Typography>
-            <Box sx={{ height: 260, display: 'flex', alignItems: 'center' }}>
-              {statusPieData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={statusPieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={65}
-                      outerRadius={100}
-                      paddingAngle={4}
-                      dataKey="value"
-                      strokeWidth={0}
-                    >
-                      {statusPieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <RTooltip
-                      content={({ active, payload }) =>
-                        active && payload?.length ? (
-                          <Paper sx={{ p: 1, borderRadius: 2, boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}>
-                            <Typography sx={{ fontSize: '0.8rem', fontWeight: 600 }}>
-                              {payload[0].name}: {payload[0].value}
-                            </Typography>
-                          </Paper>
-                        ) : null
-                      }
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <Box sx={{ width: '100%', textAlign: 'center' }}>
-                  <Typography color="textSecondary" sx={{ fontSize: '0.85rem' }}>Sem dados</Typography>
-                </Box>
-              )}
-            </Box>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mt: 1, justifyContent: 'center' }}>
-              {statusPieData.map((item) => (
-                <Box key={item.name} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: item.color }} />
-                  <Typography sx={{ fontSize: '0.72rem', fontWeight: 500, color: 'text.secondary' }}>
-                    {item.name} ({item.value})
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Paper>
-
-          {/* Hourly Activity Area Chart */}
-          <Paper className={classes.chartCard} elevation={0}>
-            <Typography className={classes.chartTitle}>Atividade por Hora</Typography>
-            <Box sx={{ height: 280 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={hourlyData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorOnline" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="colorOffline" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb40" />
-                  <XAxis dataKey="hora" tick={{ fontSize: 10 }} interval={2} />
-                  <YAxis tick={{ fontSize: 10 }} />
-                  <RTooltip content={<CustomTooltip />} />
-                  <Area type="monotone" dataKey="online" name="Online" stroke="#10b981" fillOpacity={1} fill="url(#colorOnline)" strokeWidth={2} />
-                  <Area type="monotone" dataKey="offline" name="Offline" stroke="#ef4444" fillOpacity={1} fill="url(#colorOffline)" strokeWidth={2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </Box>
-          </Paper>
-
-          {/* Category Bar Chart */}
-          <Paper className={classes.chartCard} elevation={0}>
-            <Typography className={classes.chartTitle}>Veículos por Categoria</Typography>
-            <Box sx={{ height: 280 }}>
-              {categoryData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={categoryData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb40" />
-                    <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-                    <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
-                    <RTooltip content={<CustomTooltip />} />
-                    <Bar dataKey="quantidade" name="Quantidade" fill="#6366f1" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Typography color="textSecondary" sx={{ fontSize: '0.85rem' }}>Sem dados</Typography>
-                </Box>
-              )}
-            </Box>
-          </Paper>
-
-          {/* Speed Distribution */}
-          <Paper className={classes.chartCard} elevation={0}>
-            <Typography className={classes.chartTitle}>Distribuição de Velocidade (km/h)</Typography>
-            <Box sx={{ height: 280 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={speedData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb40" />
-                  <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-                  <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
-                  <RTooltip content={<CustomTooltip />} />
-                  <Bar dataKey="veículos" name="Veículos" radius={[6, 6, 0, 0]}>
-                    {speedData.map((_, index) => (
-                      <Cell key={index} fill={['#94a3b8', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'][index]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Box>
-          </Paper>
         </div>
 
         {/* Recent Devices */}
