@@ -43,6 +43,9 @@ import AnchorIcon from '@mui/icons-material/Anchor';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import HeightIcon from '@mui/icons-material/Height';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import ThermostatIcon from '@mui/icons-material/Thermostat';
+import NetworkCellIcon from '@mui/icons-material/NetworkCell';
 import dayjs from 'dayjs';
 
 import { useTranslation } from './LocalizationProvider';
@@ -62,12 +65,12 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     [theme.breakpoints.down('md')]: {
       width: 360,
       borderRadius: 16,
-      boxShadow: '0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
     },
     [theme.breakpoints.up('md')]: {
       width: '100%',
       borderRadius: 12,
-      boxShadow: '0 -4px 24px rgba(0,0,0,0.2), 0 2px 12px rgba(0,0,0,0.08)',
+      boxShadow: '0 -4px 24px rgba(0,0,0,0.18)',
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'stretch',
@@ -83,7 +86,7 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     color: theme.palette.common.white,
     mixBlendMode: 'difference',
   },
-  vehicleImageSection: {
+  vehicleSide: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
@@ -94,21 +97,21 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
       flexShrink: 0,
     },
   },
-  vehicleImageAvatar: {
-    width: 56,
-    height: 56,
+  vehicleAvatar: {
+    width: 50,
+    height: 50,
     borderRadius: 12,
     backgroundColor: theme.palette.primary.main,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  vehicleImageImg: {
-    width: 28,
-    height: 28,
+  vehicleAvatarImg: {
+    width: 26,
+    height: 26,
     filter: 'brightness(0) invert(1)',
   },
-  desktopBody: {
+  body: {
     [theme.breakpoints.up('md')]: {
       flex: 1,
       minWidth: 0,
@@ -120,10 +123,7 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(0.8),
-    padding: theme.spacing(0.5, 1.5, 0, 1.5),
-    [theme.breakpoints.up('md')]: {
-      padding: theme.spacing(0.5, 1.5, 0, 1),
-    },
+    padding: theme.spacing(0.5, 1.2, 0, 1.2),
   },
   headerIcon: {
     width: 28,
@@ -134,9 +134,7 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
+    [theme.breakpoints.up('md')]: { display: 'none' },
   },
   headerIconImg: {
     width: 14,
@@ -148,14 +146,11 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     minWidth: 0,
   },
   content: {
-    padding: theme.spacing(0.3, 1.5, 0.3, 1.5),
+    padding: theme.spacing(0.3, 1.2),
     overflow: 'auto',
-    [theme.breakpoints.down('md')]: {
-      maxHeight: 350,
-    },
+    [theme.breakpoints.down('md')]: { maxHeight: 350 },
     [theme.breakpoints.up('md')]: {
       maxHeight: 'none',
-      padding: theme.spacing(0.3, 1.5, 0.3, 1),
       flex: 1,
     },
   },
@@ -167,52 +162,66 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   },
   chip: {
     height: 18,
-    fontSize: '0.58rem',
+    fontSize: '0.56rem',
     fontWeight: 600,
     borderRadius: 5,
-    '& .MuiChip-icon': { fontSize: '0.68rem', marginLeft: 3 },
+    '& .MuiChip-icon': { fontSize: '0.65rem', marginLeft: 3 },
     '& .MuiChip-label': { padding: '0 4px' },
   },
   dataGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '2px 10px',
+    gap: '2px 8px',
     [theme.breakpoints.up('md')]: {
-      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-      gap: '1px 14px',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+      gap: '2px 12px',
     },
   },
   dataItem: {
     display: 'flex',
     alignItems: 'center',
     gap: 3,
+    padding: '1px 0',
   },
   dataIcon: {
-    fontSize: '0.78rem !important',
+    fontSize: '0.75rem !important',
     opacity: 0.5,
     color: theme.palette.text.secondary,
   },
   dataLabel: {
-    fontSize: '0.55rem',
+    fontSize: '0.52rem',
     color: theme.palette.text.secondary,
     lineHeight: 1,
+    textTransform: 'uppercase',
+    letterSpacing: '0.03em',
   },
   dataValue: {
-    fontSize: '0.68rem',
+    fontSize: '0.66rem',
     fontWeight: 600,
     lineHeight: 1.1,
   },
   fullWidthItem: {
     gridColumn: '1 / -1',
   },
+  timestampsRow: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '2px 16px',
+    alignItems: 'center',
+  },
+  timestampItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    whiteSpace: 'nowrap',
+  },
   actions: {
     justifyContent: 'space-between',
-    padding: theme.spacing(0, 1),
-    minHeight: 32,
+    padding: theme.spacing(0, 0.5),
+    minHeight: 30,
     borderTop: `1px solid ${theme.palette.divider}`,
-    '& .MuiIconButton-root': {
-      padding: 5,
-    },
+    '& .MuiIconButton-root': { padding: 4 },
+    '& .MuiSvgIcon-root': { fontSize: '1.1rem' },
   },
   root: {
     pointerEvents: 'none',
@@ -220,7 +229,7 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     zIndex: 5,
     [theme.breakpoints.up('md')]: {
       left: `calc(${desktopPadding || '0px'} + 8px)`,
-      right: 52,
+      right: 68,
       bottom: 8,
     },
     [theme.breakpoints.down('md')]: {
@@ -367,18 +376,18 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
             style={{ position: 'relative', width: desktop ? '100%' : 'auto' }}
           >
             <Card elevation={3} className={classes.card}>
-              {/* Vehicle image on desktop */}
-              <div className={classes.vehicleImageSection}>
-                <div className={classes.vehicleImageAvatar}>
+              {/* Vehicle icon on desktop side */}
+              <div className={classes.vehicleSide}>
+                <div className={classes.vehicleAvatar}>
                   <img
-                    className={classes.vehicleImageImg}
+                    className={classes.vehicleAvatarImg}
                     src={mapIcons[mapIconKey(device.category)]}
                     alt=""
                   />
                 </div>
               </div>
 
-              <div className={classes.desktopBody}>
+              <div className={classes.body}>
               {deviceImage ? (
                 <CardMedia
                   className={`${classes.media} draggable-header`}
@@ -449,27 +458,24 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
                   {/* Address */}
                   {position.address && (
-                    <Box sx={{ display: 'flex', gap: 0.5, mb: 1, alignItems: 'flex-start' }}>
-                      <LocationOnIcon sx={{ fontSize: '0.9rem', color: 'primary.main', mt: '2px', opacity: 0.7 }} />
-                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.4 }}>
+                    <Box sx={{ display: 'flex', gap: 0.4, mb: 0.3, alignItems: 'center' }}>
+                      <LocationOnIcon sx={{ fontSize: '0.72rem', color: 'primary.main', opacity: 0.7 }} />
+                      <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary', lineHeight: 1.3 }} noWrap>
                         {position.address}
                       </Typography>
                     </Box>
                   )}
 
-                  <Divider sx={{ my: 0.4 }} />
+                  <Divider sx={{ my: 0.3 }} />
 
-                  {/* Data grid */}
+                  {/* Data grid - all available attributes */}
                   <div className={classes.dataGrid}>
-                    {/* Speed */}
                     <DataItem
                       icon={<SpeedIcon className={classes.dataIcon} />}
                       label="Velocidade"
                       value={`${speedKmh} km/h`}
                       color={getSpeedColor(speedKmh)}
                     />
-
-                    {/* Course */}
                     {position.course != null && (
                       <DataItem
                         icon={<NavigationIcon className={classes.dataIcon} sx={{ transform: `rotate(${position.course}deg)` }} />}
@@ -477,8 +483,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                         value={`${Math.round(position.course)}°`}
                       />
                     )}
-
-                    {/* Battery */}
                     {attrs.batteryLevel != null && (
                       <DataItem
                         icon={getBatteryIcon(attrs.batteryLevel)}
@@ -487,8 +491,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                         color={getBatteryColor(attrs.batteryLevel)}
                       />
                     )}
-
-                    {/* Satellites */}
                     {attrs.sat != null && (
                       <DataItem
                         icon={<SignalCellularAltIcon className={classes.dataIcon} />}
@@ -496,8 +498,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                         value={attrs.sat}
                       />
                     )}
-
-                    {/* Altitude */}
                     {position.altitude != null && (
                       <DataItem
                         icon={<HeightIcon className={classes.dataIcon} />}
@@ -505,61 +505,48 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                         value={`${Math.round(position.altitude)} m`}
                       />
                     )}
-
-                    {/* GPS Accuracy */}
                     {position.accuracy != null && (
                       <DataItem
                         icon={<GpsFixedIcon className={classes.dataIcon} />}
-                        label="Precisão GPS"
+                        label="Precisão"
                         value={`${Math.round(position.accuracy)} m`}
                       />
                     )}
-
-                    {/* Total distance */}
                     {attrs.totalDistance != null && (
                       <DataItem
-                        icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>🛣️</Box>}
-                        label="Km Total"
+                        icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>🛣️</Box>}
+                        label="Odômetro"
                         value={`${(attrs.totalDistance / 1000).toFixed(1)} km`}
                       />
                     )}
-
-                    {/* Hours */}
                     {attrs.hours != null && (
                       <DataItem
                         icon={<AccessTimeIcon className={classes.dataIcon} />}
-                        label="Horas Motor"
+                        label="Horímetro"
                         value={`${Math.round(attrs.hours / 3600000)} h`}
                       />
                     )}
-
-                    {/* Coordinates */}
-                    <DataItem
-                      icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>📍</Box>}
-                      label="Lat / Lng"
-                      value={`${position.latitude.toFixed(5)}, ${position.longitude.toFixed(5)}`}
-                      fullWidth
-                    />
-
-                    {/* Protocol */}
-                    {position.protocol && (
+                    {attrs.fuel != null && (
                       <DataItem
-                        icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>📡</Box>}
-                        label="Protocolo"
-                        value={position.protocol}
+                        icon={<LocalGasStationIcon className={classes.dataIcon} />}
+                        label="Combustível"
+                        value={`${Math.round(attrs.fuel)}%`}
                       />
                     )}
-
-                    {/* RPM */}
+                    {attrs.deviceTemp != null && (
+                      <DataItem
+                        icon={<ThermostatIcon className={classes.dataIcon} />}
+                        label="Temperatura"
+                        value={`${attrs.deviceTemp.toFixed(1)}°C`}
+                      />
+                    )}
                     {attrs.rpm != null && (
                       <DataItem
-                        icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>⚙️</Box>}
+                        icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>⚙️</Box>}
                         label="RPM"
                         value={attrs.rpm}
                       />
                     )}
-
-                    {/* Power voltage */}
                     {attrs.power != null && (
                       <DataItem
                         icon={<PowerIcon className={classes.dataIcon} />}
@@ -567,52 +554,98 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                         value={`${attrs.power.toFixed(1)} V`}
                       />
                     )}
+                    {attrs.batteryLevel != null && attrs.charge !== undefined && (
+                      <DataItem
+                        icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>🔌</Box>}
+                        label="Carregando"
+                        value={attrs.charge ? 'Sim' : 'Não'}
+                        color={attrs.charge ? '#10b981' : '#94a3b8'}
+                      />
+                    )}
+                    {attrs.rssi != null && (
+                      <DataItem
+                        icon={<NetworkCellIcon className={classes.dataIcon} />}
+                        label="Sinal GSM"
+                        value={attrs.rssi}
+                      />
+                    )}
+                    {attrs.io1 !== undefined && (
+                      <DataItem
+                        icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📥</Box>}
+                        label="Entrada 1"
+                        value={formatBoolean(attrs.io1, t)}
+                      />
+                    )}
+                    {attrs.io2 !== undefined && (
+                      <DataItem
+                        icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📥</Box>}
+                        label="Entrada 2"
+                        value={formatBoolean(attrs.io2, t)}
+                      />
+                    )}
+                    <DataItem
+                      icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📍</Box>}
+                      label="Coordenadas"
+                      value={`${position.latitude.toFixed(5)}, ${position.longitude.toFixed(5)}`}
+                    />
+                    {position.protocol && (
+                      <DataItem
+                        icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📡</Box>}
+                        label="Protocolo"
+                        value={position.protocol}
+                      />
+                    )}
+                    {position.network?.radioType && (
+                      <DataItem
+                        icon={<NetworkCellIcon className={classes.dataIcon} />}
+                        label="Rede"
+                        value={position.network.radioType.toUpperCase()}
+                      />
+                    )}
                   </div>
 
-                  <Divider sx={{ my: 0.5 }} />
+                  <Divider sx={{ my: 0.3 }} />
 
-                  {/* Timestamps */}
-                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 0.3, md: 2 }, flexWrap: 'wrap' }}>
+                  {/* Timestamps - proper inline layout */}
+                  <div className={classes.timestampsRow}>
                     {position.fixTime && (
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora GPS</Typography>
-                        <Typography sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
-                          {dayjs(position.fixTime).format('DD/MM/YYYY, HH:mm:ss')}
+                      <span className={classes.timestampItem}>
+                        <Typography sx={{ fontSize: '0.52rem', color: 'text.secondary', fontWeight: 600 }}>GPS</Typography>
+                        <Typography sx={{ fontSize: '0.6rem', fontWeight: 600 }}>
+                          {dayjs(position.fixTime).format('DD/MM HH:mm:ss')}
                         </Typography>
-                      </Box>
+                      </span>
                     )}
                     {position.deviceTime && (
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora GSM</Typography>
-                        <Typography sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
-                          {dayjs(position.deviceTime).format('DD/MM/YYYY, HH:mm:ss')}
+                      <span className={classes.timestampItem}>
+                        <Typography sx={{ fontSize: '0.52rem', color: 'text.secondary', fontWeight: 600 }}>GSM</Typography>
+                        <Typography sx={{ fontSize: '0.6rem', fontWeight: 600 }}>
+                          {dayjs(position.deviceTime).format('DD/MM HH:mm:ss')}
                         </Typography>
-                      </Box>
+                      </span>
                     )}
                     {position.serverTime && (
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora GPRS</Typography>
-                        <Typography sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
-                          {dayjs(position.serverTime).format('DD/MM/YYYY, HH:mm:ss')}
+                      <span className={classes.timestampItem}>
+                        <Typography sx={{ fontSize: '0.52rem', color: 'text.secondary', fontWeight: 600 }}>GPRS</Typography>
+                        <Typography sx={{ fontSize: '0.6rem', fontWeight: 600 }}>
+                          {dayjs(position.serverTime).format('DD/MM HH:mm:ss')}
                         </Typography>
-                      </Box>
+                      </span>
                     )}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Atualização</Typography>
-                      <Typography sx={{ fontSize: '0.72rem', fontWeight: 500, color: 'text.secondary' }}>
+                    <span className={classes.timestampItem}>
+                      <Typography sx={{ fontSize: '0.52rem', color: 'text.secondary', fontWeight: 600 }}>⏱</Typography>
+                      <Typography sx={{ fontSize: '0.6rem', fontWeight: 500, color: 'text.secondary' }}>
                         {dayjs(position.fixTime).fromNow()}
                       </Typography>
-                    </Box>
-                  </Box>
+                    </span>
+                  </div>
 
-                  {/* More details link */}
-                  <Box sx={{ mt: 0.3 }}>
-                    <Typography sx={{ fontSize: '0.7rem' }}>
-                      <Link component={RouterLink} to={`/position/${position.id}`}>
-                        {t('sharedShowDetails')}
-                      </Link>
-                    </Typography>
-                  </Box>
+                  {/* More details */}
+                  <Typography sx={{ fontSize: '0.62rem', mt: 0.2 }}>
+                    <Link component={RouterLink} to={`/position/${position.id}`}>
+                      {t('sharedShowDetails')}
+                    </Link>
+                  </Typography>
                 </CardContent>
               )}
 
@@ -660,7 +693,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                   </IconButton>
                 </Tooltip>
               </CardActions>
-              </div>{/* end desktopBody */}
+              </div>{/* end body */}
             </Card>
           </Rnd>
         )}
