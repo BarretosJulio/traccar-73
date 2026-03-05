@@ -279,20 +279,41 @@ const useStyles = makeStyles()((theme) => ({
   },
   menuGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-    gap: theme.spacing(1.5),
+    gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
+    gap: theme.spacing(2.5),
+    padding: theme.spacing(1, 0),
   },
-  menuCard: {
-    borderRadius: 16,
-    border: `1px solid ${theme.palette.divider}`,
-    overflow: 'hidden',
-    transition: 'all 0.25s ease',
-    textAlign: 'center',
+  menuItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: theme.spacing(0.8),
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
     '&:hover': {
       transform: 'translateY(-2px)',
-      boxShadow: '0 6px 20px rgba(0,0,0,0.06)',
-      borderColor: theme.palette.primary.main,
+      '& $menuIcon': {
+        boxShadow: `0 4px 14px ${theme.palette.primary.main}40`,
+      },
     },
+  },
+  menuIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.palette.primary.main,
+    background: `${theme.palette.primary.main}14`,
+    transition: 'all 0.2s ease',
+  },
+  menuLabel: {
+    fontSize: '0.68rem',
+    fontWeight: 600,
+    color: theme.palette.text.secondary,
+    textAlign: 'center',
+    lineHeight: 1.2,
   },
   footer: {
     '@media print': {
@@ -703,34 +724,16 @@ const DashboardPage = () => {
           <Typography className={classes.sectionTitle} sx={{ mb: 1.5 }}>Acesso Rápido</Typography>
           <div className={classes.menuGrid}>
             {menuItems.map((item) => (
-              <Paper key={item.label} className={classes.menuCard} elevation={0}>
-                <ListItemButton
-                  onClick={() => navigate(item.path)}
-                  sx={{
-                    py: 2.5,
-                    px: 2,
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  <Avatar
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: '14px',
-                      bgcolor: 'primary.main',
-                      color: '#fff',
-                      mb: 0.5,
-                    }}
-                  >
-                    {item.icon}
-                  </Avatar>
-                  <Typography sx={{ fontWeight: 700, fontSize: '0.78rem', textAlign: 'center' }}>
-                    {item.label}
-                  </Typography>
-                </ListItemButton>
-              </Paper>
+              <div
+                key={item.label}
+                className={classes.menuItem}
+                onClick={() => navigate(item.path)}
+              >
+                <div className={classes.menuIcon}>
+                  {item.icon}
+                </div>
+                <span className={classes.menuLabel}>{item.label}</span>
+              </div>
             ))}
           </div>
         </div>
