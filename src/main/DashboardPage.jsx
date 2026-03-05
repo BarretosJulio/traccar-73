@@ -181,7 +181,7 @@ const useStyles = makeStyles()((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
     [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: 'repeat(2, 1fr)',
+      gridTemplateColumns: 'repeat(3, 1fr)',
       gap: theme.spacing(1),
       marginTop: theme.spacing(-3),
     },
@@ -194,9 +194,11 @@ const useStyles = makeStyles()((theme) => ({
     borderRadius: 20,
     padding: theme.spacing(2.5),
     [theme.breakpoints.down('sm')]: {
-      borderRadius: 14,
-      padding: theme.spacing(1.5),
-      gap: theme.spacing(1.2),
+      borderRadius: 12,
+      padding: theme.spacing(1.2),
+      gap: theme.spacing(0.8),
+      flexDirection: 'column',
+      alignItems: 'flex-start',
     },
     display: 'flex',
     alignItems: 'center',
@@ -221,9 +223,9 @@ const useStyles = makeStyles()((theme) => ({
     height: 56,
     borderRadius: 16,
     [theme.breakpoints.down('sm')]: {
-      width: 40,
-      height: 40,
-      borderRadius: 12,
+      width: 34,
+      height: 34,
+      borderRadius: 10,
     },
     display: 'flex',
     alignItems: 'center',
@@ -236,7 +238,7 @@ const useStyles = makeStyles()((theme) => ({
     lineHeight: 1,
     letterSpacing: '-0.03em',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.5rem',
+      fontSize: '1.2rem',
     },
   },
   statLabel: {
