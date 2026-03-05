@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useTheme, useMediaQuery } from '@mui/material';
 import dimensions from '../../common/theme/dimensions';
 import { map } from '../core/MapView';
 import { usePrevious } from '../../reactHelper';
@@ -10,6 +11,9 @@ const MapSelectedDevice = ({ mapReady }) => {
   const currentId = useSelector((state) => state.devices.selectedId);
   const previousTime = usePrevious(currentTime);
   const previousId = usePrevious(currentId);
+
+  const theme = useTheme();
+  const isPhone = useMediaQuery(theme.breakpoints.down('md'));
 
   const selectZoom = useAttributePreference('web.selectZoom', 10);
   const mapFollow = useAttributePreference('mapFollow', false);
@@ -33,13 +37,19 @@ const MapSelectedDevice = ({ mapReady }) => {
         (mapFollow && positionChanged)) &&
       position
     ) {
+      // On phone: StatusCard is at the bottom, shift map center up
+      // On desktop: sidebar is on the left, shift map center right
+      const offset = isPhone
+        ? [0, -dimensions.popupMapOffset]
+        : [dimensions.popupMapOffset / 2, 0];
+
       map.easeTo({
         center: [position.longitude, position.latitude],
         zoom: Math.max(map.getZoom(), selectZoom),
-        offset: [0, -dimensions.popupMapOffset / 2],
+        offset,
       });
     }
-  }, [currentId, previousId, currentTime, previousTime, mapFollow, position, selectZoom, mapReady]);
+  }, [currentId, previousId, currentTime, previousTime, mapFollow, position, selectZoom, mapReady, isPhone]);
 
   return null;
 };
