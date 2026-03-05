@@ -14,6 +14,7 @@ import {
   nativePostMessage,
 } from './common/components/NativeInterface';
 import fetchOrThrow from './common/util/fetchOrThrow';
+import { apiUrl, API_BASE } from './common/util/apiUrl';
 
 const logoutCode = 4000;
 
@@ -72,7 +73,8 @@ const SocketController = () => {
       socketRef.current.close();
     }
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const socket = new WebSocket(`${protocol}//${window.location.host}/api/socket`);
+    const wsBase = API_BASE || `${protocol}//${window.location.host}`;
+    const socket = new WebSocket(`${wsBase.replace(/^http/, 'ws')}/api/socket`);
     socketRef.current = socket;
 
     socket.onopen = () => {
@@ -83,11 +85,11 @@ const SocketController = () => {
       dispatch(sessionActions.updateSocket(false));
       if (event.code !== logoutCode) {
         try {
-          const devicesResponse = await fetch('/api/devices');
+          const devicesResponse = await fetch(apiUrl('/api/devices'));
           if (devicesResponse.ok) {
             dispatch(devicesActions.update(await devicesResponse.json()));
           }
-          const positionsResponse = await fetch('/api/positions');
+          const positionsResponse = await fetch(apiUrl('/api/positions'));
           if (positionsResponse.ok) {
             dispatch(sessionActions.updatePositions(await positionsResponse.json()));
           }
@@ -144,7 +146,7 @@ const SocketController = () => {
     async (message) => {
       const eventId = message.data.eventId;
       if (eventId) {
-        const response = await fetch(`/api/events/${eventId}`);
+        const response = await fetch(apiUrl(`/api/events/${eventId}`));
         if (response.ok) {
           const event = await response.json();
           const eventWithMessage = {

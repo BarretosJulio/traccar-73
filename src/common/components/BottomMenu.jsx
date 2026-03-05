@@ -21,6 +21,7 @@ import { sessionActions } from '../../store';
 import { useTranslation } from './LocalizationProvider';
 import { useRestriction } from '../util/permissions';
 import { nativePostMessage } from './NativeInterface';
+import { apiUrl } from '../util/apiUrl';
 
 const BottomMenu = () => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const BottomMenu = () => {
                 : undefined,
           },
         };
-        await fetch(`/api/users/${user.id}`, {
+        await fetch(apiUrl(`/api/users/${user.id}`), {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedUser),
@@ -84,7 +85,7 @@ const BottomMenu = () => {
       }
     }
 
-    await fetch('/api/session', { method: 'DELETE' });
+    await fetch(apiUrl('/api/session'), { method: 'DELETE' });
     nativePostMessage('logout');
     navigate('/login');
     dispatch(sessionActions.updateUser(null));
