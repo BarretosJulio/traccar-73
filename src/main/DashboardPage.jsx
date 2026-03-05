@@ -49,10 +49,22 @@ import ScienceIcon from '@mui/icons-material/Science';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import BatteryFullIcon from '@mui/icons-material/BatteryFull';
+import Battery60Icon from '@mui/icons-material/Battery60';
+import Battery20Icon from '@mui/icons-material/Battery20';
+import PowerIcon from '@mui/icons-material/Power';
+import PowerOffIcon from '@mui/icons-material/PowerOff';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import NightlightIcon from '@mui/icons-material/Nightlight';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useAdministrator } from '../common/util/permissions';
 import BottomMenu from '../common/components/BottomMenu';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
+import { devicesActions } from '../store';
+import { useDispatch } from 'react-redux';
 
 dayjs.extend(relativeTime);
 
@@ -343,6 +355,7 @@ const useStyles = makeStyles()((theme) => ({
 const DashboardPage = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const t = useTranslation();
   const admin = useAdministrator();
   const { demoMode, setDemoMode } = useOutletContext() || {};
@@ -620,15 +633,27 @@ const DashboardPage = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1.5 }}>
             {displayDevices.map((device) => {
               const position = positions[device.id];
+              const attrs = position?.attributes || {};
               const speed = getSpeedKmh(device.id);
               const isMoving = speed > 1;
               const statusColor = statusColors[device.status] || '#94a3b8';
+              const batteryLevel = attrs.batteryLevel;
+              const ignition = attrs.ignition;
+              const blocked = attrs.blocked;
+              const satellites = attrs.sat;
+              const fuel = attrs.fuel;
+              const course = position?.course;
+
+              const handleClick = () => {
+                dispatch(devicesActions.selectId(device.id));
+                navigate('/map');
+              };
 
               return (
                 <Paper key={device.id} className={classes.vehicleCard} elevation={0}>
                   <ListItemButton
-                    onClick={() => navigate(`/settings/device/${device.id}`)}
-                    sx={{ py: 1.5, px: 2, gap: 1.5 }}
+                    onClick={handleClick}
+                    sx={{ py: 1.5, px: 2, gap: 1.5, flexWrap: 'wrap' }}
                   >
                     <Avatar
                       sx={{
@@ -661,12 +686,91 @@ const DashboardPage = () => {
                           }}
                         />
                       </Box>
-                      <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary' }} noWrap>
-                        {position?.address || device.uniqueId}
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <LocationOnIcon sx={{ fontSize: 11, color: 'text.secondary', opacity: 0.5 }} />
+                        <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary' }} noWrap>
+                          {position?.address || device.uniqueId}
+                        </Typography>
+                      </Box>
                     </Box>
 
                     <Box className={classes.vehicleMeta}>
+                      {/* Ignition */}
+                      {ignition !== undefined && (
+                        <Tooltip title={ignition ? 'Ignição Ligada' : 'Ignição Desligada'}>
+                          <Box className={classes.metaItem}>
+                            {ignition
+                              ? <PowerIcon sx={{ fontSize: 14, color: '#10b981' }} />
+                              : <PowerOffIcon sx={{ fontSize: 14, color: '#94a3b8' }} />}
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {/* Blocked */}
+                      {blocked !== undefined && (
+                        <Tooltip title={blocked ? 'Bloqueado' : 'Desbloqueado'}>
+                          <Box className={classes.metaItem}>
+                            {blocked
+                              ? <LockIcon sx={{ fontSize: 14, color: '#ef4444' }} />
+                              : <LockOpenIcon sx={{ fontSize: 14, color: '#10b981' }} />}
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {/* Motion */}
+                      {isMoving ? (
+                        <Tooltip title="Em movimento">
+                          <Box className={classes.metaItem}>
+                            <DirectionsRunIcon sx={{ fontSize: 14, color: '#3b82f6' }} />
+                          </Box>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="Parado">
+                          <Box className={classes.metaItem}>
+                            <NightlightIcon sx={{ fontSize: 14, color: '#94a3b8' }} />
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {/* Satellites */}
+                      {satellites != null && (
+                        <Tooltip title={`${satellites} satélites`}>
+                          <Box className={classes.metaItem}>
+                            <SignalCellularAltIcon sx={{ fontSize: 13 }} />
+                            {satellites}
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {/* Course */}
+                      {course != null && (
+                        <Tooltip title={`Direção: ${Math.round(course)}°`}>
+                          <Box className={classes.metaItem}>
+                            <NavigationIcon sx={{ fontSize: 13, transform: `rotate(${course}deg)` }} />
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {/* Fuel */}
+                      {fuel != null && (
+                        <Tooltip title={`Combustível: ${Math.round(fuel)}%`}>
+                          <Box className={classes.metaItem}>
+                            <LocalGasStationIcon sx={{ fontSize: 13 }} />
+                            {Math.round(fuel)}%
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {/* Battery */}
+                      {batteryLevel != null && (
+                        <Tooltip title={`Bateria: ${Math.round(batteryLevel)}%`}>
+                          <Box className={classes.metaItem} sx={{ color: batteryLevel > 70 ? '#10b981' : batteryLevel > 30 ? '#f59e0b' : '#ef4444' }}>
+                            {batteryLevel > 70 ? <BatteryFullIcon sx={{ fontSize: 14 }} /> : batteryLevel > 30 ? <Battery60Icon sx={{ fontSize: 14 }} /> : <Battery20Icon sx={{ fontSize: 14 }} />}
+                            {Math.round(batteryLevel)}%
+                          </Box>
+                        </Tooltip>
+                      )}
+
                       {/* Speed */}
                       <Box
                         className={classes.speedBadge}
@@ -709,6 +813,18 @@ const DashboardPage = () => {
                           sx={{
                             borderRadius: '8px',
                             fontWeight: 700,
+                            fontSize: '0.68rem',
+                            height: 24,
+                            bgcolor: '#f59e0b18',
+                            color: '#f59e0b',
+                          }}
+                        />
+                      )}
+                    </Box>
+                  </ListItemButton>
+                </Paper>
+              );
+            })}
                             fontSize: '0.68rem',
                             height: 24,
                             bgcolor: '#f59e0b18',
