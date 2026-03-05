@@ -280,17 +280,28 @@ const useStyles = makeStyles()((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      gap: theme.spacing(1),
+    },
   },
   sectionTitle: {
     fontWeight: 800,
     fontSize: '1.1rem',
     color: theme.palette.text.primary,
     letterSpacing: '-0.01em',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.95rem',
+    },
   },
   filterChips: {
     display: 'flex',
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
     flexWrap: 'wrap',
+    [theme.breakpoints.down('sm')]: {
+      gap: theme.spacing(0.5),
+    },
   },
   filterChip: {
     borderRadius: 10,
@@ -299,12 +310,19 @@ const useStyles = makeStyles()((theme) => ({
     height: 28,
     transition: 'all 0.2s ease',
     cursor: 'pointer',
+    [theme.breakpoints.down('sm')]: {
+      height: 24,
+      fontSize: '0.65rem',
+    },
   },
   vehicleCard: {
     borderRadius: 16,
     border: `1px solid ${theme.palette.divider}`,
     overflow: 'hidden',
     transition: 'all 0.2s ease',
+    [theme.breakpoints.down('sm')]: {
+      borderRadius: 12,
+    },
     '&:hover': {
       borderColor: theme.palette.primary.main,
       boxShadow: `0 0 0 1px ${theme.palette.primary.main}20`,
@@ -325,6 +343,12 @@ const useStyles = makeStyles()((theme) => ({
     alignItems: 'center',
     gap: theme.spacing(2),
     flexShrink: 0,
+    [theme.breakpoints.down('sm')]: {
+      gap: theme.spacing(0.8),
+      flexWrap: 'wrap',
+      justifyContent: 'flex-end',
+      maxWidth: '45%',
+    },
   },
   metaItem: {
     display: 'flex',
@@ -333,6 +357,10 @@ const useStyles = makeStyles()((theme) => ({
     fontSize: '0.72rem',
     color: theme.palette.text.secondary,
     fontWeight: 500,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.62rem',
+      gap: 2,
+    },
   },
   speedBadge: {
     display: 'flex',
@@ -342,6 +370,11 @@ const useStyles = makeStyles()((theme) => ({
     borderRadius: 8,
     fontSize: '0.72rem',
     fontWeight: 700,
+    [theme.breakpoints.down('sm')]: {
+      padding: '2px 6px',
+      fontSize: '0.62rem',
+      borderRadius: 6,
+    },
   },
   menuGrid: {
     display: 'flex',
@@ -349,6 +382,10 @@ const useStyles = makeStyles()((theme) => ({
     justifyContent: 'center',
     gap: theme.spacing(3),
     padding: theme.spacing(1, 0),
+    [theme.breakpoints.down('sm')]: {
+      gap: theme.spacing(1.5),
+      justifyContent: 'space-between',
+    },
   },
   menuItem: {
     display: 'flex',
@@ -358,6 +395,10 @@ const useStyles = makeStyles()((theme) => ({
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     width: 85,
+    [theme.breakpoints.down('sm')]: {
+      width: 62,
+      gap: theme.spacing(0.5),
+    },
     '&:hover': {
       transform: 'translateY(-2px)',
       '& $menuIcon': {
@@ -375,6 +416,11 @@ const useStyles = makeStyles()((theme) => ({
     color: theme.palette.primary.main,
     background: `${theme.palette.primary.main}14`,
     transition: 'all 0.2s ease',
+    [theme.breakpoints.down('sm')]: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+    },
   },
   menuLabel: {
     fontSize: '0.68rem',
@@ -384,6 +430,9 @@ const useStyles = makeStyles()((theme) => ({
     lineHeight: 1.2,
     width: '100%',
     wordBreak: 'break-word',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.58rem',
+    },
   },
   footer: {
     '@media print': {
@@ -397,11 +446,18 @@ const useStyles = makeStyles()((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     gap: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(3),
+    },
   },
   progressBar: {
     height: 4,
     borderRadius: 2,
     marginTop: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      height: 3,
+      marginTop: theme.spacing(0.5),
+    },
   },
 }));
 
@@ -704,19 +760,19 @@ const DashboardPage = () => {
 
               return (
                 <Paper key={device.id} className={classes.vehicleCard} elevation={0}>
-                  <ListItemButton
-                    onClick={handleClick}
-                    sx={{ py: 1.5, px: 2, gap: 1.5, flexWrap: 'wrap' }}
-                  >
-                    <Avatar
-                      sx={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: '14px',
-                        bgcolor: statusColor + '14',
-                        border: `2px solid ${statusColor}30`,
-                      }}
+                    <ListItemButton
+                      onClick={handleClick}
+                      sx={{ py: { xs: 1, sm: 1.5 }, px: { xs: 1.2, sm: 2 }, gap: { xs: 1, sm: 1.5 }, flexWrap: 'wrap' }}
                     >
+                      <Avatar
+                        sx={{
+                          width: { xs: 36, sm: 44 },
+                          height: { xs: 36, sm: 44 },
+                          borderRadius: { xs: '10px', sm: '14px' },
+                          bgcolor: statusColor + '14',
+                          border: `2px solid ${statusColor}30`,
+                        }}
+                      >
                       <img
                         src={mapIcons[mapIconKey(device.category)]}
                         alt=""
@@ -726,9 +782,9 @@ const DashboardPage = () => {
 
                     <Box className={classes.vehicleInfo}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }} noWrap>
-                          {device.name}
-                        </Typography>
+                          <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.78rem', sm: '0.9rem' } }} noWrap>
+                            {device.name}
+                          </Typography>
                         <Box
                           sx={{
                             width: 7,
@@ -741,9 +797,9 @@ const DashboardPage = () => {
                       </Box>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <LocationOnIcon sx={{ fontSize: 11, color: 'text.secondary', opacity: 0.5 }} />
-                        <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary' }} noWrap>
-                          {position?.address || device.uniqueId}
-                        </Typography>
+                          <Typography sx={{ fontSize: { xs: '0.62rem', sm: '0.72rem' }, color: 'text.secondary' }} noWrap>
+                            {position?.address || device.uniqueId}
+                          </Typography>
                       </Box>
                     </Box>
 
