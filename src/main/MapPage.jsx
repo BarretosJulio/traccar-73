@@ -24,11 +24,13 @@ const useStyles = makeStyles()((theme) => ({
   },
   backButton: {
     position: 'fixed',
-    top: theme.spacing(2),
-    left: theme.spacing(2),
+    top: theme.spacing(1.5),
+    left: theme.spacing(1.5),
     zIndex: 10,
     background: theme.palette.background.paper,
     boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
+    width: 40,
+    height: 40,
     '&:hover': {
       background: theme.palette.background.paper,
     },
@@ -56,6 +58,9 @@ const useStyles = makeStyles()((theme) => ({
     zIndex: 6,
     borderRadius: '16px 16px 0 0',
     overflow: 'hidden',
+    [theme.breakpoints.down('md')]: {
+      borderRadius: '12px 12px 0 0',
+    },
   },
   middle: {
     flex: 1,

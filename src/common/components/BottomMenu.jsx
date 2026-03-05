@@ -127,25 +127,25 @@ const BottomMenu = () => {
   };
 
   return (
-    <Paper square elevation={0} sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+    <Paper square elevation={0} sx={{ borderTop: '1px solid', borderColor: 'divider', pb: 'env(safe-area-inset-bottom)' }}>
       <BottomNavigation
         value={currentSelection()}
         onChange={handleSelection}
         showLabels
         sx={{
-          height: 64,
+          height: { xs: 56, sm: 64 },
           '& .MuiBottomNavigationAction-root': {
             minWidth: 'auto',
-            padding: '6px 0',
+            padding: { xs: '4px 0', sm: '6px 0' },
             '&.Mui-selected': {
               color: 'primary.main',
             },
           },
           '& .MuiBottomNavigationAction-label': {
-            fontSize: '0.7rem',
+            fontSize: { xs: '0.62rem', sm: '0.7rem' },
             fontWeight: 500,
             '&.Mui-selected': {
-              fontSize: '0.7rem',
+              fontSize: { xs: '0.62rem', sm: '0.7rem' },
               fontWeight: 600,
             },
           },

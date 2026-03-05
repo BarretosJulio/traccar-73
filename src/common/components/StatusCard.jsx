@@ -63,9 +63,10 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     pointerEvents: 'auto',
     overflow: 'hidden',
     [theme.breakpoints.down('md')]: {
-      width: 360,
-      borderRadius: 16,
-      boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+      width: '92vw',
+      maxWidth: 380,
+      borderRadius: 14,
+      boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
     },
     [theme.breakpoints.up('md')]: {
       width: '100%',
@@ -148,7 +149,10 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   content: {
     padding: theme.spacing(0.3, 1.2),
     overflow: 'auto',
-    [theme.breakpoints.down('md')]: { maxHeight: 350 },
+    [theme.breakpoints.down('md')]: {
+      maxHeight: '45vh',
+      padding: theme.spacing(0.3, 1),
+    },
     [theme.breakpoints.up('md')]: {
       maxHeight: 'none',
       flex: 1,
