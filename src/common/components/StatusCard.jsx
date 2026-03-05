@@ -8,17 +8,14 @@ import {
   Typography,
   CardActions,
   IconButton,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
   Menu,
   MenuItem,
   CardMedia,
-  TableFooter,
   Link,
   Tooltip,
   Box,
+  Chip,
+  Divider,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
@@ -27,23 +24,42 @@ import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PendingIcon from '@mui/icons-material/Pending';
+import SpeedIcon from '@mui/icons-material/Speed';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import NavigationIcon from '@mui/icons-material/Navigation';
+import BatteryFullIcon from '@mui/icons-material/BatteryFull';
+import Battery60Icon from '@mui/icons-material/Battery60';
+import Battery20Icon from '@mui/icons-material/Battery20';
+import PowerIcon from '@mui/icons-material/Power';
+import PowerOffIcon from '@mui/icons-material/PowerOff';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import NightlightIcon from '@mui/icons-material/Nightlight';
+import AnchorIcon from '@mui/icons-material/Anchor';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import HeightIcon from '@mui/icons-material/Height';
+import dayjs from 'dayjs';
 
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';
-import PositionValue from './PositionValue';
 import { useDeviceReadonly, useRestriction } from '../util/permissions';
-import usePositionAttributes from '../attributes/usePositionAttributes';
 import { devicesActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
 import { useAttributePreference } from '../util/preferences';
+import { formatAlarm, formatBoolean } from '../util/formatter';
+import { mapIconKey, mapIcons } from '../../map/core/preloadImages';
 import fetchOrThrow from '../util/fetchOrThrow';
 
 const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
     pointerEvents: 'auto',
-    width: theme.dimensions.popupMaxWidth,
+    width: 360,
     borderRadius: 16,
-    boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06)',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08)',
     overflow: 'hidden',
   },
   media: {
@@ -58,32 +74,75 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   },
   header: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing(1.5, 1.5, 0, 2),
+    gap: theme.spacing(1.2),
+    padding: theme.spacing(1.5, 1.5, 0, 1.5),
   },
-  content: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    maxHeight: theme.dimensions.cardContentMaxHeight,
-    overflow: 'auto',
+  headerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: theme.palette.primary.main,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
-  icon: {
-    width: '25px',
-    height: '25px',
+  headerIconImg: {
+    width: 20,
+    height: 20,
     filter: 'brightness(0) invert(1)',
   },
-  table: {
-    '& .MuiTableCell-sizeSmall': {
-      paddingLeft: 0,
-      paddingRight: 0,
-    },
-    '& .MuiTableCell-sizeSmall:first-of-type': {
-      paddingRight: theme.spacing(1),
-    },
+  headerInfo: {
+    flex: 1,
+    minWidth: 0,
   },
-  cell: {
-    borderBottom: 'none',
+  content: {
+    padding: theme.spacing(1, 1.5, 1, 1.5),
+    maxHeight: 400,
+    overflow: 'auto',
+  },
+  chipsRow: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginBottom: theme.spacing(1),
+  },
+  chip: {
+    height: 22,
+    fontSize: '0.62rem',
+    fontWeight: 600,
+    borderRadius: 6,
+    '& .MuiChip-icon': { fontSize: '0.78rem', marginLeft: 4 },
+    '& .MuiChip-label': { padding: '0 5px' },
+  },
+  dataGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '6px 12px',
+  },
+  dataItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 5,
+  },
+  dataIcon: {
+    fontSize: '0.9rem !important',
+    opacity: 0.5,
+    color: theme.palette.text.secondary,
+  },
+  dataLabel: {
+    fontSize: '0.65rem',
+    color: theme.palette.text.secondary,
+    lineHeight: 1,
+  },
+  dataValue: {
+    fontSize: '0.78rem',
+    fontWeight: 600,
+    lineHeight: 1.2,
+  },
+  fullWidthItem: {
+    gridColumn: '1 / -1',
   },
   actions: {
     justifyContent: 'space-between',
@@ -107,20 +166,18 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   },
 }));
 
-const StatusRow = ({ name, content }) => {
+const DataItem = ({ icon, label, value, fullWidth, color }) => {
   const { classes } = useStyles({ desktopPadding: 0 });
-
   return (
-    <TableRow>
-      <TableCell className={classes.cell}>
-        <Typography variant="body2" sx={{ fontWeight: 500 }}>{name}</Typography>
-      </TableCell>
-      <TableCell className={classes.cell}>
-        <Typography variant="body2" color="textSecondary">
-          {content}
+    <div className={`${classes.dataItem} ${fullWidth ? classes.fullWidthItem : ''}`}>
+      {icon}
+      <div>
+        <Typography className={classes.dataLabel}>{label}</Typography>
+        <Typography className={classes.dataValue} sx={color ? { color } : {}}>
+          {value}
         </Typography>
-      </TableCell>
-    </TableRow>
+      </div>
+    </div>
   );
 };
 
@@ -139,18 +196,14 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
   const deviceImage = device?.attributes?.deviceImage;
 
-  const positionAttributes = usePositionAttributes(t);
-  const positionItems = useAttributePreference(
-    'positionItems',
-    'fixTime,address,speed,totalDistance',
-  );
-
   const navigationAppLink = useAttributePreference('navigationAppLink');
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
 
   const [anchorEl, setAnchorEl] = useState(null);
-
   const [removing, setRemoving] = useState(false);
+
+  const attrs = position?.attributes || {};
+  const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
 
   const handleRemove = useCatch(async (removed) => {
     if (removed) {
@@ -179,6 +232,62 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
     navigate(`/settings/geofence/${item.id}`);
   }, [navigate, position]);
 
+  // Build chips
+  const chips = [];
+  if (attrs.ignition !== undefined) {
+    chips.push({
+      key: 'ign', label: attrs.ignition ? 'Ligado' : 'Desligado',
+      icon: attrs.ignition ? <PowerIcon /> : <PowerOffIcon />,
+      color: attrs.ignition ? '#10b981' : '#94a3b8',
+    });
+  }
+  if (attrs.motion !== undefined) {
+    chips.push({
+      key: 'motion', label: attrs.motion ? 'Movendo' : 'Parado',
+      icon: attrs.motion ? <DirectionsRunIcon /> : <NightlightIcon />,
+      color: attrs.motion ? '#3b82f6' : '#94a3b8',
+    });
+  }
+  if (attrs.blocked !== undefined) {
+    chips.push({
+      key: 'blocked', label: attrs.blocked ? 'Bloqueado' : 'Desbloq.',
+      icon: attrs.blocked ? <LockIcon /> : <LockOpenIcon />,
+      color: attrs.blocked ? '#ef4444' : '#10b981',
+    });
+  }
+  if (position?.geofenceIds?.length > 0) {
+    chips.push({
+      key: 'anchor', label: 'Âncora Ativa',
+      icon: <AnchorIcon />, color: '#8b5cf6',
+    });
+  }
+  if (attrs.alarm) {
+    chips.push({
+      key: 'alarm', label: formatAlarm(attrs.alarm, t),
+      icon: <NotificationsActiveIcon />, color: '#ef4444',
+    });
+  }
+
+  const getSpeedColor = (s) => {
+    if (s === 0) return '#94a3b8';
+    if (s < 40) return '#10b981';
+    if (s < 80) return '#f59e0b';
+    return '#ef4444';
+  };
+
+  const getBatteryColor = (level) => {
+    if (level > 70) return '#10b981';
+    if (level > 30) return '#f59e0b';
+    return '#ef4444';
+  };
+
+  const getBatteryIcon = (level) => {
+    const sx = { fontSize: '0.9rem', color: getBatteryColor(level) };
+    if (level > 70) return <BatteryFullIcon sx={sx} />;
+    if (level > 30) return <Battery60Icon sx={sx} />;
+    return <Battery20Icon sx={sx} />;
+  };
+
   return (
     <>
       <div className={classes.root}>
@@ -201,52 +310,224 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </CardMedia>
               ) : (
                 <div className={`${classes.header} draggable-header`}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                    {device.name}
-                  </Typography>
+                  <div className={classes.headerIcon}>
+                    <img
+                      className={classes.headerIconImg}
+                      src={mapIcons[mapIconKey(device.category)]}
+                      alt=""
+                    />
+                  </div>
+                  <div className={classes.headerInfo}>
+                    <Typography sx={{ fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.2 }}>
+                      {device.name}
+                    </Typography>
+                    <Typography sx={{ fontSize: '0.68rem', color: 'text.secondary', fontFamily: 'monospace' }}>
+                      ID: {device.uniqueId}
+                      {device.phone && ` • ${device.phone}`}
+                    </Typography>
+                  </div>
+                  <Chip
+                    size="small"
+                    label={device.status === 'online' ? 'Online' : 'Offline'}
+                    sx={{
+                      height: 22,
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      backgroundColor: `${device.status === 'online' ? '#10b981' : '#ef4444'}18`,
+                      color: device.status === 'online' ? '#10b981' : '#ef4444',
+                      border: `1px solid ${device.status === 'online' ? '#10b981' : '#ef4444'}30`,
+                    }}
+                  />
                   <IconButton size="small" onClick={onClose} onTouchStart={onClose}>
                     <CloseIcon fontSize="small" />
                   </IconButton>
                 </div>
               )}
+
               {position && (
                 <CardContent className={classes.content}>
-                  <Table size="small" classes={{ root: classes.table }}>
-                    <TableBody>
-                      {positionItems
-                        .split(',')
-                        .filter(
-                          (key) =>
-                            position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key),
-                        )
-                        .map((key) => (
-                          <StatusRow
-                            key={key}
-                            name={positionAttributes[key]?.name || key}
-                            content={
-                              <PositionValue
-                                position={position}
-                                property={position.hasOwnProperty(key) ? key : null}
-                                attribute={position.hasOwnProperty(key) ? null : key}
-                              />
-                            }
-                          />
-                        ))}
-                    </TableBody>
-                    <TableFooter>
-                      <TableRow>
-                        <TableCell colSpan={2} className={classes.cell}>
-                          <Typography variant="body2">
-                            <Link component={RouterLink} to={`/position/${position.id}`}>
-                              {t('sharedShowDetails')}
-                            </Link>
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableFooter>
-                  </Table>
+                  {/* Feature chips */}
+                  {chips.length > 0 && (
+                    <div className={classes.chipsRow}>
+                      {chips.map((c) => (
+                        <Chip
+                          key={c.key}
+                          label={c.label}
+                          icon={c.icon}
+                          size="small"
+                          className={classes.chip}
+                          sx={{
+                            backgroundColor: `${c.color}14`,
+                            color: c.color,
+                            border: `1px solid ${c.color}30`,
+                            '& .MuiChip-icon': { color: c.color },
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Address */}
+                  {position.address && (
+                    <Box sx={{ display: 'flex', gap: 0.5, mb: 1, alignItems: 'flex-start' }}>
+                      <LocationOnIcon sx={{ fontSize: '0.9rem', color: 'primary.main', mt: '2px', opacity: 0.7 }} />
+                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.4 }}>
+                        {position.address}
+                      </Typography>
+                    </Box>
+                  )}
+
+                  <Divider sx={{ my: 0.8 }} />
+
+                  {/* Data grid */}
+                  <div className={classes.dataGrid}>
+                    {/* Speed */}
+                    <DataItem
+                      icon={<SpeedIcon className={classes.dataIcon} />}
+                      label="Velocidade"
+                      value={`${speedKmh} km/h`}
+                      color={getSpeedColor(speedKmh)}
+                    />
+
+                    {/* Course */}
+                    {position.course != null && (
+                      <DataItem
+                        icon={<NavigationIcon className={classes.dataIcon} sx={{ transform: `rotate(${position.course}deg)` }} />}
+                        label="Direção"
+                        value={`${Math.round(position.course)}°`}
+                      />
+                    )}
+
+                    {/* Battery */}
+                    {attrs.batteryLevel != null && (
+                      <DataItem
+                        icon={getBatteryIcon(attrs.batteryLevel)}
+                        label="Bateria"
+                        value={`${Math.round(attrs.batteryLevel)}%`}
+                        color={getBatteryColor(attrs.batteryLevel)}
+                      />
+                    )}
+
+                    {/* Satellites */}
+                    {attrs.sat != null && (
+                      <DataItem
+                        icon={<SignalCellularAltIcon className={classes.dataIcon} />}
+                        label="Satélites"
+                        value={attrs.sat}
+                      />
+                    )}
+
+                    {/* Altitude */}
+                    {position.altitude != null && (
+                      <DataItem
+                        icon={<HeightIcon className={classes.dataIcon} />}
+                        label="Altitude"
+                        value={`${Math.round(position.altitude)} m`}
+                      />
+                    )}
+
+                    {/* GPS Accuracy */}
+                    {position.accuracy != null && (
+                      <DataItem
+                        icon={<GpsFixedIcon className={classes.dataIcon} />}
+                        label="Precisão GPS"
+                        value={`${Math.round(position.accuracy)} m`}
+                      />
+                    )}
+
+                    {/* Total distance */}
+                    {attrs.totalDistance != null && (
+                      <DataItem
+                        icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>🛣️</Box>}
+                        label="Km Total"
+                        value={`${(attrs.totalDistance / 1000).toFixed(1)} km`}
+                      />
+                    )}
+
+                    {/* Hours */}
+                    {attrs.hours != null && (
+                      <DataItem
+                        icon={<AccessTimeIcon className={classes.dataIcon} />}
+                        label="Horas Motor"
+                        value={`${Math.round(attrs.hours / 3600000)} h`}
+                      />
+                    )}
+
+                    {/* Coordinates */}
+                    <DataItem
+                      icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>📍</Box>}
+                      label="Lat / Lng"
+                      value={`${position.latitude.toFixed(5)}, ${position.longitude.toFixed(5)}`}
+                      fullWidth
+                    />
+
+                    {/* Protocol */}
+                    {position.protocol && (
+                      <DataItem
+                        icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>📡</Box>}
+                        label="Protocolo"
+                        value={position.protocol}
+                      />
+                    )}
+
+                    {/* RPM */}
+                    {attrs.rpm != null && (
+                      <DataItem
+                        icon={<Box component="span" sx={{ fontSize: '0.85rem', opacity: 0.5 }}>⚙️</Box>}
+                        label="RPM"
+                        value={attrs.rpm}
+                      />
+                    )}
+
+                    {/* Power voltage */}
+                    {attrs.power != null && (
+                      <DataItem
+                        icon={<PowerIcon className={classes.dataIcon} />}
+                        label="Tensão"
+                        value={`${attrs.power.toFixed(1)} V`}
+                      />
+                    )}
+                  </div>
+
+                  <Divider sx={{ my: 0.8 }} />
+
+                  {/* Timestamps */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3 }}>
+                    {position.fixTime && (
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora GPS</Typography>
+                        <Typography sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                          {dayjs(position.fixTime).format('DD/MM/YYYY, HH:mm:ss')}
+                        </Typography>
+                      </Box>
+                    )}
+                    {position.serverTime && (
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Hora Servidor</Typography>
+                        <Typography sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                          {dayjs(position.serverTime).format('DD/MM/YYYY, HH:mm:ss')}
+                        </Typography>
+                      </Box>
+                    )}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>Atualização</Typography>
+                      <Typography sx={{ fontSize: '0.72rem', fontWeight: 500, color: 'text.secondary' }}>
+                        {dayjs(position.fixTime).fromNow()}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* More details link */}
+                  <Box sx={{ mt: 1 }}>
+                    <Typography variant="body2">
+                      <Link component={RouterLink} to={`/position/${position.id}`}>
+                        {t('sharedShowDetails')}
+                      </Link>
+                    </Typography>
+                  </Box>
                 </CardContent>
               )}
+
               <CardActions classes={{ root: classes.actions }} disableSpacing>
                 <Tooltip title={t('sharedExtra')}>
                   <IconButton
