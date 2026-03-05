@@ -15,7 +15,6 @@ import MapLiveRoutes from '../map/main/MapLiveRoutes';
 import MapPositions from '../map/MapPositions';
 import MapOverlay from '../map/overlay/MapOverlay';
 import MapScale from '../map/MapScale';
-import MapScale from '../map/MapScale';
 import MapNotification from '../map/notification/MapNotification';
 import MapWhatsApp from '../map/MapWhatsApp';
 import useFeatures from '../common/util/useFeatures';
