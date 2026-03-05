@@ -665,19 +665,20 @@ const DashboardPage = () => {
 
       {demoMode && (
         <Box sx={{
-          mx: 3, mt: -1, mb: 0, p: 1.5, borderRadius: 3,
-          background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1,
+          mx: 3, mt: -0.5, mb: 0, px: 1.5, py: 0.5, borderRadius: 2,
+          background: 'rgba(245,158,11,0.15)',
+          border: '1px solid rgba(245,158,11,0.3)',
+          display: 'flex', alignItems: 'center', gap: 1,
         }}>
-          <ScienceIcon sx={{ color: '#fff', fontSize: 18 }} />
-          <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.8rem' }}>
-            MODO DEMO ATIVO — 5 veículos fictícios simulando em tempo real
+          <ScienceIcon sx={{ color: '#f59e0b', fontSize: 14 }} />
+          <Typography sx={{ color: '#fbbf24', fontWeight: 600, fontSize: '0.7rem', flex: 1 }}>
+            Modo demo ativo
           </Typography>
           <Chip
-            label="Desativar"
+            label="Sair"
             size="small"
             onClick={() => setDemoMode?.(false)}
-            sx={{ ml: 1, bgcolor: 'rgba(255,255,255,0.25)', color: '#fff', fontWeight: 700, cursor: 'pointer', '&:hover': { bgcolor: 'rgba(255,255,255,0.4)' } }}
+            sx={{ height: 20, fontSize: '0.6rem', bgcolor: 'rgba(245,158,11,0.2)', color: '#fbbf24', fontWeight: 700, cursor: 'pointer', '&:hover': { bgcolor: 'rgba(245,158,11,0.35)' } }}
           />
         </Box>
       )}
