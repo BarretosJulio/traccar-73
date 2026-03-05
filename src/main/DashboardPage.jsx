@@ -40,7 +40,6 @@ import { useTranslation } from '../common/components/LocalizationProvider';
 import { useAdministrator } from '../common/util/permissions';
 import BottomMenu from '../common/components/BottomMenu';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
-import { deviceCategories } from '../common/util/deviceCategories';
 
 const useStyles = makeStyles()((theme) => ({
   root: {
