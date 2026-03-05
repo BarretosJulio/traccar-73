@@ -18,6 +18,7 @@ import {
   TableFooter,
   Link,
   Tooltip,
+  Box,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
@@ -41,6 +42,9 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
     pointerEvents: 'auto',
     width: theme.dimensions.popupMaxWidth,
+    borderRadius: 16,
+    boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06)',
+    overflow: 'hidden',
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -56,7 +60,7 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing(1, 1, 0, 2),
+    padding: theme.spacing(1.5, 1.5, 0, 2),
   },
   content: {
     paddingTop: theme.spacing(1),
@@ -83,6 +87,8 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   },
   actions: {
     justifyContent: 'space-between',
+    padding: theme.spacing(0.5, 1),
+    borderTop: `1px solid ${theme.palette.divider}`,
   },
   root: {
     pointerEvents: 'none',
@@ -107,7 +113,7 @@ const StatusRow = ({ name, content }) => {
   return (
     <TableRow>
       <TableCell className={classes.cell}>
-        <Typography variant="body2">{name}</Typography>
+        <Typography variant="body2" sx={{ fontWeight: 500 }}>{name}</Typography>
       </TableCell>
       <TableCell className={classes.cell}>
         <Typography variant="body2" color="textSecondary">
@@ -195,7 +201,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </CardMedia>
               ) : (
                 <div className={`${classes.header} draggable-header`}>
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                     {device.name}
                   </Typography>
                   <IconButton size="small" onClick={onClose} onTouchStart={onClose}>

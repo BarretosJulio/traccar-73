@@ -22,6 +22,7 @@ const useStyles = makeStyles()((theme, { miniVariant }) => ({
   root: {
     height: '100%',
     display: 'flex',
+    background: theme.palette.background.default,
     [theme.breakpoints.down('md')]: {
       flexDirection: 'column',
     },
@@ -65,7 +66,7 @@ const PageTitle = ({ breadcrumbs }) => {
 
   if (desktop) {
     return (
-      <Typography variant="h6" noWrap>
+      <Typography variant="h6" noWrap sx={{ fontWeight: 700 }}>
         {t(breadcrumbs[0])}
       </Typography>
     );
@@ -77,7 +78,7 @@ const PageTitle = ({ breadcrumbs }) => {
           {t(breadcrumb)}
         </Typography>
       ))}
-      <Typography variant="h6" color="textPrimary">
+      <Typography variant="h6" color="textPrimary" sx={{ fontWeight: 700 }}>
         {t(breadcrumbs[breadcrumbs.length - 1])}
       </Typography>
     </Breadcrumbs>
@@ -105,6 +106,13 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
           variant="permanent"
           className={classes.desktopDrawer}
           classes={{ paper: classes.desktopDrawer }}
+          PaperProps={{
+            sx: {
+              borderRight: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 'none',
+            },
+          }}
         >
           <Toolbar>
             {!miniVariant && (
@@ -147,7 +155,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
         </Drawer>
       )}
       {!desktop && (
-        <AppBar className={classes.mobileToolbar} position="static" color="inherit">
+        <AppBar className={classes.mobileToolbar} position="static" color="inherit" elevation={0}>
           <Toolbar>
             <IconButton
               color="inherit"

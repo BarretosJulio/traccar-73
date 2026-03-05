@@ -8,6 +8,7 @@ import {
   ListItemText,
   ListItemButton,
   Typography,
+  Box,
 } from '@mui/material';
 import BatteryFullIcon from '@mui/icons-material/BatteryFull';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
@@ -39,8 +40,8 @@ dayjs.extend(relativeTime);
 
 const useStyles = makeStyles()((theme) => ({
   icon: {
-    width: '25px',
-    height: '25px',
+    width: '22px',
+    height: '22px',
     filter: 'brightness(0) invert(1)',
   },
   batteryText: {
@@ -60,8 +61,24 @@ const useStyles = makeStyles()((theme) => ({
   neutral: {
     color: theme.palette.neutral.main,
   },
+  row: {
+    borderRadius: 14,
+    margin: '2px 6px',
+    transition: 'all 0.15s ease',
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
   selected: {
-    backgroundColor: theme.palette.action.selected,
+    backgroundColor: `${theme.palette.primary.main}12 !important`,
+    borderLeft: `3px solid ${theme.palette.primary.main}`,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    display: 'inline-block',
+    marginRight: theme.spacing(0.5),
   },
 }));
 
@@ -97,6 +114,12 @@ const DeviceRow = ({ devices, index, style }) => {
   const primaryValue = resolveFieldValue(devicePrimary);
   const secondaryValue = resolveFieldValue(deviceSecondary);
 
+  const statusColor = {
+    online: '#10b981',
+    offline: '#ef4444',
+    unknown: '#94a3b8',
+  };
+
   const secondaryText = () => {
     let status;
     if (item.status === 'online' || !item.lastUpdate) {
@@ -105,15 +128,19 @@ const DeviceRow = ({ devices, index, style }) => {
       status = dayjs(item.lastUpdate).fromNow();
     }
     return (
-      <>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
         {secondaryValue && (
           <>
             {secondaryValue}
             {' • '}
           </>
         )}
+        <Box
+          className={classes.statusDot}
+          sx={{ backgroundColor: statusColor[item.status] || statusColor.unknown }}
+        />
         <span className={classes[getStatusColor(item.status)]}>{status}</span>
-      </>
+      </Box>
     );
   };
 
@@ -124,10 +151,16 @@ const DeviceRow = ({ devices, index, style }) => {
         onClick={() => dispatch(devicesActions.selectId(item.id))}
         disabled={!admin && item.disabled}
         selected={selectedDeviceId === item.id}
-        className={selectedDeviceId === item.id ? classes.selected : null}
+        className={`${classes.row} ${selectedDeviceId === item.id ? classes.selected : ''}`}
       >
         <ListItemAvatar>
-          <Avatar>
+          <Avatar
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: '12px',
+            }}
+          >
             <img className={classes.icon} src={mapIcons[mapIconKey(item.category)]} alt="" />
           </Avatar>
         </ListItemAvatar>
@@ -139,8 +172,8 @@ const DeviceRow = ({ devices, index, style }) => {
             secondary: Typography,
           }}
           slotProps={{
-            primary: { noWrap: true },
-            secondary: { noWrap: true },
+            primary: { noWrap: true, sx: { fontWeight: 600, fontSize: '0.875rem' } },
+            secondary: { noWrap: true, component: 'div', sx: { fontSize: '0.75rem' } },
           }}
         />
         {position && (
@@ -158,9 +191,9 @@ const DeviceRow = ({ devices, index, style }) => {
               >
                 <IconButton size="small">
                   {position.attributes.ignition ? (
-                    <EngineIcon width={20} height={20} className={classes.success} />
+                    <EngineIcon width={18} height={18} className={classes.success} />
                   ) : (
-                    <EngineIcon width={20} height={20} className={classes.neutral} />
+                    <EngineIcon width={18} height={18} className={classes.neutral} />
                   )}
                 </IconButton>
               </Tooltip>
