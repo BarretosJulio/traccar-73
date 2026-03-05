@@ -291,6 +291,7 @@ const useStyles = makeStyles()((theme) => ({
     gap: theme.spacing(0.8),
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+    width: 85,
     '&:hover': {
       transform: 'translateY(-2px)',
       '& $menuIcon': {
@@ -315,6 +316,8 @@ const useStyles = makeStyles()((theme) => ({
     color: theme.palette.text.secondary,
     textAlign: 'center',
     lineHeight: 1.2,
+    width: '100%',
+    wordBreak: 'break-word',
   },
   footer: {
     '@media print': {
