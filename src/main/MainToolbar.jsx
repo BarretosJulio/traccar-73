@@ -18,6 +18,7 @@ import {
   ListItemButton,
   ListItemText,
   Tooltip,
+  Box,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { useTheme } from '@mui/material/styles';
@@ -25,6 +26,7 @@ import MapIcon from '@mui/icons-material/Map';
 import DnsIcon from '@mui/icons-material/Dns';
 import AddIcon from '@mui/icons-material/Add';
 import TuneIcon from '@mui/icons-material/Tune';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useDeviceReadonly } from '../common/util/permissions';
 import DeviceRow from './DeviceRow';
@@ -32,12 +34,13 @@ import DeviceRow from './DeviceRow';
 const useStyles = makeStyles()((theme) => ({
   toolbar: {
     display: 'flex',
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
+    padding: `${theme.spacing(1)} ${theme.spacing(1.5)} !important`,
   },
   filterPanel: {
     display: 'flex',
     flexDirection: 'column',
-    padding: theme.spacing(2),
+    padding: theme.spacing(2.5),
     gap: theme.spacing(2),
     width: theme.dimensions.drawerWidthTablet,
   },
@@ -76,7 +79,11 @@ const MainToolbar = ({
 
   return (
     <Toolbar ref={toolbarRef} className={classes.toolbar}>
-      <IconButton edge="start" onClick={() => setDevicesOpen(!devicesOpen)}>
+      <IconButton
+        edge="start"
+        onClick={() => setDevicesOpen(!devicesOpen)}
+        sx={{ borderRadius: '12px' }}
+      >
         {devicesOpen ? <MapIcon /> : <DnsIcon />}
       </IconButton>
       <OutlinedInput
@@ -86,6 +93,11 @@ const MainToolbar = ({
         onChange={(e) => setKeyword(e.target.value)}
         onFocus={() => setDevicesAnchorEl(toolbarRef.current)}
         onBlur={() => setDevicesAnchorEl(null)}
+        startAdornment={
+          <InputAdornment position="start">
+            <SearchIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+          </InputAdornment>
+        }
         endAdornment={
           <InputAdornment position="end">
             <IconButton size="small" edge="end" onClick={() => setFilterAnchorEl(inputRef.current)}>
@@ -101,6 +113,10 @@ const MainToolbar = ({
         }
         size="small"
         fullWidth
+        sx={{
+          borderRadius: '12px',
+          fontSize: '0.875rem',
+        }}
       />
       <Popover
         open={!!devicesAnchorEl && !devicesOpen}
@@ -192,13 +208,27 @@ const MainToolbar = ({
           </FormGroup>
         </div>
       </Popover>
-      <IconButton edge="end" onClick={() => navigate('/settings/device')} disabled={deviceReadonly}>
+      <IconButton
+        edge="end"
+        onClick={() => navigate('/settings/device')}
+        disabled={deviceReadonly}
+        sx={{
+          borderRadius: '12px',
+          bgcolor: 'primary.main',
+          color: 'primary.contrastText',
+          width: 36,
+          height: 36,
+          '&:hover': {
+            bgcolor: 'primary.dark',
+          },
+        }}
+      >
         <Tooltip
           open={!deviceReadonly && Object.keys(devices).length === 0}
           title={t('deviceRegisterFirst')}
           arrow
         >
-          <AddIcon />
+          <AddIcon fontSize="small" />
         </Tooltip>
       </IconButton>
     </Toolbar>

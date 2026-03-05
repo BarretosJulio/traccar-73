@@ -9,7 +9,27 @@ export default (server, darkMode, direction) =>
     () =>
       createTheme({
         typography: {
-          fontFamily: 'Roboto,Segoe UI,Helvetica Neue,Arial,sans-serif',
+          fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          h6: {
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
+          },
+          subtitle1: {
+            fontWeight: 600,
+          },
+          body1: {
+            fontSize: '0.9375rem',
+          },
+          body2: {
+            fontSize: '0.8125rem',
+          },
+          caption: {
+            fontSize: '0.75rem',
+            letterSpacing: '0.02em',
+          },
+        },
+        shape: {
+          borderRadius: 12,
         },
         palette: palette(server, darkMode),
         direction,

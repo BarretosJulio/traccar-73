@@ -18,6 +18,7 @@ import { useAttributePreference } from '../common/util/preferences';
 const useStyles = makeStyles()((theme) => ({
   root: {
     height: '100%',
+    background: theme.palette.background.default,
   },
   sidebar: {
     pointerEvents: 'none',
@@ -27,9 +28,9 @@ const useStyles = makeStyles()((theme) => ({
       position: 'fixed',
       left: 0,
       top: 0,
-      height: `calc(100% - ${theme.spacing(3)})`,
+      height: `calc(100% - ${theme.spacing(2)})`,
       width: theme.dimensions.drawerWidthDesktop,
-      margin: theme.spacing(1.5),
+      margin: theme.spacing(1),
       zIndex: 3,
     },
     [theme.breakpoints.down('md')]: {
@@ -40,10 +41,14 @@ const useStyles = makeStyles()((theme) => ({
   header: {
     pointerEvents: 'auto',
     zIndex: 6,
+    borderRadius: '16px 16px 0 0',
+    overflow: 'hidden',
   },
   footer: {
     pointerEvents: 'auto',
     zIndex: 5,
+    borderRadius: '0 0 16px 16px',
+    overflow: 'hidden',
   },
   middle: {
     flex: 1,

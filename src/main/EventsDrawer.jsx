@@ -8,6 +8,7 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  Box,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,11 +21,12 @@ const useStyles = makeStyles()((theme) => ({
     width: theme.dimensions.eventsDrawerWidth,
   },
   toolbar: {
-    paddingLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(2.5),
     paddingRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
+    fontWeight: 700,
   },
 }));
 
@@ -56,6 +58,7 @@ const EventsDrawer = ({ open, onClose }) => {
           size="small"
           color="inherit"
           onClick={() => dispatch(eventsActions.deleteAll())}
+          sx={{ borderRadius: '10px' }}
         >
           <DeleteIcon fontSize="small" />
         </IconButton>
@@ -66,10 +69,15 @@ const EventsDrawer = ({ open, onClose }) => {
             key={event.id}
             onClick={() => navigate(`/event/${event.id}`)}
             disabled={!event.id}
+            sx={{ borderRadius: '12px', mx: 1, mb: 0.5 }}
           >
             <ListItemText
               primary={`${devices[event.deviceId]?.name} • ${formatType(event)}`}
               secondary={formatTime(event.eventTime, 'seconds')}
+              slotProps={{
+                primary: { sx: { fontWeight: 600, fontSize: '0.8125rem' } },
+                secondary: { sx: { fontSize: '0.75rem' } },
+              }}
             />
             <IconButton
               size="small"
@@ -78,7 +86,7 @@ const EventsDrawer = ({ open, onClose }) => {
                 dispatch(eventsActions.delete(event));
               }}
             >
-              <DeleteIcon fontSize="small" className={classes.delete} />
+              <DeleteIcon fontSize="small" />
             </IconButton>
           </ListItemButton>
         ))}

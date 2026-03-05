@@ -12,6 +12,7 @@ import {
   Tooltip,
   Box,
   InputAdornment,
+  Typography,
 } from '@mui/material';
 import ReactCountryFlag from 'react-country-flag';
 import { makeStyles } from 'tss-react/mui';
@@ -20,6 +21,7 @@ import VpnLockIcon from '@mui/icons-material/VpnLock';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import LoginIcon from '@mui/icons-material/Login';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -50,20 +52,31 @@ const useStyles = makeStyles()((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(2),
+    gap: theme.spacing(2.5),
   },
   extraContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     gap: theme.spacing(4),
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   registerButton: {
     minWidth: 'unset',
   },
   link: {
     cursor: 'pointer',
+  },
+  title: {
+    fontWeight: 800,
+    fontSize: '1.5rem',
+    marginBottom: theme.spacing(0.5),
+    color: theme.palette.text.primary,
+  },
+  subtitle: {
+    color: theme.palette.text.secondary,
+    marginBottom: theme.spacing(2),
+    fontSize: '0.875rem',
   },
 }));
 
@@ -197,6 +210,14 @@ const LoginPage = () => {
         {useMediaQuery(theme.breakpoints.down('lg')) && (
           <LogoImage color={theme.palette.primary.main} />
         )}
+        <div>
+          <Typography className={classes.title}>
+            {t('loginLogin')}
+          </Typography>
+          <Typography className={classes.subtitle}>
+            Entre com suas credenciais para acessar
+          </Typography>
+        </div>
         {!openIdForced && (
           <>
             <TextField
@@ -251,15 +272,33 @@ const LoginPage = () => {
               onClick={handlePasswordLogin}
               type="submit"
               variant="contained"
-              color="secondary"
               disabled={!email || !password || (codeEnabled && !code)}
+              startIcon={<LoginIcon />}
+              sx={{
+                bgcolor: 'primary.main',
+                color: 'white',
+                py: 1.5,
+                fontSize: '0.9375rem',
+                fontWeight: 700,
+                '&:hover': {
+                  bgcolor: 'primary.dark',
+                },
+              }}
             >
               {t('loginLogin')}
             </Button>
           </>
         )}
         {openIdEnabled && (
-          <Button onClick={() => handleOpenIdLogin()} variant="contained" color="secondary">
+          <Button
+            onClick={() => handleOpenIdLogin()}
+            variant="contained"
+            sx={{
+              bgcolor: 'primary.main',
+              color: 'white',
+              py: 1.5,
+            }}
+          >
             {t('loginOpenId')}
           </Button>
         )}
@@ -271,6 +310,7 @@ const LoginPage = () => {
                 className={classes.link}
                 underline="none"
                 variant="caption"
+                sx={{ fontWeight: 500 }}
               >
                 {t('loginRegister')}
               </Link>
@@ -281,6 +321,7 @@ const LoginPage = () => {
                 className={classes.link}
                 underline="none"
                 variant="caption"
+                sx={{ fontWeight: 500 }}
               >
                 {t('loginReset')}
               </Link>

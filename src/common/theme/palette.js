@@ -1,27 +1,46 @@
-import { grey, green, indigo } from '@mui/material/colors';
+import { grey, teal, green } from '@mui/material/colors';
 
 const validatedColor = (color) => (/^#([0-9A-Fa-f]{3}){1,2}$/.test(color) ? color : null);
 
 export default (server, darkMode) => ({
   mode: darkMode ? 'dark' : 'light',
   background: {
-    default: darkMode ? grey[900] : grey[50],
+    default: darkMode ? '#111827' : '#f5f7fa',
+    paper: darkMode ? '#1f2937' : '#ffffff',
   },
   primary: {
     main:
-      validatedColor(server?.attributes?.colorPrimary) || (darkMode ? indigo[200] : indigo[900]),
+      validatedColor(server?.attributes?.colorPrimary) || (darkMode ? '#5eead4' : '#0f766e'),
+    light: darkMode ? '#99f6e4' : '#14b8a6',
+    dark: darkMode ? '#2dd4bf' : '#0d4f47',
+    contrastText: '#ffffff',
   },
   secondary: {
     main:
-      validatedColor(server?.attributes?.colorSecondary) || (darkMode ? green[200] : green[800]),
+      validatedColor(server?.attributes?.colorSecondary) || (darkMode ? '#a78bfa' : '#1e293b'),
+    contrastText: '#ffffff',
   },
   neutral: {
     main: grey[500],
   },
   geometry: {
-    main: '#3bb2d0',
+    main: '#14b8a6',
   },
   alwaysDark: {
     main: grey[900],
   },
+  success: {
+    main: '#10b981',
+  },
+  warning: {
+    main: '#f59e0b',
+  },
+  error: {
+    main: '#ef4444',
+  },
+  text: {
+    primary: darkMode ? '#f1f5f9' : '#1e293b',
+    secondary: darkMode ? '#94a3b8' : '#64748b',
+  },
+  divider: darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
 });
