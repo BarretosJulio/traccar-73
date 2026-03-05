@@ -14,11 +14,11 @@ const DEMO_VEHICLES = [
 
 // São Paulo region base coordinates
 const BASE_POSITIONS = [
-  { lat: -23.5505, lng: -46.6333 }, // Centro SP
-  { lat: -23.5631, lng: -46.6544 }, // Paulista
-  { lat: -23.5875, lng: -46.6580 }, // Ibirapuera
-  { lat: -23.5200, lng: -46.5900 }, // Zona Leste
-  { lat: -23.6100, lng: -46.6950 }, // Zona Sul
+  { lat: -23.5505, lng: -46.6333, address: 'Praça da Sé, Centro, São Paulo, SP' },
+  { lat: -23.5631, lng: -46.6544, address: 'Av. Paulista, 1578, Bela Vista, São Paulo, SP' },
+  { lat: -23.5875, lng: -46.6580, address: 'Parque Ibirapuera, Moema, São Paulo, SP' },
+  { lat: -23.5200, lng: -46.5900, address: 'Av. Radial Leste, Tatuapé, São Paulo, SP' },
+  { lat: -23.6100, lng: -46.6950, address: 'Av. Interlagos, 2255, Interlagos, São Paulo, SP' },
 ];
 
 const ALERT_TYPES = [
@@ -56,7 +56,7 @@ const DemoController = ({ active }) => {
       altitude: 750 + Math.random() * 50,
       speed: pos.speed / 1.852, // convert km/h to knots
       course: pos.course,
-      accuracy: 5 + Math.random() * 10,
+      address: BASE_POSITIONS[idx].address,
       attributes: {
         batteryLevel: 40 + Math.random() * 60,
         ignition: deviceId !== 99904,
