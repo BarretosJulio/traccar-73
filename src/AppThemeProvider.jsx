@@ -1,3 +1,4 @@
+import React, { createContext, useContext, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { ThemeProvider, useMediaQuery } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
@@ -6,6 +7,7 @@ import { prefixer } from 'stylis';
 import rtlPlugin from 'stylis-plugin-rtl';
 import theme from './common/theme';
 import { useLocalization } from './common/components/LocalizationProvider';
+import usePersistedState from './common/util/usePersistedState';
 
 const cache = {
   ltr: createCache({
@@ -18,19 +20,40 @@ const cache = {
   }),
 };
 
+const ThemeModeContext = createContext({
+  darkMode: true,
+  toggleDarkMode: () => {},
+});
+
+export const useThemeMode = () => useContext(ThemeModeContext);
+
 const AppThemeProvider = ({ children }) => {
   const server = useSelector((state) => state.session.server);
   const { direction } = useLocalization();
 
-  const serverDarkMode = server?.attributes?.darkMode;
   const preferDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const darkMode = serverDarkMode !== undefined ? serverDarkMode : preferDarkMode;
+  const [userDarkMode, setUserDarkMode] = usePersistedState('darkMode', null);
+
+  // Priority: user preference > server config > system preference
+  const darkMode = userDarkMode !== null
+    ? userDarkMode
+    : server?.attributes?.darkMode !== undefined
+      ? server.attributes.darkMode
+      : preferDarkMode;
+
+  const toggleDarkMode = useCallback(() => {
+    setUserDarkMode(!darkMode);
+  }, [darkMode, setUserDarkMode]);
 
   const themeInstance = theme(server, darkMode, direction);
 
+  const contextValue = useMemo(() => ({ darkMode, toggleDarkMode }), [darkMode, toggleDarkMode]);
+
   return (
     <CacheProvider value={cache[direction]}>
-      <ThemeProvider theme={themeInstance}>{children}</ThemeProvider>
+      <ThemeModeContext.Provider value={contextValue}>
+        <ThemeProvider theme={themeInstance}>{children}</ThemeProvider>
+      </ThemeModeContext.Provider>
     </CacheProvider>
   );
 };

@@ -58,6 +58,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import NightlightIcon from '@mui/icons-material/Nightlight';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useAdministrator } from '../common/util/permissions';
@@ -65,6 +67,7 @@ import BottomMenu from '../common/components/BottomMenu';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
 import { devicesActions } from '../store';
 import { useDispatch } from 'react-redux';
+import { useThemeMode } from '../AppThemeProvider';
 
 dayjs.extend(relativeTime);
 
@@ -468,6 +471,7 @@ const DashboardPage = () => {
   const t = useTranslation();
   const admin = useAdministrator();
   const { demoMode, setDemoMode } = useOutletContext() || {};
+  const { darkMode, toggleDarkMode } = useThemeMode();
 
   const user = useSelector((state) => state.session.user);
   const devices = useSelector((state) => state.devices.items);
@@ -625,7 +629,21 @@ const DashboardPage = () => {
               : 'Painel de controle de frota'}
           </Typography>
         </div>
-        <Box sx={{ display: 'flex', gap: 1, zIndex: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, zIndex: 1, alignItems: 'center' }}>
+          <Tooltip title={darkMode ? 'Modo Claro' : 'Modo Escuro'}>
+            <IconButton
+              onClick={toggleDarkMode}
+              sx={{
+                background: 'rgba(255,255,255,0.15)',
+                color: '#fff',
+                borderRadius: 3,
+                border: '1px solid rgba(255,255,255,0.25)',
+                '&:hover': { background: 'rgba(255,255,255,0.25)' },
+              }}
+            >
+              {darkMode ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
+            </IconButton>
+          </Tooltip>
           {admin && (
             <Tooltip title={demoMode ? 'Desativar Demo' : 'Ativar Demo (5 veículos fictícios)'}>
               <IconButton
