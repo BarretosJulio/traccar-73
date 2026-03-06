@@ -157,7 +157,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             <Tooltip title={t('sharedHide')}>
               <IconButton
                 size="small"
-                onClick={() => navigate('/app')}
+                onClick={() => navigate(-1)}
               >
                 <CloseIcon fontSize="small" />
               </IconButton>
