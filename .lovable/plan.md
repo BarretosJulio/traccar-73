@@ -1,33 +1,56 @@
 
 
-# Modernizar Controles do Mapa + Botão WhatsApp
+## Redesign Profissional da Tela de Login
 
-## O que será feito
+### Problemas na Screenshot
+1. **Logo muito pequena** — maxHeight de 120px, precisa ser ~200px na tela de login
+2. **Form colado na logo** — sem espaçamento vertical adequado, tudo amontoado no topo
+3. **Sidebar sem distribuição vertical** — conteúdo empilhado no topo em vez de distribuído com `justifyContent: center` ou espaçamento proporcional
+4. **Options bar (QR + idioma)** entre logo e form — cria ruído visual
+5. **Aspecto geral amador** — falta respiração, hierarquia visual e proporção
 
-1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
-2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
+### Solução
 
-## Mudanças Técnicas
+Reorganizar o sidebar com **3 zonas verticais bem distribuídas**:
 
-### 1. CSS Global dos controles do mapa (`public/styles.css`)
-- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
-- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
-- Adicionar separadores sutis entre botões
-- Manter responsivo para mobile
+```text
+┌────────────────────┐
+│                    │
+│      [LOGO]        │  ← Zona 1: Logo grande (200px) + slogan
+│   Rastreamento     │
+│    Inteligente     │
+│                    │
+│────────────────────│
+│                    │
+│    [FORM LOGIN]    │  ← Zona 2: Form centralizado verticalmente
+│    Email           │
+│    Senha           │
+│    [Entrar]        │
+│    [Demo]          │
+│    Register|Reset  │
+│                    │
+│────────────────────│
+│  QR  | Idioma      │  ← Zona 3: Options bar no rodapé
+└────────────────────┘
+```
 
-### 2. Geocoder (`src/map/geocoder/geocoder.css`)
-- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
-- Border-radius mais arredondado, sombra premium
+### Alterações por Arquivo
 
-### 3. Notificação (`src/map/notification/notification.css`)
-- Atualizar ícones SVG com cores teal para combinar com o tema
+**1. `src/login/LogoImage.jsx`**
+- Aumentar `maxHeight` de `120px` para `200px` (triplo visual)
+- Aumentar `margin` para dar mais presença
 
-### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
-- Criar controle customizado maplibre similar ao `MapNotification`
-- Ícone WhatsApp em SVG verde
-- Ao clicar, abre `https://wa.me/{numero}` em nova aba
-- Número configurável via atributos do servidor ou hardcoded
+**2. `src/login/LoginLayout.jsx`**
+- Sidebar: usar `justifyContent: 'space-between'` para distribuir logo/form/footer
+- Aumentar padding vertical (`py: 5`)
+- Logo zone: `flex: 0 0 auto`, centralizada
+- Form zone: `flex: 1`, com `display: flex, alignItems: center, justifyContent: center`
+- Mover o slogan para fonte ligeiramente maior (0.9rem)
 
-### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
-- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
+**3. `src/login/LoginPage.jsx`**
+- Mover a `options` bar (QR + idioma) para o **final** do children (rodapé do sidebar)
+- Aumentar gap do container do form para `spacing(2.5)`
+- Título "Entrar" com `fontSize: 1.6rem`
+- Subtítulo com `fontSize: 0.9rem`
+- Botão login com `py: 1.4` e `fontSize: 0.95rem`
 
