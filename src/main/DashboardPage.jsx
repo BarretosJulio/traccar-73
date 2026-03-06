@@ -958,7 +958,7 @@ const DashboardPage = () => {
                   </Typography>
                   {activeFilter !== 'all' && (
                     <Chip
-                      label="Ver todos"
+                      label={t('dashboardShowAll')}
                       size="small"
                       onClick={() => setActiveFilter('all')}
                       sx={{ fontWeight: 600, cursor: 'pointer' }}
