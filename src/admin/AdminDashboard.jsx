@@ -258,7 +258,7 @@ const AdminDashboard = () => {
                     <span>{uploadingLogo ? t('adminUploading') : `📁 ${t('adminUploadLogo')}`}</span>
                     <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingLogo} onChange={handleLogoUpload} />
                   </label>
-                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>PNG, JPG ou SVG • Máx 2MB</p>
+                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>{t('adminFileMaxSize')}</p>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div>
