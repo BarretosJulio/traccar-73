@@ -89,7 +89,7 @@ body {
 }
 
 .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
-  filter: brightness(0) invert(0.7);
+  filter: brightness(0) invert(0.85);
   transition: filter 0.25s ease;
 }
 

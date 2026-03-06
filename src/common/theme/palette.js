@@ -15,7 +15,7 @@ export default (server, darkMode, tenant) => ({
       || (darkMode ? '#5eead4' : '#0f766e'),
     light: darkMode ? '#99f6e4' : '#14b8a6',
     dark: darkMode ? '#2dd4bf' : '#0d4f47',
-    contrastText: '#ffffff',
+    contrastText: darkMode ? '#0f172a' : '#ffffff',
   },
   secondary: {
     main:

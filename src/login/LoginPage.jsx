@@ -318,7 +318,6 @@ const LoginPage = () => {
             variant="contained"
             sx={{
               bgcolor: 'primary.main',
-              color: 'white',
               py: 1.5,
             }}
           >

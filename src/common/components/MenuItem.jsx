@@ -19,7 +19,7 @@ const MenuItem = ({ title, link, icon, selected }) => (
         },
         '&.Mui-selected': {
           backgroundColor: 'primary.main',
-          color: (theme) => theme.palette.mode === 'dark' ? '#1e293b' : 'primary.contrastText',
+          color: 'primary.contrastText',
           '&:hover': {
             backgroundColor: 'primary.dark',
           },

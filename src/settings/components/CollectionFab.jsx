@@ -32,7 +32,7 @@ const CollectionFab = ({ editPath, disabled }) => {
             color="primary"
             onClick={() => navigate(editPath)}
             sx={{
-              color: (th) => th.palette.mode === 'dark' ? '#1e293b' : 'primary.contrastText',
+              color: 'primary.contrastText',
             }}
           >
             <AddIcon />

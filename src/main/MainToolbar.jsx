@@ -221,7 +221,7 @@ const MainToolbar = ({
             sx={{
               borderRadius: '12px',
               bgcolor: 'primary.main',
-              color: (th) => th.palette.mode === 'dark' ? '#1e293b' : 'primary.contrastText',
+              color: 'primary.contrastText',
               width: 36,
               height: 36,
               '&:hover': {
