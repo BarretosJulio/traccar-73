@@ -41,43 +41,55 @@ import QrCodeDialog from '../common/components/QrCodeDialog';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { apiUrl } from '../common/util/apiUrl';
 
+const lightInputSx = {
+  '& .MuiOutlinedInput-root': {
+    color: '#fff',
+    '& fieldset': {
+      borderColor: 'rgba(255,255,255,0.3)',
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(255,255,255,0.5)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'rgba(255,255,255,0.8)',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: 'rgba(255,255,255,0.6)',
+    '&.Mui-focused': {
+      color: 'rgba(255,255,255,0.9)',
+    },
+  },
+  '& .MuiFormHelperText-root': {
+    color: '#ff8a80',
+  },
+  '& .MuiIconButton-root': {
+    color: 'rgba(255,255,255,0.6)',
+  },
+};
+
 const useStyles = makeStyles()((theme) => ({
   options: {
-    position: 'fixed',
-    top: theme.spacing(2),
-    right: theme.spacing(2),
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     gap: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(2.5),
+    gap: theme.spacing(2),
   },
   extraContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     gap: theme.spacing(4),
-    marginTop: theme.spacing(1),
-  },
-  registerButton: {
-    minWidth: 'unset',
+    marginTop: theme.spacing(0.5),
   },
   link: {
     cursor: 'pointer',
-  },
-  title: {
-    fontWeight: 800,
-    fontSize: '1.5rem',
-    marginBottom: theme.spacing(0.5),
-    color: theme.palette.text.primary,
-  },
-  subtitle: {
-    color: theme.palette.text.secondary,
-    marginBottom: theme.spacing(2),
-    fontSize: '0.875rem',
   },
 }));
 
@@ -96,7 +108,6 @@ const LoginPage = () => {
   }));
 
   const [failed, setFailed] = useState(false);
-
   const [email, setEmail] = usePersistedState('loginEmail', '');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
@@ -200,7 +211,7 @@ const LoginPage = () => {
     <LoginLayout>
       <div className={classes.options}>
         {nativeEnvironment && changeEnabled && (
-          <IconButton color="primary" onClick={() => navigate('/change-server')}>
+          <IconButton sx={{ color: 'rgba(255,255,255,0.7)' }} onClick={() => navigate('/change-server')}>
             <Tooltip
               title={`${t('settingsServer')}: ${window.location.hostname}`}
               open={showServerTooltip}
@@ -211,13 +222,22 @@ const LoginPage = () => {
           </IconButton>
         )}
         {!nativeEnvironment && (
-          <IconButton color="primary" onClick={() => setShowQr(true)}>
+          <IconButton sx={{ color: 'rgba(255,255,255,0.7)' }} onClick={() => setShowQr(true)}>
             <QrCode2Icon />
           </IconButton>
         )}
         {languageEnabled && (
-          <FormControl>
-            <Select value={language} onChange={(e) => setLocalLanguage(e.target.value)}>
+          <FormControl size="small">
+            <Select
+              value={language}
+              onChange={(e) => setLocalLanguage(e.target.value)}
+              sx={{
+                color: '#fff',
+                '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.3)' },
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.5)' },
+                '.MuiSvgIcon-root': { color: 'rgba(255,255,255,0.7)' },
+              }}
+            >
               {languageList.map((it) => (
                 <MenuItem key={it.code} value={it.code}>
                   <Box component="span" sx={{ mr: 1 }}>
@@ -231,14 +251,11 @@ const LoginPage = () => {
         )}
       </div>
       <div className={classes.container}>
-        {useMediaQuery(theme.breakpoints.down('lg')) && (
-          <LogoImage color={theme.palette.primary.main} />
-        )}
         <div>
-          <Typography className={classes.title}>
+          <Typography sx={{ fontWeight: 800, fontSize: '1.4rem', color: '#fff', mb: 0.5 }}>
             {t('loginLogin')}
           </Typography>
-          <Typography className={classes.subtitle}>
+          <Typography sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', mb: 1 }}>
             Entre com suas credenciais para acessar
           </Typography>
         </div>
@@ -254,6 +271,8 @@ const LoginPage = () => {
               autoFocus={!email}
               onChange={(e) => setEmail(e.target.value)}
               helperText={failed && 'Invalid username or password'}
+              size="small"
+              sx={lightInputSx}
             />
             <TextField
               required
@@ -265,6 +284,8 @@ const LoginPage = () => {
               autoComplete="current-password"
               autoFocus={!!email}
               onChange={(e) => setPassword(e.target.value)}
+              size="small"
+              sx={lightInputSx}
               slotProps={{
                 input: {
                   endAdornment: (
@@ -273,6 +294,7 @@ const LoginPage = () => {
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                         size="small"
+                        sx={{ color: 'rgba(255,255,255,0.6)' }}
                       >
                         {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                       </IconButton>
@@ -290,6 +312,8 @@ const LoginPage = () => {
                 value={code}
                 type="number"
                 onChange={(e) => setCode(e.target.value)}
+                size="small"
+                sx={lightInputSx}
               />
             )}
             <Button
@@ -299,14 +323,19 @@ const LoginPage = () => {
               disabled={!email || !password || (codeEnabled && !code)}
               startIcon={<LoginIcon />}
               sx={{
-                bgcolor: 'primary.main',
-                color: 'primary.contrastText',
-                py: 1.5,
-                fontSize: '0.9375rem',
+                bgcolor: 'rgba(255,255,255,0.15)',
+                color: '#fff',
+                py: 1.2,
+                fontSize: '0.875rem',
                 fontWeight: 700,
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255,255,255,0.2)',
                 '&:hover': {
-                  bgcolor: 'primary.dark',
-                  color: 'primary.contrastText',
+                  bgcolor: 'rgba(255,255,255,0.25)',
+                },
+                '&.Mui-disabled': {
+                  color: 'rgba(255,255,255,0.3)',
+                  bgcolor: 'rgba(255,255,255,0.05)',
                 },
               }}
             >
@@ -319,8 +348,11 @@ const LoginPage = () => {
             onClick={() => handleOpenIdLogin()}
             variant="contained"
             sx={{
-              bgcolor: 'primary.main',
-              py: 1.5,
+              bgcolor: 'rgba(255,255,255,0.15)',
+              color: '#fff',
+              py: 1.2,
+              border: '1px solid rgba(255,255,255,0.2)',
+              '&:hover': { bgcolor: 'rgba(255,255,255,0.25)' },
             }}
           >
             {t('loginOpenId')}
@@ -330,14 +362,14 @@ const LoginPage = () => {
           onClick={handleDemoLogin}
           variant="outlined"
           sx={{
-            py: 1.2,
-            fontSize: '0.875rem',
+            py: 1,
+            fontSize: '0.8rem',
             fontWeight: 600,
-            borderColor: 'primary.main',
-            color: 'primary.main',
+            borderColor: 'rgba(255,255,255,0.3)',
+            color: 'rgba(255,255,255,0.8)',
             '&:hover': {
-              bgcolor: 'primary.main',
-              color: 'white',
+              bgcolor: 'rgba(255,255,255,0.1)',
+              borderColor: 'rgba(255,255,255,0.5)',
             },
           }}
         >
@@ -351,7 +383,7 @@ const LoginPage = () => {
                 className={classes.link}
                 underline="none"
                 variant="caption"
-                sx={{ fontWeight: 500 }}
+                sx={{ fontWeight: 500, color: 'rgba(255,255,255,0.6)', '&:hover': { color: '#fff' } }}
               >
                 {t('loginRegister')}
               </Link>
@@ -362,7 +394,7 @@ const LoginPage = () => {
                 className={classes.link}
                 underline="none"
                 variant="caption"
-                sx={{ fontWeight: 500 }}
+                sx={{ fontWeight: 500, color: 'rgba(255,255,255,0.6)', '&:hover': { color: '#fff' } }}
               >
                 {t('loginReset')}
               </Link>
