@@ -877,7 +877,7 @@ const DashboardPage = () => {
 
                       {/* Fuel */}
                       {fuel != null && (
-                        <Tooltip title={`Combustível: ${Math.round(fuel)}%`}>
+                        <Tooltip title={`${t('positionFuel')}: ${Math.round(fuel)}%`}>
                           <Box className={classes.metaItem}>
                             <LocalGasStationIcon sx={{ fontSize: 13 }} />
                             {Math.round(fuel)}%
