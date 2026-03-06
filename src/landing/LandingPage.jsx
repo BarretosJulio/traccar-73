@@ -109,7 +109,7 @@ const LandingPage = () => {
           <span style={{ fontWeight: 800, fontSize: 16, color: '#fff', whiteSpace: 'nowrap' }}>HyperTraccar</span>
         </div>
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-          <button onClick={() => navigate('/login')} style={{
+          <button onClick={() => navigate('/admin/login')} style={{
             padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(0,245,160,0.3)',
             background: 'transparent', color: '#00f5a0', cursor: 'pointer',
             fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap',
