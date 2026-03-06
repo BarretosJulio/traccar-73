@@ -315,7 +315,7 @@ const LoginPage = () => {
               <TextField
                 required
                 error={failed}
-                label={t('loginTotpCode')}
+                placeholder={t('loginTotpCode')}
                 name="code"
                 value={code}
                 type="number"
