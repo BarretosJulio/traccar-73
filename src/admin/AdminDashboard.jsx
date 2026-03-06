@@ -234,7 +234,7 @@ const AdminDashboard = () => {
                   <input value={tenant?.company_name || ''} onChange={(e) => updateField('company_name', e.target.value)} style={inputStyle} />
                 </div>
                 <div>
-                  <label style={labelStyle}>Logo da Empresa</label>
+                  <label style={labelStyle}>{t('adminCompanyLogo')}</label>
                   {tenant?.logo_url && (
                     <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
                       <img src={tenant.logo_url} alt="Logo" style={{
