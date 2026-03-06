@@ -705,6 +705,7 @@ const AdminDashboard = () => {
         {/* Stats Tab */}
         {activeTab === 'stats' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Plano Info */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
               {[
                 { label: 'Status', value: tenant?.subscription_status === 'trial' ? 'Trial' : t('adminPlanActive'), color: '#ffc800' },
@@ -720,12 +721,34 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
+
+            {/* Uso em Tempo Real */}
             <div style={{
-              padding: 32, borderRadius: 16, textAlign: 'center',
+              padding: 20, borderRadius: 16,
               background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
             }}>
-              <p style={{ color: '#64748b', fontSize: 14 }}>
-                📊 {t('adminStatsComingSoon')}
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+                📡 Uso em Tempo Real
+                {statsLoading && <span style={{ fontSize: 12, color: '#64748b' }}>(atualizando...)</span>}
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
+                {[
+                  { label: 'Instalações PWA', value: statsData.installations, color: '#a78bfa', icon: '📲' },
+                  { label: 'Sessões Ativas', value: statsData.activeSessions, color: '#10b981', icon: '🟢' },
+                  { label: 'Sessões Expiradas', value: statsData.expiredSessions, color: '#ef4444', icon: '🔴' },
+                ].map((stat) => (
+                  <div key={stat.label} style={{
+                    padding: 20, borderRadius: 12, textAlign: 'center',
+                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+                  }}>
+                    <div style={{ fontSize: 28, marginBottom: 4 }}>{stat.icon}</div>
+                    <div style={{ fontSize: 36, fontWeight: 900, color: stat.color }}>{stat.value}</div>
+                    <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 6, fontWeight: 500 }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              <p style={{ fontSize: 11, color: '#475569', marginTop: 16, textAlign: 'center' }}>
+                Atualizado automaticamente a cada 30 segundos
               </p>
             </div>
           </div>
