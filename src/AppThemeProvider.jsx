@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { ThemeProvider, useMediaQuery } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
-import { prefixer } from 'stylis';
 import rtlPlugin from 'stylis-plugin-rtl';
 import theme from './common/theme';
 import { useLocalization } from './common/components/LocalizationProvider';
@@ -13,11 +12,10 @@ import { useTenant } from './common/components/TenantProvider';
 const cache = {
   ltr: createCache({
     key: 'muiltr',
-    stylisPlugins: [prefixer],
   }),
   rtl: createCache({
     key: 'muirtl',
-    stylisPlugins: [prefixer, rtlPlugin],
+    stylisPlugins: [rtlPlugin],
   }),
 };
 
