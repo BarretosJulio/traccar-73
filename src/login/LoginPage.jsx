@@ -145,6 +145,7 @@ const LoginPage = () => {
       const response = await fetch(apiUrl('/api/session'), {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
           'x-tenant-slug': tenantSlug,
           'x-traccar-email': email,
         },

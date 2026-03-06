@@ -12,8 +12,17 @@ export default async (input, init) => {
     'x-traccar-email': getTraccarEmail(),
   };
 
+  // Add Content-Type for POST/PUT/PATCH if body is URLSearchParams
+  if (init?.body instanceof URLSearchParams && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
+
   const response = await fetch(url, { ...init, headers });
   if (!response.ok) {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      throw new Error('Resposta inesperada do servidor. Verifique a conexão.');
+    }
     throw new Error(await response.text());
   }
   return response;

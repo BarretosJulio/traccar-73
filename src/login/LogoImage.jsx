@@ -25,8 +25,8 @@ const LogoImage = ({ color }) => {
   const tenantCtx = useTenant();
   const tenantLogo = tenantCtx?.tenant?.logo_url;
 
-  const logo = useSelector((state) => state.session.server.attributes?.logo);
-  const logoInverted = useSelector((state) => state.session.server.attributes?.logoInverted);
+  const logo = useSelector((state) => state.session.server?.attributes?.logo);
+  const logoInverted = useSelector((state) => state.session.server?.attributes?.logoInverted);
 
   // Priority: tenant logo > Traccar server logo > default SVG
   const effectiveLogo = tenantLogo || logo;

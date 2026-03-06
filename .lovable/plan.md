@@ -1,50 +1,33 @@
 
 
-## Diagnóstico
+# Modernizar Controles do Mapa + Botão WhatsApp
 
-O proxy `traccar-proxy` está funcionando corretamente (testei ambos tenants e retornou 200). O erro 301 que apareceu era transitório/cache antigo.
+## O que será feito
 
-O problema real é que o **Painel Cliente (PWA)** tem dependências frágeis que quebram quando o servidor Traccar não responde ou o tenant não está configurado corretamente.
+1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
+2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
 
-### Problemas identificados:
+## Mudanças Técnicas
 
-1. **LogoImage crash**: Acessa `state.session.server.attributes?.logo` mas se o server for `null` (antes de carregar), dá erro
-2. **ServerProvider sem tratamento de tenant**: Não verifica se o tenant tem `traccar_url` válida antes de chamar o proxy
-3. **Falta de Content-Type no POST login**: O `LoginPage` manda `body: new URLSearchParams(...)` mas não define `Content-Type: application/x-www-form-urlencoded` explicitamente nos headers
-4. **App.jsx session check**: Chama `/api/session` GET sem `x-traccar-email`, causando possível falha silenciosa
-5. **Compatibilidade Traccar**: A versão 6.x mudou endpoints — precisa ter fallback
+### 1. CSS Global dos controles do mapa (`public/styles.css`)
+- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
+- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
+- Adicionar separadores sutis entre botões
+- Manter responsivo para mobile
 
-## Plano de Implementação
+### 2. Geocoder (`src/map/geocoder/geocoder.css`)
+- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
+- Border-radius mais arredondado, sombra premium
 
-### 1. Tornar LogoImage resiliente (sem server obrigatório)
+### 3. Notificação (`src/map/notification/notification.css`)
+- Atualizar ícones SVG com cores teal para combinar com o tema
 
-Adicionar optional chaining seguro para quando `state.session.server` for `null` (quando acessado fora do contexto do app, ou antes do carregamento).
+### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
+- Criar controle customizado maplibre similar ao `MapNotification`
+- Ícone WhatsApp em SVG verde
+- Ao clicar, abre `https://wa.me/{numero}` em nova aba
+- Número configurável via atributos do servidor ou hardcoded
 
-### 2. Corrigir ServerProvider para validar tenant
-
-Antes de chamar o proxy, verificar se o tenant tem `traccar_url` válida (não é `https://pending-setup.example.com`). Se não tiver, redirecionar para uma mensagem de "empresa ainda não configurada".
-
-### 3. Corrigir headers do LoginPage
-
-Garantir que o POST de login envia `Content-Type: application/x-www-form-urlencoded` explicitamente, pois o proxy repassa headers.
-
-### 4. Tornar App.jsx mais robusto
-
-Adicionar `x-traccar-email` do localStorage na chamada GET `/api/session` para recuperar sessão existente.
-
-### 5. Garantir compatibilidade com qualquer versão Traccar
-
-O proxy já segue redirects. Adicionar tratamento para respostas inesperadas (HTML em vez de JSON, por exemplo) que podem ocorrer em versões diferentes do Traccar.
-
-### Arquivos a modificar:
-
-| Arquivo | Mudança |
-|---|---|
-| `src/login/LogoImage.jsx` | Optional chaining seguro para `server` nulo |
-| `src/ServerProvider.jsx` | Validar tenant.traccar_url antes de fetch |
-| `src/login/LoginPage.jsx` | Adicionar Content-Type header explícito |
-| `src/App.jsx` | Adicionar x-traccar-email no session check |
-| `src/common/util/fetchOrThrow.js` | Adicionar Content-Type default e tratamento de resposta HTML |
-
-Nenhuma alteração no Painel Admin ou Painel Empresa.
+### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
+- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
 

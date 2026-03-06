@@ -24,10 +24,33 @@ const ServerProvider = ({ children }) => {
     if (!error && !isPublicRoute) {
       try {
         const tenantSlug = localStorage.getItem('tenantSlug') || 'mabtracker';
+
+        // Validate tenant has a real traccar_url before calling proxy
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://foifugnuaehjtjftpkrk.supabase.co';
+        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvaWZ1Z251YWVoanRqZnRwa3JrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDc5MjIsImV4cCI6MjA4ODM4MzkyMn0.4nYVYZu8FCN4-aJ1NxytL-jFRN07VHDZzFYT0dmEDDo';
+        const tenantRes = await fetch(
+          `${supabaseUrl}/rest/v1/tenants?slug=eq.${encodeURIComponent(tenantSlug)}&select=traccar_url&limit=1`,
+          { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } },
+        );
+        if (tenantRes.ok) {
+          const tenants = await tenantRes.json();
+          const traccarUrl = tenants?.[0]?.traccar_url;
+          if (!traccarUrl || traccarUrl.includes('pending-setup') || traccarUrl.includes('example.com')) {
+            throw Error('Empresa ainda não configurou o servidor de rastreamento. Entre em contato com o administrador.');
+          }
+        }
+
         const response = await fetch(apiUrl('/api/server'), {
-          headers: { 'x-tenant-slug': tenantSlug },
+          headers: {
+            'x-tenant-slug': tenantSlug,
+            'x-traccar-email': localStorage.getItem('traccarEmail') || '',
+          },
         });
         if (response.ok) {
+          const contentType = response.headers.get('content-type') || '';
+          if (!contentType.includes('application/json')) {
+            throw Error('Resposta inesperada do servidor Traccar. Verifique a configuração.');
+          }
           dispatch(sessionActions.updateServer(await response.json()));
         } else {
           const message = await response.text();
