@@ -125,7 +125,7 @@ const BottomMenu = () => {
 
   const handleAccount = () => {
     setAnchorEl(null);
-    navigate(`/settings/user/${user.id}`);
+    navigate(`/app/settings/user/${user.id}`);
   };
 
   const handleLogout = async () => {
