@@ -733,7 +733,7 @@ const DashboardPage = () => {
             </Box>
             <Box className={classes.filterChips}>
               {['all', 'online', 'offline', 'moving', 'blocked'].map((key) => {
-                const labels = { all: 'Todos', online: 'Online', offline: 'Offline', moving: 'Movendo', blocked: 'Bloqueados' };
+                const labels = { all: t('sharedAll'), online: 'Online', offline: 'Offline', moving: t('statusMoving'), blocked: t('statusBlocked') };
                 const colors = { all: '#6366f1', online: '#10b981', offline: '#ef4444', moving: '#3b82f6', blocked: '#f59e0b' };
                 return (
                   <Chip
