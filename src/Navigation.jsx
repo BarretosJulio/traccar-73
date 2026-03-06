@@ -1,6 +1,8 @@
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 import LandingPage from './landing/LandingPage';
 import OnboardingPage from './landing/OnboardingPage';
+import AdminLoginPage from './admin/AdminLoginPage';
+import AdminDashboard from './admin/AdminDashboard';
 import { useDispatch } from 'react-redux';
 import DashboardPage from './main/DashboardPage';
 import MapPage from './main/MapPage';
@@ -118,6 +120,8 @@ const Navigation = () => {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />

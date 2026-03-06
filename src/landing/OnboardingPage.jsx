@@ -13,6 +13,7 @@ const OnboardingPage = () => {
     company_name: '',
     traccar_url: '',
     owner_email: '',
+    password: '',
     color_primary: '#00f5a0',
     color_secondary: '#ffffff',
   });
@@ -23,7 +24,7 @@ const OnboardingPage = () => {
   };
 
   const canAdvance = () => {
-    if (step === 1) return form.company_name.trim().length >= 3 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.owner_email);
+    if (step === 1) return form.company_name.trim().length >= 3 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.owner_email) && form.password.length >= 6;
     if (step === 2) {
       try { new URL(form.traccar_url); return true; } catch { return false; }
     }
@@ -185,6 +186,16 @@ const OnboardingPage = () => {
                   style={inputStyle}
                 />
               </div>
+              <div>
+                <label style={labelStyle}>Senha * <span style={{ color: '#475569', fontWeight: 400 }}>(mín. 6 caracteres)</span></label>
+                <input
+                  type="password"
+                  placeholder="••••••"
+                  value={form.password}
+                  onChange={(e) => updateField('password', e.target.value)}
+                  style={inputStyle}
+                />
+              </div>
               <button onClick={() => setStep(2)} style={btnPrimary}>
                 Continuar
               </button>
@@ -286,10 +297,10 @@ const OnboardingPage = () => {
                 <p style={{ fontSize: 18, fontWeight: 700, color: '#00f5a0', margin: 0 }}>{success.slug}</p>
               </div>
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/admin/login')}
                 style={{ ...btnPrimary, opacity: 1, pointerEvents: 'auto' }}
               >
-                Ir para o Login
+                Entrar no Painel
               </button>
               <button onClick={() => navigate('/')} style={btnSecondary}>
                 Voltar ao Início
@@ -302,7 +313,7 @@ const OnboardingPage = () => {
           <p style={{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 20 }}>
             Já tem uma conta?{' '}
             <span
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/admin/login')}
               style={{ color: '#00f5a0', cursor: 'pointer', fontWeight: 600 }}
             >
               Entrar
