@@ -303,24 +303,6 @@ const AdminDashboard = () => {
                       </label>
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>{t('adminFileMaxSize')}</p>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                      <div>
-                        <label style={labelStyle}>{t('adminPrimaryColor')}</label>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <input type="color" value={tenant?.color_primary || '#1a73e8'} onChange={(e) => updateField('color_primary', e.target.value)}
-                            style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
-                          <input value={tenant?.color_primary || ''} onChange={(e) => updateField('color_primary', e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                        </div>
-                      </div>
-                      <div>
-                        <label style={labelStyle}>{t('adminSecondaryColor')}</label>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <input type="color" value={tenant?.color_secondary || '#ffffff'} onChange={(e) => updateField('color_secondary', e.target.value)}
-                            style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
-                          <input value={tenant?.color_secondary || ''} onChange={(e) => updateField('color_secondary', e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
