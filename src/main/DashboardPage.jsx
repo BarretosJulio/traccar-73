@@ -991,7 +991,7 @@ const DashboardPage = () => {
 
         {/* Quick Actions Menu */}
         <div>
-          <Typography className={classes.sectionTitle} sx={{ mb: 1.5 }}>Acesso Rápido</Typography>
+          <Typography className={classes.sectionTitle} sx={{ mb: 1.5 }}>{t('dashboardQuickAccess')}</Typography>
           <div className={classes.menuGrid}>
             {menuItems.map((item) => (
               <div

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
+import { useTranslation } from '../common/components/LocalizationProvider';
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
+  const t = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ const AdminLoginPage = () => {
       navigate('/admin');
     } catch (err) {
       setError(err.message === 'Invalid login credentials'
-        ? 'Email ou senha inválidos'
+        ? t('loginInvalidCredentials')
         : err.message || 'Erro ao fazer login');
     } finally {
       setLoading(false);
@@ -48,9 +50,9 @@ const AdminLoginPage = () => {
             fontWeight: 900, fontSize: 22, color: '#0a0a0f',
           }}>H</div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>
-            Painel da Empresa
+            {t('loginCompanyPanel')}
           </h1>
-          <p style={{ color: '#64748b', fontSize: 14 }}>Entre com suas credenciais</p>
+          <p style={{ color: '#64748b', fontSize: 14 }}>{t('loginEnterCredentials')}</p>
         </div>
 
         <form onSubmit={handleLogin} style={{
@@ -69,7 +71,7 @@ const AdminLoginPage = () => {
           </div>
           <div>
             <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#94a3b8', marginBottom: 6 }}>
-              Senha
+              {t('loginPassword')}
             </label>
             <input
               type="password" value={password} onChange={(e) => setPassword(e.target.value)}
@@ -85,20 +87,20 @@ const AdminLoginPage = () => {
             background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
             opacity: loading || !email || !password ? 0.5 : 1,
           }}>
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? t('loginEntering') : t('loginEnter')}
           </button>
         </form>
 
         <div style={{ textAlign: 'center', marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <p style={{ color: '#475569', fontSize: 13, margin: 0 }}>
-            Não tem conta?{' '}
+            {t('loginNoAccount')}{' '}
             <span onClick={() => navigate('/onboarding')} style={{ color: '#00f5a0', cursor: 'pointer', fontWeight: 600 }}>
-              Criar empresa
+              {t('loginCreateCompany')}
             </span>
           </p>
           <p style={{ color: '#475569', fontSize: 13, margin: 0 }}>
             <span onClick={() => navigate('/')} style={{ color: '#64748b', cursor: 'pointer' }}>
-              ← Voltar ao início
+              ← {t('loginGoBack')}
             </span>
           </p>
         </div>
