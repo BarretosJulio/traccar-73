@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import {
   AppBar,
+  Box,
   Breadcrumbs,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -17,7 +19,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from './LocalizationProvider';
-import BackIcon from './BackIcon';
 
 const useStyles = makeStyles()((theme, { miniVariant }) => ({
   root: {
@@ -115,22 +116,14 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
               borderRight: '1px solid',
               borderColor: 'divider',
               boxShadow: 'none',
+              display: 'flex',
+              flexDirection: 'column',
             },
           }}
         >
           <Toolbar>
             {!miniVariant && (
-              <>
-                <IconButton
-                  color="inherit"
-                  edge="start"
-                  sx={{ mr: 2 }}
-                  onClick={() => navigate('/app')}
-                >
-                  <BackIcon />
-                </IconButton>
-                <PageTitle breadcrumbs={breadcrumbs} />
-              </>
+              <PageTitle breadcrumbs={breadcrumbs} />
             )}
             <IconButton
               color="inherit"
@@ -146,7 +139,24 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             </IconButton>
           </Toolbar>
           <Divider />
-          {menu}
+          <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
+            {menu}
+          </Box>
+          <Divider />
+          <Button
+            startIcon={!miniVariant ? <ArrowBackIcon /> : undefined}
+            onClick={() => navigate('/app')}
+            sx={{
+              justifyContent: miniVariant ? 'center' : 'flex-start',
+              py: 1.5,
+              px: 2,
+              textTransform: 'none',
+              color: 'text.secondary',
+              '&:hover': { bgcolor: 'action.hover' },
+            }}
+          >
+            {miniVariant ? <ArrowBackIcon /> : 'Voltar ao Painel'}
+          </Button>
         </Drawer>
       ) : (
         <Drawer
