@@ -43,28 +43,32 @@ import { apiUrl } from '../common/util/apiUrl';
 
 const lightInputSx = {
   '& .MuiOutlinedInput-root': {
-    color: '#fff',
+    color: '#1e293b',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
     '& fieldset': {
-      borderColor: 'rgba(255,255,255,0.3)',
+      borderColor: 'transparent',
     },
     '&:hover fieldset': {
-      borderColor: 'rgba(255,255,255,0.5)',
+      borderColor: 'rgba(0,0,0,0.1)',
     },
     '&.Mui-focused fieldset': {
-      borderColor: 'rgba(255,255,255,0.8)',
+      borderColor: 'rgba(0,0,0,0.2)',
+      borderWidth: '1.5px',
+    },
+    '& input::placeholder': {
+      color: '#94a3b8',
+      opacity: 1,
     },
   },
   '& .MuiInputLabel-root': {
-    color: 'rgba(255,255,255,0.6)',
-    '&.Mui-focused': {
-      color: 'rgba(255,255,255,0.9)',
-    },
+    display: 'none',
   },
   '& .MuiFormHelperText-root': {
     color: '#ff8a80',
   },
   '& .MuiIconButton-root': {
-    color: 'rgba(255,255,255,0.6)',
+    color: '#64748b',
   },
 };
 
@@ -233,9 +237,13 @@ const LoginPage = () => {
               onChange={(e) => setLocalLanguage(e.target.value)}
               sx={{
                 color: '#fff',
-                '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.3)' },
+                bgcolor: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(8px)',
+                borderRadius: '10px',
+                fontWeight: 600,
+                '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.25)' },
                 '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.5)' },
-                '.MuiSvgIcon-root': { color: 'rgba(255,255,255,0.7)' },
+                '.MuiSvgIcon-root': { color: '#fff' },
               }}
             >
               {languageList.map((it) => (
@@ -264,20 +272,20 @@ const LoginPage = () => {
             <TextField
               required
               error={failed}
-              label={t('userEmail')}
+              placeholder={t('userEmail')}
               name="email"
               value={email}
               autoComplete="email"
               autoFocus={!email}
               onChange={(e) => setEmail(e.target.value)}
-              helperText={failed && 'Invalid username or password'}
+              helperText={failed && 'Usuário ou senha inválidos'}
               size="small"
               sx={lightInputSx}
             />
             <TextField
               required
               error={failed}
-              label={t('userPassword')}
+              placeholder={t('userPassword')}
               name="password"
               value={password}
               type={showPassword ? 'text' : 'password'}
@@ -307,7 +315,7 @@ const LoginPage = () => {
               <TextField
                 required
                 error={failed}
-                label={t('loginTotpCode')}
+                placeholder={t('loginTotpCode')}
                 name="code"
                 value={code}
                 type="number"
@@ -323,19 +331,18 @@ const LoginPage = () => {
               disabled={!email || !password || (codeEnabled && !code)}
               startIcon={<LoginIcon />}
               sx={{
-                bgcolor: 'rgba(255,255,255,0.15)',
-                color: '#fff',
+                bgcolor: '#fff',
+                color: '#1e293b',
                 py: 1.2,
                 fontSize: '0.875rem',
                 fontWeight: 700,
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255,255,255,0.2)',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
                 '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.25)',
+                  bgcolor: '#f1f5f9',
                 },
                 '&.Mui-disabled': {
-                  color: 'rgba(255,255,255,0.3)',
-                  bgcolor: 'rgba(255,255,255,0.05)',
+                  color: '#94a3b8',
+                  bgcolor: 'rgba(255,255,255,0.5)',
                 },
               }}
             >
