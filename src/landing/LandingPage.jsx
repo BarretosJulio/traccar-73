@@ -1,46 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const plans = [
-  {
-    name: 'Starter',
-    monthlyPrice: '24,90',
-    yearlyPrice: '21,90',
-    features: [
-      'App PWA com sua marca',
-      'Rastreamento em tempo real',
-      'Histórico de rotas (30 dias)',
-      'Alertas de velocidade e cercas',
-      'Suporte por e-mail',
-    ],
-  },
-  {
-    name: 'Professional',
-    monthlyPrice: '49,90',
-    yearlyPrice: '43,90',
-    popular: true,
-    features: [
-      'Tudo do Starter +',
-      'Histórico ilimitado',
-      'Relatórios avançados (Excel/PDF)',
-      'Botão WhatsApp personalizado',
-      'Domínio próprio',
-      'Suporte prioritário',
-    ],
-  },
-  {
-    name: 'Enterprise',
-    monthlyPrice: '99,90',
-    yearlyPrice: '87,90',
-    features: [
-      'Tudo do Professional +',
-      'Multi-operador',
-      'Notificações push nativas',
-      'SLA garantido 99.9%',
-      'Gerente de conta dedicado',
-      'Personalização sob medida',
-    ],
-  },
+const allFeatures = [
+  'App PWA 100% com sua marca',
+  'Rastreamento em tempo real',
+  'Histórico de rotas ilimitado',
+  'Relatórios avançados (Excel/PDF)',
+  'Alertas de velocidade e cercas virtuais',
+  'Botão WhatsApp personalizado',
+  'Domínio próprio',
+  'Multi-operador',
+  'Notificações push',
+  'Suporte prioritário',
 ];
 
 const features = [
@@ -95,7 +66,7 @@ const faqs = [
   },
   {
     q: 'Posso usar meu domínio próprio?',
-    a: 'Sim! No plano Professional e Enterprise seu app fica acessível no seu domínio (ex: app.suaempresa.com.br).',
+    a: 'Sim! Seu app fica acessível no seu domínio (ex: app.suaempresa.com.br).',
   },
   {
     q: 'Posso cancelar a qualquer momento?',
@@ -107,6 +78,9 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const [annual, setAnnual] = useState(true);
   const [openFaq, setOpenFaq] = useState(null);
+
+  const monthlyPrice = '24,90';
+  const yearlyPrice = '21,90';
 
   return (
     <div style={{
@@ -358,16 +332,16 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Pricing - Single Plan */}
       <section id="pricing" style={{
-        padding: '100px 24px', maxWidth: 1200, margin: '0 auto',
+        padding: '100px 24px', maxWidth: 600, margin: '0 auto',
       }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: '#fff', marginBottom: 16 }}>
-            Planos e Preços
+            Preço Simples
           </h2>
           <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 32 }}>
-            Comece grátis por 7 dias. Sem cartão de crédito.
+            Tudo incluso. Sem limites. Comece grátis por 7 dias.
           </p>
           <div style={{
             display: 'inline-flex', borderRadius: 12, padding: 4,
@@ -389,58 +363,44 @@ const LandingPage = () => {
             </button>
           </div>
         </div>
+
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24,
-          alignItems: 'stretch',
+          padding: 40, borderRadius: 20,
+          background: 'linear-gradient(180deg, rgba(0,245,160,0.06) 0%, rgba(10,10,15,1) 40%)',
+          border: '1px solid rgba(0,245,160,0.3)',
+          textAlign: 'center',
         }}>
-          {plans.map((plan) => (
-            <div key={plan.name} style={{
-              padding: 32, borderRadius: 20, position: 'relative',
-              background: plan.popular
-                ? 'linear-gradient(180deg, rgba(0,245,160,0.06) 0%, rgba(10,10,15,1) 40%)'
-                : 'rgba(255,255,255,0.02)',
-              border: plan.popular
-                ? '1px solid rgba(0,245,160,0.3)'
-                : '1px solid rgba(255,255,255,0.06)',
-              display: 'flex', flexDirection: 'column',
-            }}>
-              {plan.popular && (
-                <div style={{
-                  position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)',
-                  padding: '4px 16px', borderRadius: 20, fontSize: 12, fontWeight: 700,
-                  background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
-                  color: '#0a0a0f', letterSpacing: 0.5,
-                }}>MAIS POPULAR</div>
-              )}
-              <h3 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{plan.name}</h3>
-              <div style={{ marginBottom: 24 }}>
-                <span style={{ fontSize: 48, fontWeight: 900, color: '#fff' }}>
-                  R${annual ? plan.yearlyPrice : plan.monthlyPrice}
-                </span>
-                <span style={{ color: '#64748b', fontSize: 15 }}>/mês</span>
-              </div>
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', flex: 1 }}>
-                {plan.features.map((f) => (
-                  <li key={f} style={{
-                    padding: '8px 0', fontSize: 14, color: '#cbd5e1',
-                    display: 'flex', alignItems: 'center', gap: 10,
-                  }}>
-                    <span style={{ color: '#00f5a0', fontSize: 16 }}>✓</span> {f}
-                  </li>
-                ))}
-              </ul>
-              <button style={{
-                width: '100%', padding: '14px 0', borderRadius: 12, border: 'none',
-                cursor: 'pointer', fontWeight: 700, fontSize: 15,
-                background: plan.popular
-                  ? 'linear-gradient(135deg, #00f5a0, #00d9f5)'
-                  : 'rgba(255,255,255,0.06)',
-                color: plan.popular ? '#0a0a0f' : '#e2e8f0',
+          <div style={{ marginBottom: 8 }}>
+            <span style={{ fontSize: 56, fontWeight: 900, color: '#fff' }}>
+              R${annual ? yearlyPrice : monthlyPrice}
+            </span>
+            <span style={{ color: '#64748b', fontSize: 16 }}>/mês</span>
+          </div>
+          {annual && (
+            <p style={{ color: '#00f5a0', fontSize: 13, marginBottom: 24 }}>
+              Economia de 12% no plano anual
+            </p>
+          )}
+          {!annual && <div style={{ marginBottom: 24 }} />}
+          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', textAlign: 'left' }}>
+            {allFeatures.map((f) => (
+              <li key={f} style={{
+                padding: '10px 0', fontSize: 15, color: '#cbd5e1',
+                display: 'flex', alignItems: 'center', gap: 10,
               }}>
-                Começar Teste Grátis
-              </button>
-            </div>
-          ))}
+                <span style={{ color: '#00f5a0', fontSize: 16 }}>✓</span> {f}
+              </li>
+            ))}
+          </ul>
+          <button style={{
+            width: '100%', padding: '16px 0', borderRadius: 12, border: 'none',
+            cursor: 'pointer', fontWeight: 700, fontSize: 16,
+            background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
+            color: '#0a0a0f',
+            boxShadow: '0 0 40px rgba(0,245,160,0.15)',
+          }}>
+            Começar Teste Grátis — 7 Dias
+          </button>
         </div>
       </section>
 
