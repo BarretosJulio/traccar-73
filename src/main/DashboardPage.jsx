@@ -954,7 +954,7 @@ const DashboardPage = () => {
                 <Box className={classes.emptyState}>
                   <SignalCellularAltIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
                   <Typography color="textSecondary" sx={{ fontWeight: 600 }}>
-                    Nenhum veículo {activeFilter !== 'all' ? 'nesta categoria' : 'encontrado'}
+                    {t('dashboardNoVehicles')} {activeFilter !== 'all' ? t('dashboardNoCategory') : t('dashboardNoFound')}
                   </Typography>
                   {activeFilter !== 'all' && (
                     <Chip
