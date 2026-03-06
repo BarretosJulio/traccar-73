@@ -479,7 +479,7 @@ const AdminDashboard = () => {
                 fontWeight: 700, fontSize: 15, fontFamily: 'inherit',
                 background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
               }}>
-                {tenant?.subscription_status === 'trial' ? 'Assinar Agora' : 'Gerenciar Plano'}
+                {tenant?.subscription_status === 'trial' ? t('adminSubscribeNow') : t('adminManagePlan')}
               </button>
             </div>
 
