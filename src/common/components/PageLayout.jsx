@@ -33,9 +33,8 @@ const useStyles = makeStyles()((theme) => ({
     padding: theme.spacing(3),
   },
   floatingCard: {
-    width: '100%',
-    maxWidth: 960,
-    maxHeight: '88vh',
+    width: 960,
+    height: '80vh',
     borderRadius: 20,
     overflow: 'hidden',
     display: 'flex',
@@ -57,7 +56,8 @@ const useStyles = makeStyles()((theme) => ({
     minHeight: 0,
   },
   floatingSidebar: {
-    width: 250,
+    width: 220,
+    minWidth: 220,
     borderRight: `1px solid ${theme.palette.divider}`,
     overflowY: 'auto',
     flexShrink: 0,
@@ -65,6 +65,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   floatingContent: {
     flexGrow: 1,
+    minWidth: 0,
     overflowY: 'auto',
     padding: theme.spacing(1),
   },

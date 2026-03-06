@@ -15,6 +15,7 @@ import TermsDialog from './common/components/TermsDialog';
 import Loader from './common/components/Loader';
 import fetchOrThrow from './common/util/fetchOrThrow';
 import { apiUrl } from './common/util/apiUrl';
+import MainMap from './main/MainMap';
 
 const useStyles = makeStyles()(() => ({
   page: {
