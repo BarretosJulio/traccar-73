@@ -301,7 +301,7 @@ const AdminDashboard = () => {
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>{t('adminTechnicalConfig')}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
-                  <label style={labelStyle}>URL do Servidor Traccar</label>
+                  <label style={labelStyle}>{t('adminTraccarUrl')}</label>
                   <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
                   <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
                     URL do seu servidor Traccar (ex: https://demo.traccar.org)
