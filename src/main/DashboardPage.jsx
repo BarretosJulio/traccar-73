@@ -821,7 +821,7 @@ const DashboardPage = () => {
                     <Box className={classes.vehicleMeta}>
                       {/* Ignition */}
                       {ignition !== undefined && (
-                        <Tooltip title={ignition ? 'Ignição Ligada' : 'Ignição Desligada'}>
+                        <Tooltip title={ignition ? t('statusIgnitionOn') : t('statusIgnitionOff')}>
                           <Box className={classes.metaItem}>
                             {ignition
                               ? <PowerIcon sx={{ fontSize: 14, color: '#10b981' }} />
