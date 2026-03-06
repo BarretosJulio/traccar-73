@@ -4,6 +4,7 @@ import { supabase } from '../integrations/supabase/client';
 import { useTranslation } from '../common/components/LocalizationProvider';
 
 const AdminDashboard = () => {
+  const t = useTranslation();
   const navigate = useNavigate();
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
