@@ -843,13 +843,13 @@ const DashboardPage = () => {
 
                       {/* Motion */}
                       {isMoving ? (
-                        <Tooltip title="Em movimento">
+                        <Tooltip title={t('statusMoving')}>
                           <Box className={classes.metaItem}>
                             <DirectionsRunIcon sx={{ fontSize: 14, color: '#3b82f6' }} />
                           </Box>
                         </Tooltip>
                       ) : (
-                        <Tooltip title="Parado">
+                        <Tooltip title={t('statusStopped')}>
                           <Box className={classes.metaItem}>
                             <NightlightIcon sx={{ fontSize: 14, color: '#94a3b8' }} />
                           </Box>
