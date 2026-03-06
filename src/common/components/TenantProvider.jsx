@@ -1,21 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '../../integrations/supabase/client';
+import { EDGE_FUNCTION_BASE } from '../util/apiUrl';
 
 const TenantContext = createContext(null);
 
 export const useTenant = () => useContext(TenantContext);
 
 const detectTenantSlug = () => {
-  // 1. Check URL query param ?tenant=slug
   const params = new URLSearchParams(window.location.search);
   const queryTenant = params.get('tenant');
   if (queryTenant) return queryTenant;
 
-  // 2. Check localStorage (persisted from previous visit)
   const stored = localStorage.getItem('tenantSlug');
   if (stored) return stored;
 
-  // 3. Default tenant for development
   return 'mabtracker';
 };
 
@@ -27,18 +24,27 @@ export const TenantProvider = ({ children }) => {
   useEffect(() => {
     const fetchTenant = async () => {
       try {
-        const { data, error } = await supabase
-          .from('tenants')
-          .select('*')
-          .eq('slug', tenantSlug)
-          .single();
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://foifugnuaehjtjftpkrk.supabase.co';
+        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvaWZ1Z251YWVoanRqZnRwa3JrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDc5MjIsImV4cCI6MjA4ODM4MzkyMn0.4nYVYZu8FCN4-aJ1NxytL-jFRN07VHDZzFYT0dmEDDo';
+        
+        const response = await fetch(
+          `${supabaseUrl}/rest/v1/tenants?slug=eq.${encodeURIComponent(tenantSlug)}&select=*&limit=1`,
+          {
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`,
+            },
+          }
+        );
 
-        if (error || !data) {
-          console.error('Tenant not found:', tenantSlug, error);
-          setTenant(null);
-        } else {
-          setTenant(data);
-          localStorage.setItem('tenantSlug', data.slug);
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setTenant(data[0]);
+            localStorage.setItem('tenantSlug', data[0].slug);
+          } else {
+            console.error('Tenant not found:', tenantSlug);
+          }
         }
       } catch (err) {
         console.error('Error fetching tenant:', err);
@@ -50,12 +56,7 @@ export const TenantProvider = ({ children }) => {
     fetchTenant();
   }, [tenantSlug]);
 
-  const value = {
-    tenant,
-    tenantSlug,
-    setTenantSlug,
-    loading,
-  };
+  const value = { tenant, tenantSlug, setTenantSlug, loading };
 
   return (
     <TenantContext.Provider value={value}>
