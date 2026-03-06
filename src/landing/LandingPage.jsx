@@ -392,7 +392,7 @@ const LandingPage = () => {
               </li>
             ))}
           </ul>
-          <button style={{
+          <button onClick={() => navigate('/onboarding')} style={{
             width: '100%', padding: '16px 0', borderRadius: 12, border: 'none',
             cursor: 'pointer', fontWeight: 700, fontSize: 16,
             background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
