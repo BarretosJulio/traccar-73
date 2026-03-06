@@ -201,7 +201,7 @@ Deno.serve(async (req: Request) => {
     const fetchOptions: RequestInit = {
       method: req.method,
       headers: traccarHeaders,
-      redirect: "manual",
+      redirect: "follow",
     };
 
     if (req.method !== "GET" && req.method !== "HEAD") {
