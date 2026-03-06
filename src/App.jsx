@@ -38,6 +38,7 @@ const App = () => {
   const { pathname, search } = useLocation();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
+  const isSettingsRoute = pathname.startsWith('/app/settings') || pathname.startsWith('/app/geofences');
   const [demoMode, setDemoMode] = useState(() => {
     const saved = window.sessionStorage.getItem('demoMode');
     if (saved === 'true') {
