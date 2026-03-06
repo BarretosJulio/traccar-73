@@ -1,33 +1,57 @@
 
 
-# Modernizar Controles do Mapa + Botão WhatsApp
+## Problema
 
-## O que será feito
+No modo demo, `SocketController` e `CachingController` continuam fazendo chamadas reais à API Traccar (`/api/devices`, `/api/positions`, `/api/geofences`, etc.). Como não existe sessão real no Traccar, todas retornam **401 Unauthorized** — o erro que aparece na tela.
 
-1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
-2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
+## Solução
 
-## Mudanças Técnicas
+Passar `demoMode` como contexto do Outlet (já é feito em `App.jsx`) e usá-lo nos controllers para **pular todas as chamadas API reais** quando o demo está ativo.
 
-### 1. CSS Global dos controles do mapa (`public/styles.css`)
-- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
-- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
-- Adicionar separadores sutis entre botões
-- Manter responsivo para mobile
+### Arquivos a Modificar
 
-### 2. Geocoder (`src/map/geocoder/geocoder.css`)
-- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
-- Border-radius mais arredondado, sombra premium
+**1. `src/SocketController.jsx`**
+- Receber `demoMode` via props ou contexto
+- Quando `demoMode === true`, não fazer polling nem fetch de devices/positions
+- Os dados demo já são injetados pelo `DemoController`
 
-### 3. Notificação (`src/map/notification/notification.css`)
-- Atualizar ícones SVG com cores teal para combinar com o tema
+**2. `src/CachingController.js`**
+- Receber `demoMode` via props ou contexto
+- Quando `demoMode === true`, pular fetch de geofences, groups, drivers, maintenances, calendars
 
-### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
-- Criar controle customizado maplibre similar ao `MapNotification`
-- Ícone WhatsApp em SVG verde
-- Ao clicar, abre `https://wa.me/{numero}` em nova aba
-- Número configurável via atributos do servidor ou hardcoded
+**3. `src/App.jsx`**
+- Passar `demoMode` como prop para `SocketController` e `CachingController`
+- No `useEffectAsync` que verifica sessão (linha 64-80): se `demoMode === true`, pular o fetch de `/api/session` (o user já foi definido no Redux pelo LoginPage)
 
-### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
-- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
+### Lógica
+
+```jsx
+// App.jsx - passar demoMode aos controllers
+<SocketController demoMode={demoMode} />
+<CachingController demoMode={demoMode} />
+
+// SocketController.jsx - pular polling
+useEffect(() => {
+  if (authenticated && !demoMode) {
+    // ... polling normal
+  }
+}, [authenticated, demoMode]);
+
+// CachingController.js - pular cache
+useEffectAsync(async () => {
+  if (authenticated && !demoMode) {
+    const response = await fetchOrThrow('/api/geofences');
+    // ...
+  }
+}, [authenticated, demoMode]);
+
+// App.jsx - pular session check em demo
+useEffectAsync(async () => {
+  if (!user && !demoMode) {
+    // fetch session...
+  }
+}, [demoMode]);
+```
+
+Isso garante que no modo demo nenhuma chamada real à API é feita, eliminando os erros 401.
 
