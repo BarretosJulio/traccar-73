@@ -38,11 +38,11 @@ Deno.serve(async (req: Request) => {
     const body = await req.json();
     const { company_name, traccar_url, owner_email, password, color_primary, color_secondary } = body;
 
-    if (!company_name || !traccar_url || !owner_email || !password) {
+    if (!company_name || !owner_email || !password) {
       return new Response(
         JSON.stringify({
           success: false,
-          message: "Campos obrigatórios: company_name, traccar_url, owner_email, password",
+          message: "Campos obrigatórios: company_name, owner_email, password",
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -55,20 +55,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (password.length < 6) {
-      return new Response(
-        JSON.stringify({ success: false, message: "Senha deve ter no mínimo 6 caracteres" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const cleanUrl = traccar_url.replace(/\/$/, "");
-    try { new URL(cleanUrl); } catch {
-      return new Response(
-        JSON.stringify({ success: false, message: "URL do Traccar inválida" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const cleanUrl = traccar_url ? traccar_url.replace(/\/$/, "") : "https://pending-setup.example.com";
 
     // Check existing tenant by email
     const { data: existing } = await supabaseAdmin
