@@ -125,7 +125,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
                   color="inherit"
                   edge="start"
                   sx={{ mr: 2 }}
-                  onClick={() => navigate('/app')}}
+                  onClick={() => navigate('/app')}
                 >
                   <BackIcon />
                 </IconButton>
