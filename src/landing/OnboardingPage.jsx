@@ -13,6 +13,7 @@ const OnboardingPage = () => {
     company_name: '',
     traccar_url: '',
     owner_email: '',
+    password: '',
     color_primary: '#00f5a0',
     color_secondary: '#ffffff',
   });
