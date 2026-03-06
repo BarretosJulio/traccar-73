@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useNavigate, Link as RouterLink, useOutletContext } from 'react-router-dom';
 import { Rnd } from 'react-rnd';
 import {
   Card,
@@ -51,7 +51,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';
 import { useDeviceReadonly, useRestriction } from '../util/permissions';
-import { devicesActions } from '../../store';
+import { devicesActions, errorsActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
 import { useAttributePreference } from '../util/preferences';
 import { formatAlarm, formatBoolean } from '../util/formatter';
@@ -266,6 +266,8 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
+  const context = useOutletContext() || {};
+  const demoMode = context.demoMode || false;
 
   const readonly = useRestriction('readonly');
   const deviceReadonly = useDeviceReadonly();
@@ -286,6 +288,11 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
 
   const handleRemove = useCatch(async (removed) => {
+    if (demoMode) {
+      dispatch(errorsActions.push('Função indisponível no modo demo'));
+      setRemoving(false);
+      return;
+    }
     if (removed) {
       const response = await fetchOrThrow('/api/devices');
       dispatch(devicesActions.refresh(await response.json()));
@@ -294,6 +301,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   });
 
   const handleGeofence = useCatchCallback(async () => {
+    if (demoMode) {
+      dispatch(errorsActions.push('Função indisponível no modo demo'));
+      return;
+    }
     const newItem = {
       name: t('sharedGeofence'),
       area: `CIRCLE (${position.latitude} ${position.longitude}, 50)`,
@@ -310,7 +321,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       body: JSON.stringify({ deviceId: position.deviceId, geofenceId: item.id }),
     });
     navigate(`/app/settings/geofence/${item.id}`);
-  }, [navigate, position]);
+  }, [navigate, position, demoMode]);
 
   // Build chips
   const chips = [];
