@@ -18,6 +18,7 @@ import MapScale from '../map/MapScale';
 import MapNotification from '../map/notification/MapNotification';
 import MapWhatsApp from '../map/MapWhatsApp';
 import useFeatures from '../common/util/useFeatures';
+import { useTenant } from '../common/components/TenantProvider';
 
 const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
   const theme = useTheme();
@@ -28,6 +29,9 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
   const eventsAvailable = useSelector((state) => !!state.events.items.length);
 
   const features = useFeatures();
+
+  const tenantCtx = useTenant();
+  const whatsappNumber = tenantCtx?.tenant?.whatsapp_number;
 
   const onMarkerClick = useCallback(
     (_, deviceId) => {
@@ -58,7 +62,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
       {!features.disableEvents && (
         <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
       )}
-      <MapWhatsApp />
+      {whatsappNumber && <MapWhatsApp phoneNumber={whatsappNumber} />}
       {desktop && (
         <MapPadding
           start={

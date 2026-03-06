@@ -8,6 +8,7 @@ import rtlPlugin from 'stylis-plugin-rtl';
 import theme from './common/theme';
 import { useLocalization } from './common/components/LocalizationProvider';
 import usePersistedState from './common/util/usePersistedState';
+import { useTenant } from './common/components/TenantProvider';
 
 const cache = {
   ltr: createCache({
@@ -30,11 +31,12 @@ export const useThemeMode = () => useContext(ThemeModeContext);
 const AppThemeProvider = ({ children }) => {
   const server = useSelector((state) => state.session.server);
   const { direction } = useLocalization();
+  const tenantCtx = useTenant();
+  const tenant = tenantCtx?.tenant;
 
   const preferDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [userDarkMode, setUserDarkMode] = usePersistedState('darkMode', null);
 
-  // Priority: user preference > server config > system preference
   const darkMode = userDarkMode !== null
     ? userDarkMode
     : server?.attributes?.darkMode !== undefined
@@ -45,7 +47,7 @@ const AppThemeProvider = ({ children }) => {
     setUserDarkMode(!darkMode);
   }, [darkMode, setUserDarkMode]);
 
-  const themeInstance = theme(server, darkMode, direction);
+  const themeInstance = theme(server, darkMode, direction, tenant);
 
   const contextValue = useMemo(() => ({ darkMode, toggleDarkMode }), [darkMode, toggleDarkMode]);
 
