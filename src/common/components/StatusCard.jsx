@@ -342,28 +342,28 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const chips = [];
   if (attrs.ignition !== undefined) {
     chips.push({
-      key: 'ign', label: attrs.ignition ? 'Ligado' : 'Desligado',
+      key: 'ign', label: attrs.ignition ? t('statusIgnitionOn') : t('statusIgnitionOff'),
       icon: attrs.ignition ? <PowerIcon /> : <PowerOffIcon />,
       color: attrs.ignition ? '#10b981' : '#94a3b8',
     });
   }
   if (attrs.motion !== undefined) {
     chips.push({
-      key: 'motion', label: attrs.motion ? 'Movendo' : 'Parado',
+      key: 'motion', label: attrs.motion ? t('statusMoving') : t('statusStopped'),
       icon: attrs.motion ? <DirectionsRunIcon /> : <NightlightIcon />,
       color: attrs.motion ? '#3b82f6' : '#94a3b8',
     });
   }
   if (attrs.blocked !== undefined) {
     chips.push({
-      key: 'blocked', label: attrs.blocked ? 'Bloqueado' : 'Desbloq.',
+      key: 'blocked', label: attrs.blocked ? t('statusBlocked') : t('statusUnblocked'),
       icon: attrs.blocked ? <LockIcon /> : <LockOpenIcon />,
       color: attrs.blocked ? '#ef4444' : '#10b981',
     });
   }
   if (position?.geofenceIds?.length > 0) {
     chips.push({
-      key: 'anchor', label: 'Âncora Ativa',
+      key: 'anchor', label: t('statusAnchorActive'),
       icon: <AnchorIcon />, color: '#8b5cf6',
     });
   }
