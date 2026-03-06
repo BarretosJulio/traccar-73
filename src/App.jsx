@@ -16,6 +16,8 @@ import Loader from './common/components/Loader';
 import fetchOrThrow from './common/util/fetchOrThrow';
 import { apiUrl } from './common/util/apiUrl';
 import MainMap from './main/MainMap';
+import usePwaInstallTracker from './common/util/usePwaInstallTracker';
+import { useTenant } from './common/components/TenantProvider';
 
 const useStyles = makeStyles()(() => ({
   page: {
