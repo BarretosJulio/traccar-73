@@ -164,7 +164,7 @@ const LandingPage = () => {
           Não vendemos servidor nem painel administrativo — apenas o app do cliente final.
         </p>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} style={{
+          <button onClick={() => navigate('/onboarding')} style={{
             padding: '16px 40px', borderRadius: 12, border: 'none',
             background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
             color: '#0a0a0f', cursor: 'pointer', fontWeight: 800, fontSize: 16,
