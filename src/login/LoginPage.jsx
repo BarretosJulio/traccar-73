@@ -300,11 +300,13 @@ const LoginPage = () => {
               startIcon={<LoginIcon />}
               sx={{
                 bgcolor: 'primary.main',
+                color: 'primary.contrastText',
                 py: 1.5,
                 fontSize: '0.9375rem',
                 fontWeight: 700,
                 '&:hover': {
                   bgcolor: 'primary.dark',
+                  color: 'primary.contrastText',
                 },
               }}
             >
