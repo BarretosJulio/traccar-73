@@ -616,12 +616,12 @@ const DashboardPage = () => {
             </Typography>
           </Box>
           <Typography className={classes.greeting}>
-            {user?.name ? t('dashboardGreeting').replace('{0}', user.name) : t('dashboardTitle')}
+            {user?.name ? (t('dashboardGreeting') || 'Hello, {0}').replace('{0}', user.name) : (t('dashboardTitle') || 'Dashboard')}
           </Typography>
           <Typography className={classes.subtitle}>
             {deviceStats.total > 0
-              ? t('dashboardFleetStatus').replace('{0}', deviceStats.online).replace('{1}', deviceStats.total).replace('{2}', deviceStats.moving)
-              : t('dashboardFleetPanel')}
+              ? (t('dashboardFleetStatus') || '{0} of {1} devices online · {2} moving').replace('{0}', deviceStats.online).replace('{1}', deviceStats.total).replace('{2}', deviceStats.moving)
+              : (t('dashboardFleetPanel') || 'Fleet Control Panel')}
           </Typography>
         </div>
         <Box sx={{ display: 'flex', gap: 1, zIndex: 1, alignItems: 'center' }}>
