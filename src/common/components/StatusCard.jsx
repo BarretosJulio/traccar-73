@@ -673,7 +673,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('commandTitle')}>
                   <IconButton
-                    onClick={() => navigate(`/settings/device/${deviceId}/command`)}
+                    onClick={() => navigate(`/app/settings/device/${deviceId}/command`)}
                     disabled={disableActions}
                   >
                     <SendIcon />
