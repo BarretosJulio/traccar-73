@@ -92,6 +92,11 @@ const App = () => {
       <UpdateController />
       <MotionController />
       <DemoController active={demoMode} />
+      {desktop && isSettingsRoute && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+          <MainMap filteredPositions={[]} selectedPosition={null} onEventsClick={() => {}} />
+        </div>
+      )}
       <div className={classes.page}>
         <Outlet context={{ demoMode, setDemoMode }} />
       </div>
