@@ -285,7 +285,7 @@ const LoginPage = () => {
             <TextField
               required
               error={failed}
-              label={t('userPassword')}
+              placeholder={t('userPassword')}
               name="password"
               value={password}
               type={showPassword ? 'text' : 'password'}
