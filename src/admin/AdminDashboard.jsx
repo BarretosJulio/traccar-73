@@ -255,7 +255,7 @@ const AdminDashboard = () => {
                     border: '2px dashed rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)',
                     color: '#94a3b8', fontSize: 13, fontWeight: 600,
                   }}>
-                    <span>{uploadingLogo ? 'Enviando...' : '📁 Clique para enviar logo'}</span>
+                    <span>{uploadingLogo ? t('adminUploading') : `📁 ${t('adminUploadLogo')}`}</span>
                     <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingLogo} onChange={handleLogoUpload} />
                   </label>
                   <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>PNG, JPG ou SVG • Máx 2MB</p>
