@@ -630,7 +630,7 @@ const DashboardPage = () => {
           </Typography>
         </div>
         <Box sx={{ display: 'flex', gap: 1, zIndex: 1, alignItems: 'center' }}>
-          <Tooltip title={darkMode ? 'Modo Claro' : 'Modo Escuro'}>
+          <Tooltip title={darkMode ? t('dashboardLightMode') : t('dashboardDarkMode')}>
             <IconButton
               onClick={toggleDarkMode}
               sx={{
