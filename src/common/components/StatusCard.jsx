@@ -266,6 +266,8 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
+  const context = useOutletContext() || {};
+  const demoMode = context.demoMode || false;
 
   const readonly = useRestriction('readonly');
   const deviceReadonly = useDeviceReadonly();
