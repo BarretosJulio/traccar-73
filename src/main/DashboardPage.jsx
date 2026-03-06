@@ -908,7 +908,7 @@ const DashboardPage = () => {
                       </Box>
 
                       {/* Last update */}
-                      <Tooltip title="Última atualização">
+                      <Tooltip title={t('dashboardLastUpdate')}>
                         <Box className={classes.metaItem}>
                           <AccessTimeIcon sx={{ fontSize: 13 }} />
                           {getLastUpdate(device)}
