@@ -196,7 +196,8 @@ const AdminDashboard = () => {
 
   return (
     <div style={{
-      minHeight: '100vh', backgroundColor: '#0a0a0f', color: '#e2e8f0',
+      position: 'fixed', inset: 0, overflow: 'auto',
+      backgroundColor: '#0a0a0f', color: '#e2e8f0',
       fontFamily: "'Inter', -apple-system, sans-serif",
     }}>
       {/* Header */}
