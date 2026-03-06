@@ -38,11 +38,11 @@ Deno.serve(async (req: Request) => {
     const body = await req.json();
     const { company_name, traccar_url, owner_email, password, color_primary, color_secondary } = body;
 
-    if (!company_name || !traccar_url || !owner_email || !password) {
+    if (!company_name || !owner_email || !password) {
       return new Response(
         JSON.stringify({
           success: false,
-          message: "Campos obrigatórios: company_name, traccar_url, owner_email, password",
+          message: "Campos obrigatórios: company_name, owner_email, password",
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
