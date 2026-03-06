@@ -1,22 +1,33 @@
 
 
-## Problem
+# Modernizar Controles do Mapa + Botão WhatsApp
 
-The Admin Dashboard has `backgroundColor: '#0a0a0f'` but the app's root/body background from the theme palette is `#111827` (dark mode). This lighter blue color bleeds through at the edges and between sections, creating an ugly two-tone effect visible in your screenshots.
+## O que será feito
 
-## Solution
+1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
+2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
 
-Unify the background colors so there's only one consistent dark background across the entire admin panel:
+## Mudanças Técnicas
 
-1. **`src/admin/AdminDashboard.jsx`** — Change the root `minHeight: '100vh'` container to also set `position: fixed` + `inset: 0` + `overflow: auto` so it fully covers the underlying app background. Alternatively, keep `#0a0a0f` but ensure it covers everything with `min-height: 100vh` and the body doesn't show through.
+### 1. CSS Global dos controles do mapa (`public/styles.css`)
+- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
+- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
+- Adicionar separadores sutis entre botões
+- Manter responsivo para mobile
 
-2. **`src/common/theme/palette.js`** — Optionally align the dark mode `background.default` from `#111827` to `#0a0a0f` so they match. However, since the admin panel is a standalone page with its own styling, the better fix is in the admin component itself.
+### 2. Geocoder (`src/map/geocoder/geocoder.css`)
+- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
+- Border-radius mais arredondado, sombra premium
 
-### Specific changes:
+### 3. Notificação (`src/map/notification/notification.css`)
+- Atualizar ícones SVG com cores teal para combinar com o tema
 
-**`src/admin/AdminDashboard.jsx`** (line 197-199):
-- Change the root container to use `position: 'fixed'`, `inset: 0`, `overflow: 'auto'` instead of `minHeight: '100vh'`. This ensures the `#0a0a0f` background covers the entire viewport with no gaps where `#111827` can show through.
-- Apply the same fix to the loading state container (line 151).
+### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
+- Criar controle customizado maplibre similar ao `MapNotification`
+- Ícone WhatsApp em SVG verde
+- Ao clicar, abre `https://wa.me/{numero}` em nova aba
+- Número configurável via atributos do servidor ou hardcoded
 
-This eliminates the lighter blue band completely — the entire admin screen will be a single uniform `#0a0a0f` dark background.
+### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
+- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
 
