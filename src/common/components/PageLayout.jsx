@@ -136,7 +136,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
 
   if (desktop) {
     return (
-      <div className={classes.overlay} onClick={() => navigate('/app')}>
+      <div className={classes.overlay} onClick={() => navigate(-1)}>
         <Paper
           className={classes.floatingCard}
           elevation={24}
@@ -146,7 +146,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             <Tooltip title={t('sharedBack')}>
               <IconButton
                 size="small"
-                onClick={() => navigate('/app')}
+                onClick={() => navigate(-1)}
                 sx={{ mr: 1.5 }}
               >
                 <ArrowBackIcon fontSize="small" />
@@ -157,7 +157,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             <Tooltip title={t('sharedHide')}>
               <IconButton
                 size="small"
-                onClick={() => navigate('/app')}
+                onClick={() => navigate(-1)}
               >
                 <CloseIcon fontSize="small" />
               </IconButton>
