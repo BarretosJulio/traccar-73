@@ -24,8 +24,6 @@ const useStyles = makeStyles()((theme) => ({
   },
   backButton: {
     position: 'fixed',
-    top: theme.spacing(8.5),
-    left: theme.spacing(1.5),
     zIndex: 10,
     background: theme.palette.background.paper,
     boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
@@ -33,6 +31,14 @@ const useStyles = makeStyles()((theme) => ({
     height: 36,
     '&:hover': {
       background: theme.palette.background.paper,
+    },
+    [theme.breakpoints.up('md')]: {
+      top: theme.spacing(1.5),
+      left: `calc(${theme.dimensions.drawerWidthDesktop} + ${theme.spacing(2.5)})`,
+    },
+    [theme.breakpoints.down('md')]: {
+      top: theme.spacing(1),
+      left: theme.spacing(1),
     },
   },
   sidebar: {
