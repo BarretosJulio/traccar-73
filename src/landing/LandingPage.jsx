@@ -385,7 +385,7 @@ const LandingPage = () => {
               background: annual ? 'rgba(0,245,160,0.15)' : 'transparent',
               color: annual ? '#00f5a0' : '#94a3b8',
             }}>
-              Anual <span style={{ fontSize: 12, color: '#00f5a0', marginLeft: 4 }}>-20%</span>
+              Anual <span style={{ fontSize: 12, color: '#00f5a0', marginLeft: 4 }}>-12%</span>
             </button>
           </div>
         </div>
@@ -413,15 +413,12 @@ const LandingPage = () => {
                 }}>MAIS POPULAR</div>
               )}
               <h3 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{plan.name}</h3>
-              <div style={{ marginBottom: 8 }}>
+              <div style={{ marginBottom: 24 }}>
                 <span style={{ fontSize: 48, fontWeight: 900, color: '#fff' }}>
                   R${annual ? plan.yearlyPrice : plan.monthlyPrice}
                 </span>
                 <span style={{ color: '#64748b', fontSize: 15 }}>/mês</span>
               </div>
-              <p style={{ color: '#64748b', fontSize: 14, marginBottom: 24 }}>
-                Até {plan.devices} dispositivos
-              </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', flex: 1 }}>
                 {plan.features.map((f) => (
                   <li key={f} style={{
