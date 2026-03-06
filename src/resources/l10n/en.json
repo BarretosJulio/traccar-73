@@ -736,5 +736,12 @@
     "adminErrorFileSize": "Error: File must be at most 2MB",
     "adminLogoSuccess": "Logo uploaded successfully!",
     "adminErrorSave": "Error saving",
-    "adminErrorLogo": "Error uploading logo"
+    "adminErrorLogo": "Error uploading logo",
+    "adminLoginPageSection": "Login Page",
+    "adminLoginSidebarColor": "Sidebar Color",
+    "adminLoginBgColor": "Background Color",
+    "adminLoginBgImage": "Background Image",
+    "adminUploadBgImage": "Upload background image",
+    "adminBgImageSuccess": "Background image uploaded!",
+    "adminLoginPreview": "Preview"
 }
