@@ -350,7 +350,95 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {message && (
+            {/* Login Page Customization */}
+            <div style={cardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>
+                {t('adminLoginPageSection') || 'Tela de Login'}
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div>
+                  <label style={labelStyle}>{t('adminLoginSidebarColor') || 'Cor do Painel Lateral'}</label>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <input type="color" value={tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'} onChange={(e) => updateField('login_sidebar_color', e.target.value)}
+                      style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
+                    <input value={tenant?.login_sidebar_color || ''} onChange={(e) => updateField('login_sidebar_color', e.target.value)} placeholder={tenant?.color_primary || '#0f766e'} style={{ ...inputStyle, flex: 1 }} />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>{t('adminLoginBgColor') || 'Cor de Fundo'}</label>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <input type="color" value={tenant?.login_bg_color || '#f5f7fa'} onChange={(e) => updateField('login_bg_color', e.target.value)}
+                      style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
+                    <input value={tenant?.login_bg_color || ''} onChange={(e) => updateField('login_bg_color', e.target.value)} placeholder="#f5f7fa" style={{ ...inputStyle, flex: 1 }} />
+                  </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>{t('adminLoginBgImage') || 'Imagem de Fundo'}</label>
+                  {tenant?.login_bg_image && (
+                    <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <img src={tenant.login_bg_image} alt="BG" style={{
+                        maxWidth: 160, maxHeight: 80, width: 'auto', height: 'auto',
+                        borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
+                        objectFit: 'cover', background: 'rgba(255,255,255,0.05)', padding: 4,
+                      }} />
+                      <button onClick={() => updateField('login_bg_image', '')} style={{
+                        padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
+                        background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
+                        fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
+                      }}>Remover</button>
+                    </div>
+                  )}
+                  <label style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    padding: '14px 16px', borderRadius: 8, cursor: 'pointer',
+                    border: '2px dashed rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)',
+                    color: '#94a3b8', fontSize: 13, fontWeight: 600,
+                  }}>
+                    <span>{uploadingBgImage ? t('adminUploading') : `🖼️ ${t('adminUploadBgImage') || 'Enviar imagem de fundo'}`}</span>
+                    <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
+                  </label>
+                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>{t('adminFileMaxSize')}</p>
+                </div>
+
+                {/* Mini Preview */}
+                <div>
+                  <label style={labelStyle}>{t('adminLoginPreview') || 'Pré-visualização'}</label>
+                  <div style={{
+                    display: 'flex', height: 80, borderRadius: 10, overflow: 'hidden',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                  }}>
+                    <div style={{
+                      width: 60,
+                      background: tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <div style={{ width: 20, height: 20, borderRadius: 4, background: 'rgba(255,255,255,0.3)' }} />
+                    </div>
+                    <div style={{
+                      flex: 1, position: 'relative',
+                      background: tenant?.login_bg_image
+                        ? `url(${tenant.login_bg_image}) center/cover`
+                        : (tenant?.login_bg_color || '#f5f7fa'),
+                    }}>
+                      {tenant?.login_bg_image && (
+                        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
+                      )}
+                      <div style={{
+                        position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', height: '100%',
+                      }}>
+                        <div style={{
+                          width: 40, height: 6, borderRadius: 3,
+                          background: tenant?.login_bg_image ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.15)',
+                        }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
               <p style={{
                 textAlign: 'center', fontSize: 14, fontWeight: 600, margin: 0,
                 color: message.includes('Erro') || message.includes('Error') ? '#ff6b6b' : '#00f5a0',
