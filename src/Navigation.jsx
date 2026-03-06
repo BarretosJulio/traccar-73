@@ -120,6 +120,8 @@ const Navigation = () => {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
