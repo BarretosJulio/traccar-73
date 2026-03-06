@@ -238,7 +238,7 @@ const AdminDashboard = () => {
         }}>{t('adminLogout')}</button>
       </header>
 
-      <div style={{ maxWidth: 800, margin: '0 auto', padding: '32px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 32px' }}>
         {/* Tabs */}
         <div style={{
           display: 'flex', gap: 4, marginBottom: 32, padding: 4, borderRadius: 12,
