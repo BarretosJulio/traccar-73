@@ -9,44 +9,44 @@ import {
 import { useEffectAsync } from './reactHelper';
 import fetchOrThrow from './common/util/fetchOrThrow';
 
-const CachingController = () => {
+const CachingController = ({ demoMode }) => {
   const authenticated = useSelector((state) => !!state.session.user);
   const dispatch = useDispatch();
 
   useEffectAsync(async () => {
-    if (authenticated) {
+    if (authenticated && !demoMode) {
       const response = await fetchOrThrow('/api/geofences');
       dispatch(geofencesActions.refresh(await response.json()));
     }
-  }, [authenticated]);
+  }, [authenticated, demoMode]);
 
   useEffectAsync(async () => {
-    if (authenticated) {
+    if (authenticated && !demoMode) {
       const response = await fetchOrThrow('/api/groups');
       dispatch(groupsActions.refresh(await response.json()));
     }
-  }, [authenticated]);
+  }, [authenticated, demoMode]);
 
   useEffectAsync(async () => {
-    if (authenticated) {
+    if (authenticated && !demoMode) {
       const response = await fetchOrThrow('/api/drivers');
       dispatch(driversActions.refresh(await response.json()));
     }
-  }, [authenticated]);
+  }, [authenticated, demoMode]);
 
   useEffectAsync(async () => {
-    if (authenticated) {
+    if (authenticated && !demoMode) {
       const response = await fetchOrThrow('/api/maintenance');
       dispatch(maintenancesActions.refresh(await response.json()));
     }
-  }, [authenticated]);
+  }, [authenticated, demoMode]);
 
   useEffectAsync(async () => {
-    if (authenticated) {
+    if (authenticated && !demoMode) {
       const response = await fetchOrThrow('/api/calendars');
       dispatch(calendarsActions.refresh(await response.json()));
     }
-  }, [authenticated]);
+  }, [authenticated, demoMode]);
 
   return null;
 };

@@ -87,8 +87,8 @@ const App = () => {
   }
   return (
     <>
-      <SocketController />
-      <CachingController />
+      <SocketController demoMode={demoMode} />
+      <CachingController demoMode={demoMode} />
       <UpdateController />
       <MotionController />
       <DemoController active={demoMode} />

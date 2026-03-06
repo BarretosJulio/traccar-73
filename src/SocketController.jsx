@@ -113,7 +113,7 @@ const SocketController = ({ demoMode }) => {
 
   // Reconnect on visibility change
   useEffect(() => {
-    if (!authenticated) return undefined;
+    if (!authenticated || demoMode) return undefined;
     const onVisibility = () => {
       if (!document.hidden && !pollingRef.current) {
         pollData();
@@ -122,7 +122,7 @@ const SocketController = ({ demoMode }) => {
     };
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, [authenticated, pollData]);
+  }, [authenticated, demoMode, pollData]);
 
   const handleNativeNotification = useCatchCallback(
     async (message) => {
