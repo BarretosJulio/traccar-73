@@ -574,16 +574,16 @@ const DashboardPage = () => {
   ];
 
   const menuItems = [
-    { label: t('deviceTitle'), icon: <DevicesIcon />, path: '/settings/devices', show: true },
-    { label: t('settingsGroups'), icon: <GroupsIcon />, path: '/settings/groups', show: true },
-    { label: t('sharedDrivers'), icon: <PersonIcon />, path: '/settings/drivers', show: true },
-    { label: 'Cercas', icon: <FenceIcon />, path: '/geofences', show: true },
-    { label: t('sharedNotifications'), icon: <NotificationsIcon />, path: '/settings/notifications', show: true },
-    { label: t('sharedMaintenance'), icon: <BuildIcon />, path: '/settings/maintenances', show: true },
-    { label: t('sharedPreferences'), icon: <SettingsIcon />, path: '/settings/preferences', show: true },
-    { label: t('reportTitle'), icon: <DescriptionIcon />, path: '/reports/combined', show: true },
-    { label: t('settingsUsers'), icon: <PeopleIcon />, path: '/settings/users', show: admin },
-    { label: t('settingsServer'), icon: <StorageIcon />, path: '/settings/server', show: admin },
+    { label: t('deviceTitle'), icon: <DevicesIcon />, path: '/app/settings/devices', show: true },
+    { label: t('settingsGroups'), icon: <GroupsIcon />, path: '/app/settings/groups', show: true },
+    { label: t('sharedDrivers'), icon: <PersonIcon />, path: '/app/settings/drivers', show: true },
+    { label: 'Cercas', icon: <FenceIcon />, path: '/app/geofences', show: true },
+    { label: t('sharedNotifications'), icon: <NotificationsIcon />, path: '/app/settings/notifications', show: true },
+    { label: t('sharedMaintenance'), icon: <BuildIcon />, path: '/app/settings/maintenances', show: true },
+    { label: t('sharedPreferences'), icon: <SettingsIcon />, path: '/app/settings/preferences', show: true },
+    { label: t('reportTitle'), icon: <DescriptionIcon />, path: '/app/reports/combined', show: true },
+    { label: t('settingsUsers'), icon: <PeopleIcon />, path: '/app/settings/users', show: admin },
+    { label: t('settingsServer'), icon: <StorageIcon />, path: '/app/settings/server', show: admin },
   ].filter((item) => item.show);
 
   const getSpeedKmh = (deviceId) => {
