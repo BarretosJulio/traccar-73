@@ -91,21 +91,23 @@ const LoginLayout = ({ children }) => {
     <main className={classes.root}>
       <div className={classes.sidebar} style={{ background: sidebarBg }}>
         <div className={classes.sidebarOverlay} />
-        <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center', mt: 2 }}>
+        <div className={classes.logoZone}>
           <LogoImage color="#ffffff" />
           <Typography
-            variant="body2"
             sx={{
               color: 'rgba(255,255,255,0.7)',
-              mt: 1,
+              mt: 0.5,
               fontWeight: 400,
+              fontSize: '0.9rem',
               letterSpacing: '0.05em',
             }}
           >
             Rastreamento Inteligente
           </Typography>
-        </Box>
-        <form className={classes.form}>{children}</form>
+        </div>
+        <div className={classes.formZone}>
+          <form className={classes.form}>{children}</form>
+        </div>
       </div>
       <div className={classes.contentArea} style={contentStyle}>
         {bgImage && <div className={classes.bgOverlay} />}
