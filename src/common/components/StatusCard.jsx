@@ -302,8 +302,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
   const handleRemove = useCatch(async (removed) => {
     if (demoMode) {
-      dispatch(errorsActions.push('Função indisponível no modo demo'));
+      dispatch(errorsActions.push(t('demoModeUnavailable')));
       setRemoving(false);
+      return;
+    }
       return;
     }
     if (removed) {
