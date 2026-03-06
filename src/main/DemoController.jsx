@@ -119,7 +119,7 @@ const DemoController = ({ active }) => {
         eventTime: new Date().toISOString(),
         deviceId: device.id,
         attributes: {
-          message: `[DEMO] ${device.name}: ${alert.message}`,
+          message: `[DEMO] ${device.name}: ${alert.messageKey}`,
           ...(alert.alarm ? { alarm: alert.alarm } : {}),
         },
       }]));

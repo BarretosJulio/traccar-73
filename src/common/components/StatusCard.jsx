@@ -502,21 +502,21 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                   <div className={classes.dataGrid}>
                     <DataItem
                       icon={<SpeedIcon className={classes.dataIcon} />}
-                      label="Velocidade"
+                      label={t('positionSpeed')}
                       value={`${speedKmh} km/h`}
                       color={getSpeedColor(speedKmh)}
                     />
                     {position.course != null && (
                       <DataItem
                         icon={<NavigationIcon className={classes.dataIcon} sx={{ transform: `rotate(${position.course}deg)` }} />}
-                        label="Direção"
+                        label={t('positionCourse')}
                         value={`${Math.round(position.course)}°`}
                       />
                     )}
                     {attrs.batteryLevel != null && (
                       <DataItem
                         icon={getBatteryIcon(attrs.batteryLevel)}
-                        label="Bateria"
+                        label={t('positionBatteryLevel')}
                         value={`${Math.round(attrs.batteryLevel)}%`}
                         color={getBatteryColor(attrs.batteryLevel)}
                       />
@@ -524,49 +524,49 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     {attrs.sat != null && (
                       <DataItem
                         icon={<SignalCellularAltIcon className={classes.dataIcon} />}
-                        label="Satélites"
+                        label={t('positionSat')}
                         value={attrs.sat}
                       />
                     )}
                     {position.altitude != null && (
                       <DataItem
                         icon={<HeightIcon className={classes.dataIcon} />}
-                        label="Altitude"
+                        label={t('positionAltitude')}
                         value={`${Math.round(position.altitude)} m`}
                       />
                     )}
                     {position.accuracy != null && (
                       <DataItem
                         icon={<GpsFixedIcon className={classes.dataIcon} />}
-                        label="Precisão"
+                        label={t('positionAccuracy')}
                         value={`${Math.round(position.accuracy)} m`}
                       />
                     )}
                     {attrs.totalDistance != null && (
                       <DataItem
                         icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>🛣️</Box>}
-                        label="Odômetro"
+                        label={t('positionOdometerLabel')}
                         value={`${(attrs.totalDistance / 1000).toFixed(1)} km`}
                       />
                     )}
                     {attrs.hours != null && (
                       <DataItem
                         icon={<AccessTimeIcon className={classes.dataIcon} />}
-                        label="Horímetro"
+                        label={t('positionHourmeter')}
                         value={`${Math.round(attrs.hours / 3600000)} h`}
                       />
                     )}
                     {attrs.fuel != null && (
                       <DataItem
                         icon={<LocalGasStationIcon className={classes.dataIcon} />}
-                        label="Combustível"
+                        label={t('positionFuel')}
                         value={`${Math.round(attrs.fuel)}%`}
                       />
                     )}
                     {attrs.deviceTemp != null && (
                       <DataItem
                         icon={<ThermostatIcon className={classes.dataIcon} />}
-                        label="Temperatura"
+                        label={t('positionTemperature')}
                         value={`${attrs.deviceTemp.toFixed(1)}°C`}
                       />
                     )}
@@ -580,55 +580,55 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     {attrs.power != null && (
                       <DataItem
                         icon={<PowerIcon className={classes.dataIcon} />}
-                        label="Tensão"
+                        label={t('positionVoltage')}
                         value={`${attrs.power.toFixed(1)} V`}
                       />
                     )}
                     {attrs.batteryLevel != null && attrs.charge !== undefined && (
                       <DataItem
                         icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>🔌</Box>}
-                        label="Carregando"
-                        value={attrs.charge ? 'Sim' : 'Não'}
+                        label={t('positionCharging')}
+                        value={attrs.charge ? t('sharedYes') : t('sharedNo')}
                         color={attrs.charge ? '#10b981' : '#94a3b8'}
                       />
                     )}
                     {attrs.rssi != null && (
                       <DataItem
                         icon={<NetworkCellIcon className={classes.dataIcon} />}
-                        label="Sinal GSM"
+                        label={t('positionSignalGsm')}
                         value={attrs.rssi}
                       />
                     )}
                     {attrs.io1 !== undefined && (
                       <DataItem
                         icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📥</Box>}
-                        label="Entrada 1"
+                        label={t('positionInput1')}
                         value={formatBoolean(attrs.io1, t)}
                       />
                     )}
                     {attrs.io2 !== undefined && (
                       <DataItem
                         icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📥</Box>}
-                        label="Entrada 2"
+                        label={t('positionInput2')}
                         value={formatBoolean(attrs.io2, t)}
                       />
                     )}
                     <DataItem
                       icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📍</Box>}
-                      label="Coordenadas"
+                      label={t('sharedCoordinates')}
                       value={`${position.latitude.toFixed(5)}, ${position.longitude.toFixed(5)}`}
                     />
                     {position.protocol && (
                       <DataItem
                         icon={<Box component="span" sx={{ fontSize: '0.75rem', opacity: 0.5 }}>📡</Box>}
-                        label="Protocolo"
+                        label={t('positionProtocol')}
                         value={position.protocol}
                       />
                     )}
                     {position.network?.radioType && (
                       <DataItem
                         icon={<NetworkCellIcon className={classes.dataIcon} />}
-                        label="Rede"
+                        label={t('positionNetwork')}
                         value={position.network.radioType.toUpperCase()}
                       />
                     )}
