@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link as RouterLink, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Rnd } from 'react-rnd';
 import {
   Card,
@@ -16,6 +16,14 @@ import {
   Box,
   Chip,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { useTheme, useMediaQuery } from '@mui/material';
@@ -57,6 +65,8 @@ import { useAttributePreference } from '../util/preferences';
 import { formatAlarm, formatBoolean } from '../util/formatter';
 import { mapIconKey, mapIcons } from '../../map/core/preloadImages';
 import fetchOrThrow from '../util/fetchOrThrow';
+import usePositionAttributes from '../attributes/usePositionAttributes';
+import PositionValue from './PositionValue';
 
 const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
@@ -281,8 +291,11 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const navigationAppLink = useAttributePreference('navigationAppLink');
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
 
+  const positionAttributes = usePositionAttributes(t);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [removing, setRemoving] = useState(false);
+  const [positionDialogOpen, setPositionDialogOpen] = useState(false);
 
   const attrs = position?.attributes || {};
   const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
@@ -657,7 +670,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
                   {/* More details */}
                   <Typography sx={{ fontSize: '0.62rem', mt: 0.2 }}>
-                    <Link component={RouterLink} to={`/app/position/${position.id}`}>
+                    <Link
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); setPositionDialogOpen(true); }}
+                    >
                       {t('sharedShowDetails')}
                     </Link>
                   </Typography>
@@ -761,6 +777,60 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
         itemId={deviceId}
         onResult={(removed) => handleRemove(removed)}
       />
+      {position && (
+        <Dialog
+          open={positionDialogOpen}
+          onClose={() => setPositionDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
+            <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 700 }}>
+              {device?.name} — {t('sharedShowDetails')}
+            </Typography>
+            <IconButton size="small" onClick={() => setPositionDialogOpen(false)}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ p: 0 }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>{t('stateName')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>{t('sharedName')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>{t('stateValue')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.getOwnPropertyNames(position)
+                  .filter((it) => it !== 'attributes')
+                  .map((property) => (
+                    <TableRow key={property}>
+                      <TableCell sx={{ fontSize: '0.72rem' }}>{property}</TableCell>
+                      <TableCell sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                        {positionAttributes[property]?.name}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: '0.72rem' }}>
+                        <PositionValue position={position} property={property} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                {Object.getOwnPropertyNames(position.attributes).map((attribute) => (
+                  <TableRow key={attribute}>
+                    <TableCell sx={{ fontSize: '0.72rem' }}>{attribute}</TableCell>
+                    <TableCell sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                      {positionAttributes[attribute]?.name}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '0.72rem' }}>
+                      <PositionValue position={position} attribute={attribute} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
