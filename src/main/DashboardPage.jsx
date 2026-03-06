@@ -133,11 +133,6 @@ const useStyles = makeStyles()((theme) => ({
       fontSize: '0.7rem',
     },
   },
-  subtitle: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: '0.85rem',
-    fontWeight: 400,
-  },
   mapButton: {
     background: 'rgba(255,255,255,0.15)',
     backdropFilter: 'blur(10px)',
