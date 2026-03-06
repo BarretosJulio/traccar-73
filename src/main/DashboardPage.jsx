@@ -723,7 +723,7 @@ const DashboardPage = () => {
           <Box className={classes.sectionHeader}>
             <Box>
               <Typography className={classes.sectionTitle}>
-                Veículos
+                {t('sharedVehicles')}
                 <Chip
                   label={filteredDevices.length}
                   size="small"
