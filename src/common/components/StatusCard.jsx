@@ -681,7 +681,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
                   <IconButton
-                    onClick={() => navigate(`/settings/device/${deviceId}`)}
+                    onClick={() => navigate(`/app/settings/device/${deviceId}`)}
                     disabled={disableActions || deviceReadonly}
                   >
                     <EditIcon />
