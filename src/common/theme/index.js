@@ -4,7 +4,7 @@ import palette from './palette';
 import dimensions from './dimensions';
 import components from './components';
 
-export default (server, darkMode, direction) =>
+export default (server, darkMode, direction, tenant) =>
   useMemo(
     () =>
       createTheme({
@@ -31,10 +31,10 @@ export default (server, darkMode, direction) =>
         shape: {
           borderRadius: 12,
         },
-        palette: palette(server, darkMode),
+        palette: palette(server, darkMode, tenant),
         direction,
         dimensions,
         components,
       }),
-    [server, darkMode, direction],
+    [server, darkMode, direction, tenant],
   );

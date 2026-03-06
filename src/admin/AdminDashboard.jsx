@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
 
@@ -10,6 +10,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('pwa');
   const [message, setMessage] = useState('');
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -18,18 +19,15 @@ const AdminDashboard = () => {
         navigate('/admin/login');
         return;
       }
-
       const { data, error } = await supabase
         .from('tenants')
         .select('*')
         .eq('user_id', session.user.id)
         .single();
-
       if (error || !data) {
         navigate('/admin/login');
         return;
       }
-
       setTenant(data);
       setLoading(false);
     };
@@ -54,7 +52,6 @@ const AdminDashboard = () => {
           traccar_url: tenant.traccar_url,
         })
         .eq('id', tenant.id);
-
       if (error) throw error;
       setMessage('Salvo com sucesso!');
       setTimeout(() => setMessage(''), 3000);
@@ -102,6 +99,17 @@ const AdminDashboard = () => {
     }
   };
 
+  const getPwaLink = () => {
+    if (tenant?.custom_domain) return `https://${tenant.custom_domain}`;
+    return `${window.location.origin}/login?tenant=${tenant?.slug}`;
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(getPwaLink());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   if (loading) {
     return (
       <div style={{
@@ -128,8 +136,13 @@ const AdminDashboard = () => {
   };
 
   const labelStyle = {
-    display: 'block', fontSize: 12, fontWeight: 600, color: '#94a3b8', marginBottom: 6, textTransform: 'uppercase',
-    letterSpacing: '0.5px',
+    display: 'block', fontSize: 12, fontWeight: 600, color: '#94a3b8', marginBottom: 6,
+    textTransform: 'uppercase', letterSpacing: '0.5px',
+  };
+
+  const cardStyle = {
+    padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.02)',
+    border: '1px solid rgba(255,255,255,0.08)',
   };
 
   const trialDays = tenant?.trial_ends_at
@@ -137,7 +150,8 @@ const AdminDashboard = () => {
     : 0;
 
   const tabs = [
-    { id: 'pwa', label: '🎨 Personalizar PWA' },
+    { id: 'pwa', label: '🎨 Personalizar' },
+    { id: 'link', label: '🔗 Link do App' },
     { id: 'plan', label: '📋 Plano' },
     { id: 'stats', label: '📊 Estatísticas' },
   ];
@@ -155,12 +169,18 @@ const AdminDashboard = () => {
         position: 'sticky', top: 0, zIndex: 10,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 900, fontSize: 14, color: '#0a0a0f',
-          }}>H</div>
+          {tenant?.logo_url ? (
+            <img src={tenant.logo_url} alt="Logo" style={{
+              width: 32, height: 32, borderRadius: 8, objectFit: 'contain',
+            }} />
+          ) : (
+            <div style={{
+              width: 32, height: 32, borderRadius: 8,
+              background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 900, fontSize: 14, color: '#0a0a0f',
+            }}>H</div>
+          )}
           <div>
             <span style={{ fontWeight: 700, fontSize: 14, color: '#fff' }}>{tenant?.company_name}</span>
             <span style={{
@@ -186,11 +206,12 @@ const AdminDashboard = () => {
         <div style={{
           display: 'flex', gap: 4, marginBottom: 32, padding: 4, borderRadius: 12,
           background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+          overflowX: 'auto',
         }}>
           {tabs.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
               flex: 1, padding: '12px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
-              fontWeight: 600, fontSize: 13, fontFamily: 'inherit',
+              fontWeight: 600, fontSize: 13, fontFamily: 'inherit', whiteSpace: 'nowrap',
               background: activeTab === tab.id ? 'rgba(0,245,160,0.1)' : 'transparent',
               color: activeTab === tab.id ? '#00f5a0' : '#64748b',
             }}>{tab.label}</button>
@@ -200,10 +221,8 @@ const AdminDashboard = () => {
         {/* PWA Tab */}
         {activeTab === 'pwa' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <div style={{
-              padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}>
+            {/* Logo & Identity */}
+            <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>
                 Identidade Visual
               </h3>
@@ -216,39 +235,26 @@ const AdminDashboard = () => {
                   <label style={labelStyle}>Logo da Empresa</label>
                   {tenant?.logo_url && (
                     <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <img
-                        src={tenant.logo_url}
-                        alt="Logo"
-                        style={{
-                          maxWidth: 120, maxHeight: 60, width: 'auto', height: 'auto',
-                          borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
-                          objectFit: 'contain', background: 'rgba(255,255,255,0.05)', padding: 4,
-                        }}
-                      />
-                      <button
-                        onClick={() => updateField('logo_url', '')}
-                        style={{
-                          padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
-                          background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
-                          fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
-                        }}
-                      >Remover</button>
+                      <img src={tenant.logo_url} alt="Logo" style={{
+                        maxWidth: 120, maxHeight: 60, width: 'auto', height: 'auto',
+                        borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
+                        objectFit: 'contain', background: 'rgba(255,255,255,0.05)', padding: 4,
+                      }} />
+                      <button onClick={() => updateField('logo_url', '')} style={{
+                        padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
+                        background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
+                        fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
+                      }}>Remover</button>
                     </div>
                   )}
                   <label style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     padding: '14px 16px', borderRadius: 8, cursor: 'pointer',
                     border: '2px dashed rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)',
-                    color: '#94a3b8', fontSize: 13, fontWeight: 600, transition: 'all 0.2s',
+                    color: '#94a3b8', fontSize: 13, fontWeight: 600,
                   }}>
                     <span>{uploadingLogo ? 'Enviando...' : '📁 Clique para enviar logo'}</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      disabled={uploadingLogo}
-                      onChange={handleLogoUpload}
-                    />
+                    <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingLogo} onChange={handleLogoUpload} />
                   </label>
                   <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>PNG, JPG ou SVG • Máx 2MB</p>
                 </div>
@@ -273,13 +279,9 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div style={{
-              padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>
-                WhatsApp
-              </h3>
+            {/* WhatsApp */}
+            <div style={cardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>WhatsApp</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
                   <label style={labelStyle}>Número WhatsApp</label>
@@ -292,27 +294,23 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div style={{
-              padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>
-                Configuração Técnica
-              </h3>
+            {/* Technical Config */}
+            <div style={cardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>Configuração Técnica</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
                   <label style={labelStyle}>URL do Servidor Traccar</label>
-                  <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} style={inputStyle} />
+                  <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
+                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
+                    URL do seu servidor Traccar (ex: https://demo.traccar.org)
+                  </p>
                 </div>
                 <div>
                   <label style={labelStyle}>Domínio Personalizado</label>
                   <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Slug do App</label>
-                  <div style={{ ...inputStyle, background: 'rgba(255,255,255,0.02)', color: '#64748b' }}>
-                    {tenant?.slug}
-                  </div>
+                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
+                    Opcional: configure um domínio próprio para seu app
+                  </p>
                 </div>
               </div>
             </div>
@@ -335,6 +333,110 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* Link Tab */}
+        {activeTab === 'link' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <div style={{
+              padding: 32, borderRadius: 16, textAlign: 'center',
+              background: 'linear-gradient(180deg, rgba(0,245,160,0.06) 0%, rgba(10,10,15,1) 50%)',
+              border: '1px solid rgba(0,245,160,0.2)',
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🔗</div>
+              <h2 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
+                Link do seu App
+              </h2>
+              <p style={{ color: '#94a3b8', fontSize: 14, margin: '0 0 24px' }}>
+                Compartilhe este link com seus clientes para acessarem o app de rastreamento
+              </p>
+
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: 10, padding: '12px 16px', marginBottom: 16,
+              }}>
+                <span style={{
+                  flex: 1, color: '#00f5a0', fontSize: 14, fontWeight: 600,
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  textAlign: 'left',
+                }}>
+                  {getPwaLink()}
+                </span>
+                <button onClick={handleCopyLink} style={{
+                  padding: '8px 20px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                  fontWeight: 700, fontSize: 13, fontFamily: 'inherit',
+                  background: copied ? '#00f5a0' : 'rgba(0,245,160,0.15)',
+                  color: copied ? '#0a0a0f' : '#00f5a0',
+                  transition: 'all 0.2s',
+                }}>
+                  {copied ? '✓ Copiado!' : 'Copiar'}
+                </button>
+              </div>
+
+              <div style={{
+                display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap',
+              }}>
+                <a
+                  href={getPwaLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    padding: '10px 24px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
+                    background: 'transparent', color: '#e2e8f0', cursor: 'pointer',
+                    fontWeight: 600, fontSize: 13, textDecoration: 'none',
+                  }}
+                >
+                  Abrir App ↗
+                </a>
+              </div>
+            </div>
+
+            <div style={cardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>
+                Como funciona
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {[
+                  { step: '1', title: 'Envie o link', desc: 'Compartilhe o link acima com seus clientes via WhatsApp, e-mail ou SMS.' },
+                  { step: '2', title: 'Cliente acessa', desc: 'Seu cliente abre o link e faz login com as credenciais do Traccar.' },
+                  { step: '3', title: 'App personalizado', desc: 'O app aparece com sua marca, cores e logo configurados no painel.' },
+                ].map((item) => (
+                  <div key={item.step} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                    <div style={{
+                      width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+                      background: 'rgba(0,245,160,0.1)', color: '#00f5a0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontWeight: 800, fontSize: 13,
+                    }}>{item.step}</div>
+                    <div>
+                      <div style={{ fontWeight: 700, color: '#fff', fontSize: 14 }}>{item.title}</div>
+                      <div style={{ color: '#64748b', fontSize: 13, marginTop: 2 }}>{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={cardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 12px' }}>
+                Informações do App
+              </h3>
+              {[
+                ['Slug', tenant?.slug],
+                ['Domínio Personalizado', tenant?.custom_domain || 'Não configurado'],
+                ['Servidor Traccar', tenant?.traccar_url || 'Não configurado'],
+              ].map(([label, value]) => (
+                <div key={label} style={{
+                  display: 'flex', justifyContent: 'space-between', padding: '10px 0',
+                  borderBottom: '1px solid rgba(255,255,255,0.04)',
+                }}>
+                  <span style={{ color: '#64748b', fontSize: 14 }}>{label}</span>
+                  <span style={{ color: '#e2e8f0', fontSize: 14, fontWeight: 600, maxWidth: '60%', textAlign: 'right', wordBreak: 'break-all' }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Plan Tab */}
         {activeTab === 'plan' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -354,12 +456,11 @@ const AdminDashboard = () => {
                 {tenant?.subscription_status === 'trial' ? '⏳ Período de Teste' : '✅ Plano Ativo'}
               </div>
               <h2 style={{ fontSize: 28, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
-                {tenant?.plan_type === 'basic' ? 'Plano Completo' : tenant?.plan_type}
+                Plano Completo
               </h2>
               <p style={{ color: '#94a3b8', fontSize: 15, margin: '0 0 24px' }}>
-                R$ 24,90/mês • Todas as funcionalidades incluídas
+                R$ 24,90/mês • Todas as funcionalidades
               </p>
-
               {tenant?.subscription_status === 'trial' && (
                 <div style={{
                   padding: 16, borderRadius: 10, background: 'rgba(255,200,0,0.05)',
@@ -371,7 +472,6 @@ const AdminDashboard = () => {
                   </p>
                 </div>
               )}
-
               <button style={{
                 padding: '14px 40px', borderRadius: 10, border: 'none', cursor: 'pointer',
                 fontWeight: 700, fontSize: 15, fontFamily: 'inherit',
@@ -381,10 +481,7 @@ const AdminDashboard = () => {
               </button>
             </div>
 
-            <div style={{
-              padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}>
+            <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>Detalhes da Conta</h3>
               {[
                 ['Email', tenant?.owner_email],
@@ -422,14 +519,12 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
-
             <div style={{
               padding: 32, borderRadius: 16, textAlign: 'center',
               background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
             }}>
               <p style={{ color: '#64748b', fontSize: 14 }}>
                 📊 Estatísticas detalhadas estarão disponíveis em breve.
-                <br />Acompanhe acessos, dispositivos ativos e mais.
               </p>
             </div>
           </div>
