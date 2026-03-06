@@ -43,28 +43,32 @@ import { apiUrl } from '../common/util/apiUrl';
 
 const lightInputSx = {
   '& .MuiOutlinedInput-root': {
-    color: '#fff',
+    color: '#1e293b',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
     '& fieldset': {
-      borderColor: 'rgba(255,255,255,0.3)',
+      borderColor: 'transparent',
     },
     '&:hover fieldset': {
-      borderColor: 'rgba(255,255,255,0.5)',
+      borderColor: 'rgba(0,0,0,0.1)',
     },
     '&.Mui-focused fieldset': {
-      borderColor: 'rgba(255,255,255,0.8)',
+      borderColor: 'rgba(0,0,0,0.2)',
+      borderWidth: '1.5px',
+    },
+    '& input::placeholder': {
+      color: '#94a3b8',
+      opacity: 1,
     },
   },
   '& .MuiInputLabel-root': {
-    color: 'rgba(255,255,255,0.6)',
-    '&.Mui-focused': {
-      color: 'rgba(255,255,255,0.9)',
-    },
+    display: 'none',
   },
   '& .MuiFormHelperText-root': {
     color: '#ff8a80',
   },
   '& .MuiIconButton-root': {
-    color: 'rgba(255,255,255,0.6)',
+    color: '#64748b',
   },
 };
 
