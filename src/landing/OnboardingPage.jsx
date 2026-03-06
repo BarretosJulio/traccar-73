@@ -297,10 +297,10 @@ const OnboardingPage = () => {
                 <p style={{ fontSize: 18, fontWeight: 700, color: '#00f5a0', margin: 0 }}>{success.slug}</p>
               </div>
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/admin/login')}
                 style={{ ...btnPrimary, opacity: 1, pointerEvents: 'auto' }}
               >
-                Ir para o Login
+                Entrar no Painel
               </button>
               <button onClick={() => navigate('/')} style={btnSecondary}>
                 Voltar ao Início
