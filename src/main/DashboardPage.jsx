@@ -868,7 +868,7 @@ const DashboardPage = () => {
 
                       {/* Course */}
                       {course != null && (
-                        <Tooltip title={`Direção: ${Math.round(course)}°`}>
+                        <Tooltip title={`${t('positionCourse')}: ${Math.round(course)}°`}>
                           <Box className={classes.metaItem}>
                             <NavigationIcon sx={{ fontSize: 13, transform: `rotate(${course}deg)` }} />
                           </Box>
