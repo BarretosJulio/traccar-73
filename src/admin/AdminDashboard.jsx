@@ -124,7 +124,7 @@ const AdminDashboard = () => {
             borderTopColor: '#00f5a0', borderRadius: '50%',
             animation: 'spin 0.8s linear infinite', margin: '0 auto 16px',
           }} />
-          <p style={{ color: '#64748b', fontSize: 14 }}>Carregando painel...</p>
+          <p style={{ color: '#64748b', fontSize: 14 }}>{t('adminLoadingPanel')}</p>
           <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
         </div>
       </div>
