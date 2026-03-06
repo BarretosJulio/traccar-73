@@ -291,8 +291,11 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const navigationAppLink = useAttributePreference('navigationAppLink');
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
 
+  const positionAttributes = usePositionAttributes(t);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [removing, setRemoving] = useState(false);
+  const [positionDialogOpen, setPositionDialogOpen] = useState(false);
 
   const attrs = position?.attributes || {};
   const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
