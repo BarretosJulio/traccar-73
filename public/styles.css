@@ -85,7 +85,7 @@ body {
 }
 
 .maplibregl-ctrl-group button + button {
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
