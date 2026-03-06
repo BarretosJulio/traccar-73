@@ -163,7 +163,7 @@ const BottomMenu = () => {
   const handleNav = (value, event) => {
     switch (value) {
       case 'map':
-        navigate('/map');
+        navigate('/app/map');
         break;
       case 'reports': {
         let id = selectedDeviceId;
@@ -173,11 +173,11 @@ const BottomMenu = () => {
             id = deviceIds[0];
           }
         }
-        navigate(id != null ? `/reports/combined?deviceId=${id}` : '/reports/combined');
+        navigate(id != null ? `/app/reports/combined?deviceId=${id}` : '/app/reports/combined');
         break;
       }
       case 'settings':
-        navigate('/settings/preferences?menu=true');
+        navigate('/app/settings/preferences?menu=true');
         break;
       case 'account':
         setAnchorEl(event?.currentTarget);
