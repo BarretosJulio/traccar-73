@@ -1,8 +1,8 @@
-import { grey, teal, green } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 
 const validatedColor = (color) => (/^#([0-9A-Fa-f]{3}){1,2}$/.test(color) ? color : null);
 
-export default (server, darkMode) => ({
+export default (server, darkMode, tenant) => ({
   mode: darkMode ? 'dark' : 'light',
   background: {
     default: darkMode ? '#111827' : '#f5f7fa',
@@ -10,14 +10,18 @@ export default (server, darkMode) => ({
   },
   primary: {
     main:
-      validatedColor(server?.attributes?.colorPrimary) || (darkMode ? '#5eead4' : '#0f766e'),
+      validatedColor(tenant?.color_primary)
+      || validatedColor(server?.attributes?.colorPrimary)
+      || (darkMode ? '#5eead4' : '#0f766e'),
     light: darkMode ? '#99f6e4' : '#14b8a6',
     dark: darkMode ? '#2dd4bf' : '#0d4f47',
     contrastText: '#ffffff',
   },
   secondary: {
     main:
-      validatedColor(server?.attributes?.colorSecondary) || (darkMode ? '#a78bfa' : '#1e293b'),
+      validatedColor(tenant?.color_secondary)
+      || validatedColor(server?.attributes?.colorSecondary)
+      || (darkMode ? '#a78bfa' : '#1e293b'),
     contrastText: '#ffffff',
   },
   neutral: {
