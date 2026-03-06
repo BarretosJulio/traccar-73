@@ -455,7 +455,7 @@ const AdminDashboard = () => {
                 color: tenant?.subscription_status === 'trial' ? '#ffc800' : '#00f5a0',
                 fontSize: 13, fontWeight: 700,
               }}>
-                {tenant?.subscription_status === 'trial' ? '⏳ Período de Teste' : '✅ Plano Ativo'}
+                {tenant?.subscription_status === 'trial' ? `⏳ ${t('adminTrialPeriod')}` : `✅ ${t('adminPlanActive')}`}
               </div>
               <h2 style={{ fontSize: 28, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
                 Plano Completo
