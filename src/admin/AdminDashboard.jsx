@@ -58,7 +58,7 @@ const AdminDashboard = () => {
       setMessage(t('adminSavedSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setMessage('Erro ao salvar: ' + err.message);
+      setMessage(`${t('adminErrorSave')}: ` + err.message);
     } finally {
       setSaving(false);
     }
