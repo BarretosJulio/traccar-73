@@ -508,9 +508,9 @@ const AdminDashboard = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
               {[
-                { label: 'Status', value: tenant?.subscription_status === 'trial' ? 'Trial' : 'Ativo', color: '#ffc800' },
-                { label: 'Máx. Dispositivos', value: tenant?.max_devices || 50, color: '#00f5a0' },
-                { label: 'Dias Restantes', value: trialDays, color: '#00d9f5' },
+                { label: 'Status', value: tenant?.subscription_status === 'trial' ? 'Trial' : t('adminPlanActive'), color: '#ffc800' },
+                { label: t('adminMaxDevices'), value: tenant?.max_devices || 50, color: '#00f5a0' },
+                { label: t('adminDaysRemaining'), value: trialDays, color: '#00d9f5' },
               ].map((stat) => (
                 <div key={stat.label} style={{
                   padding: 24, borderRadius: 16, textAlign: 'center',
