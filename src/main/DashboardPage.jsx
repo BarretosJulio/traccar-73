@@ -770,7 +770,7 @@ const DashboardPage = () => {
 
               const handleClick = () => {
                 dispatch(devicesActions.selectId(device.id));
-                navigate('/map');
+                navigate('/app/map');
               };
 
               return (
