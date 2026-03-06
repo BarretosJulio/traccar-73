@@ -331,19 +331,18 @@ const LoginPage = () => {
               disabled={!email || !password || (codeEnabled && !code)}
               startIcon={<LoginIcon />}
               sx={{
-                bgcolor: 'rgba(255,255,255,0.15)',
-                color: '#fff',
+                bgcolor: '#fff',
+                color: '#1e293b',
                 py: 1.2,
                 fontSize: '0.875rem',
                 fontWeight: 700,
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255,255,255,0.2)',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
                 '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.25)',
+                  bgcolor: '#f1f5f9',
                 },
                 '&.Mui-disabled': {
-                  color: 'rgba(255,255,255,0.3)',
-                  bgcolor: 'rgba(255,255,255,0.05)',
+                  color: '#94a3b8',
+                  bgcolor: 'rgba(255,255,255,0.5)',
                 },
               }}
             >
