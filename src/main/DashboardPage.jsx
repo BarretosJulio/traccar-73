@@ -858,7 +858,7 @@ const DashboardPage = () => {
 
                       {/* Satellites */}
                       {satellites != null && (
-                        <Tooltip title={`${satellites} satélites`}>
+                        <Tooltip title={`${t('positionSat')}: ${satellites}`}>
                           <Box className={classes.metaItem}>
                             <SignalCellularAltIcon sx={{ fontSize: 13 }} />
                             {satellites}
