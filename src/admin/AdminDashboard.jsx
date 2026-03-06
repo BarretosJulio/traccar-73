@@ -95,7 +95,7 @@ const AdminDashboard = () => {
       setMessage(t('adminLogoSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setMessage('Erro ao enviar logo: ' + err.message);
+      setMessage(`${t('adminErrorLogo')}: ` + err.message);
     } finally {
       setUploadingLogo(false);
     }
