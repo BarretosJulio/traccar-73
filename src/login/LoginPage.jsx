@@ -272,13 +272,13 @@ const LoginPage = () => {
             <TextField
               required
               error={failed}
-              label={t('userEmail')}
+              placeholder={t('userEmail')}
               name="email"
               value={email}
               autoComplete="email"
               autoFocus={!email}
               onChange={(e) => setEmail(e.target.value)}
-              helperText={failed && 'Invalid username or password'}
+              helperText={failed && 'Usuário ou senha inválidos'}
               size="small"
               sx={lightInputSx}
             />
