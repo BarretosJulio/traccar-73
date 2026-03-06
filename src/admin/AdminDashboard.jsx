@@ -258,235 +258,251 @@ const AdminDashboard = () => {
         {/* PWA Tab */}
         {activeTab === 'pwa' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {/* Logo & Identity */}
-            <div style={cardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>
-                {t('adminVisualIdentity')}
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div>
-                  <label style={labelStyle}>{t('adminCompanyName')}</label>
-                  <input value={tenant?.company_name || ''} onChange={(e) => updateField('company_name', e.target.value)} style={inputStyle} />
-                </div>
-                <div>
-                  <label style={labelStyle}>{t('adminCompanyLogo')}</label>
-                  {tenant?.logo_url && (
-                    <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <img src={tenant.logo_url} alt="Logo" style={{
-                        maxWidth: 120, maxHeight: 60, width: 'auto', height: 'auto',
-                        borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
-                        objectFit: 'contain', background: 'rgba(255,255,255,0.05)', padding: 4,
-                      }} />
-                      <button onClick={() => updateField('logo_url', '')} style={{
-                        padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
-                        background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
-                        fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
-                      }}>Remover</button>
+            {/* 2-Column Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 480px), 1fr))',
+              gap: 24,
+            }}>
+              {/* Left Column */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                {/* Logo & Identity */}
+                <div style={cardStyle}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    🏢 {t('adminVisualIdentity')}
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div>
+                      <label style={labelStyle}>{t('adminCompanyName')}</label>
+                      <input value={tenant?.company_name || ''} onChange={(e) => updateField('company_name', e.target.value)} style={inputStyle} />
                     </div>
-                  )}
-                  <label style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                    padding: '14px 16px', borderRadius: 8, cursor: 'pointer',
-                    border: '2px dashed rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)',
-                    color: '#94a3b8', fontSize: 13, fontWeight: 600,
-                  }}>
-                    <span>{uploadingLogo ? t('adminUploading') : `📁 ${t('adminUploadLogo')}`}</span>
-                    <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingLogo} onChange={handleLogoUpload} />
-                  </label>
-                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>{t('adminFileMaxSize')}</p>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                  <div>
-                    <label style={labelStyle}>{t('adminPrimaryColor')}</label>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                      <input type="color" value={tenant?.color_primary || '#1a73e8'} onChange={(e) => updateField('color_primary', e.target.value)}
-                        style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
-                      <input value={tenant?.color_primary || ''} onChange={(e) => updateField('color_primary', e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                    </div>
-                  </div>
-                  <div>
-                    <label style={labelStyle}>{t('adminSecondaryColor')}</label>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                      <input type="color" value={tenant?.color_secondary || '#ffffff'} onChange={(e) => updateField('color_secondary', e.target.value)}
-                        style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
-                      <input value={tenant?.color_secondary || ''} onChange={(e) => updateField('color_secondary', e.target.value)} style={{ ...inputStyle, flex: 1 }} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* WhatsApp */}
-            <div style={cardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>WhatsApp</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div>
-                  <label style={labelStyle}>{t('adminWhatsappNumber')}</label>
-                  <input value={tenant?.whatsapp_number || ''} onChange={(e) => updateField('whatsapp_number', e.target.value)} placeholder="5511999999999" style={inputStyle} />
-                </div>
-                <div>
-                  <label style={labelStyle}>{t('adminDefaultMessage')}</label>
-                  <input value={tenant?.whatsapp_message || ''} onChange={(e) => updateField('whatsapp_message', e.target.value)} placeholder="Olá, preciso de suporte" style={inputStyle} />
-                </div>
-              </div>
-            </div>
-
-            {/* Technical Config */}
-            <div style={cardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>{t('adminTechnicalConfig')}</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div>
-                  <label style={labelStyle}>{t('adminTraccarUrl')}</label>
-                  <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
-                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
-                    URL do seu servidor Traccar (ex: https://demo.traccar.org)
-                  </p>
-                </div>
-                <div>
-                  <label style={labelStyle}>{t('adminCustomDomain')}</label>
-                  <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
-                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
-                    Opcional: configure um domínio próprio para seu app
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Login Page Customization */}
-            <div style={cardStyle}>
-              <div style={{ marginBottom: 20 }}>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  🎨 {t('adminLoginPageSection') || 'Tela de Login'}
-                </h3>
-                <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>
-                  {t('adminLoginPageDesc') || 'Personalize as cores e imagem de fundo da tela de login'}
-                </p>
-              </div>
-
-              {/* Color Pickers Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginBottom: 20 }}>
-                {/* Sidebar Color */}
-                <div style={{ padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginSidebarColor') || 'Cor do Painel Lateral'}</label>
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <div style={{
-                      width: 48, height: 48, borderRadius: 10, overflow: 'hidden',
-                      border: `2px solid ${tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'}`,
-                      boxShadow: `0 0 12px ${(tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e')}40`,
-                      flexShrink: 0, position: 'relative', cursor: 'pointer',
-                    }}>
-                      <input type="color" value={tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'} onChange={(e) => updateField('login_sidebar_color', e.target.value)}
-                        style={{ position: 'absolute', inset: -4, width: 'calc(100% + 8px)', height: 'calc(100% + 8px)', border: 'none', cursor: 'pointer', background: 'transparent' }} />
-                    </div>
-                    <input value={tenant?.login_sidebar_color || ''} onChange={(e) => updateField('login_sidebar_color', e.target.value)} placeholder={tenant?.color_primary || '#0f766e'}
-                      style={{ ...inputStyle, flex: 1, borderLeft: `3px solid ${tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'}` }} />
-                  </div>
-                </div>
-
-                {/* Background Color */}
-                <div style={{ padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgColor') || 'Cor de Fundo'}</label>
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <div style={{
-                      width: 48, height: 48, borderRadius: 10, overflow: 'hidden',
-                      border: `2px solid ${tenant?.login_bg_color || '#f5f7fa'}`,
-                      boxShadow: `0 0 12px ${(tenant?.login_bg_color || '#f5f7fa')}40`,
-                      flexShrink: 0, position: 'relative', cursor: 'pointer',
-                    }}>
-                      <input type="color" value={tenant?.login_bg_color || '#f5f7fa'} onChange={(e) => updateField('login_bg_color', e.target.value)}
-                        style={{ position: 'absolute', inset: -4, width: 'calc(100% + 8px)', height: 'calc(100% + 8px)', border: 'none', cursor: 'pointer', background: 'transparent' }} />
-                    </div>
-                    <input value={tenant?.login_bg_color || ''} onChange={(e) => updateField('login_bg_color', e.target.value)} placeholder="#f5f7fa"
-                      style={{ ...inputStyle, flex: 1, borderLeft: `3px solid ${tenant?.login_bg_color || '#f5f7fa'}` }} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Background Image Upload */}
-              <div style={{ marginBottom: 20 }}>
-                <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgImage') || 'Imagem de Fundo'}</label>
-                {tenant?.login_bg_image ? (
-                  <div style={{
-                    position: 'relative', borderRadius: 12, overflow: 'hidden', height: 120,
-                    backgroundImage: `url(${tenant.login_bg_image})`, backgroundSize: 'cover', backgroundPosition: 'center',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                  }}>
-                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+                    <div>
+                      <label style={labelStyle}>{t('adminCompanyLogo')}</label>
+                      {tenant?.logo_url && (
+                        <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+                          <img src={tenant.logo_url} alt="Logo" style={{
+                            maxWidth: 120, maxHeight: 60, width: 'auto', height: 'auto',
+                            borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
+                            objectFit: 'contain', background: 'rgba(255,255,255,0.05)', padding: 4,
+                          }} />
+                          <button onClick={() => updateField('logo_url', '')} style={{
+                            padding: '6px 14px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
+                            background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
+                            fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
+                          }}>Remover</button>
+                        </div>
+                      )}
                       <label style={{
-                        padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
-                        background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 13, fontWeight: 600,
-                        backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                        padding: '14px 16px', borderRadius: 8, cursor: 'pointer',
+                        border: '2px dashed rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)',
+                        color: '#94a3b8', fontSize: 13, fontWeight: 600,
                       }}>
-                        🔄 {t('adminChangeImage') || 'Trocar'}
+                        <span>{uploadingLogo ? t('adminUploading') : `📁 ${t('adminUploadLogo')}`}</span>
+                        <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingLogo} onChange={handleLogoUpload} />
+                      </label>
+                      <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>{t('adminFileMaxSize')}</p>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                      <div>
+                        <label style={labelStyle}>{t('adminPrimaryColor')}</label>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <input type="color" value={tenant?.color_primary || '#1a73e8'} onChange={(e) => updateField('color_primary', e.target.value)}
+                            style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
+                          <input value={tenant?.color_primary || ''} onChange={(e) => updateField('color_primary', e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+                        </div>
+                      </div>
+                      <div>
+                        <label style={labelStyle}>{t('adminSecondaryColor')}</label>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <input type="color" value={tenant?.color_secondary || '#ffffff'} onChange={(e) => updateField('color_secondary', e.target.value)}
+                            style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
+                          <input value={tenant?.color_secondary || ''} onChange={(e) => updateField('color_secondary', e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* WhatsApp */}
+                <div style={cardStyle}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    💬 WhatsApp
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div>
+                      <label style={labelStyle}>{t('adminWhatsappNumber')}</label>
+                      <input value={tenant?.whatsapp_number || ''} onChange={(e) => updateField('whatsapp_number', e.target.value)} placeholder="5511999999999" style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>{t('adminDefaultMessage')}</label>
+                      <input value={tenant?.whatsapp_message || ''} onChange={(e) => updateField('whatsapp_message', e.target.value)} placeholder="Olá, preciso de suporte" style={inputStyle} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                {/* Login Page Customization */}
+                <div style={cardStyle}>
+                  <div style={{ marginBottom: 20 }}>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                      🎨 {t('adminLoginPageSection') || 'Tela de Login'}
+                    </h3>
+                    <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>
+                      {t('adminLoginPageDesc') || 'Personalize as cores e imagem de fundo da tela de login'}
+                    </p>
+                  </div>
+
+                  {/* Color Pickers */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                    <div style={{ padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginSidebarColor') || 'Cor do Painel Lateral'}</label>
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <div style={{
+                          width: 44, height: 44, borderRadius: 10, overflow: 'hidden',
+                          border: `2px solid ${tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'}`,
+                          boxShadow: `0 0 12px ${(tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e')}40`,
+                          flexShrink: 0, position: 'relative', cursor: 'pointer',
+                        }}>
+                          <input type="color" value={tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'} onChange={(e) => updateField('login_sidebar_color', e.target.value)}
+                            style={{ position: 'absolute', inset: -4, width: 'calc(100% + 8px)', height: 'calc(100% + 8px)', border: 'none', cursor: 'pointer', background: 'transparent' }} />
+                        </div>
+                        <input value={tenant?.login_sidebar_color || ''} onChange={(e) => updateField('login_sidebar_color', e.target.value)} placeholder={tenant?.color_primary || '#0f766e'}
+                          style={{ ...inputStyle, flex: 1, borderLeft: `3px solid ${tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'}` }} />
+                      </div>
+                    </div>
+
+                    <div style={{ padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgColor') || 'Cor de Fundo'}</label>
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <div style={{
+                          width: 44, height: 44, borderRadius: 10, overflow: 'hidden',
+                          border: `2px solid ${tenant?.login_bg_color || '#f5f7fa'}`,
+                          boxShadow: `0 0 12px ${(tenant?.login_bg_color || '#f5f7fa')}40`,
+                          flexShrink: 0, position: 'relative', cursor: 'pointer',
+                        }}>
+                          <input type="color" value={tenant?.login_bg_color || '#f5f7fa'} onChange={(e) => updateField('login_bg_color', e.target.value)}
+                            style={{ position: 'absolute', inset: -4, width: 'calc(100% + 8px)', height: 'calc(100% + 8px)', border: 'none', cursor: 'pointer', background: 'transparent' }} />
+                        </div>
+                        <input value={tenant?.login_bg_color || ''} onChange={(e) => updateField('login_bg_color', e.target.value)} placeholder="#f5f7fa"
+                          style={{ ...inputStyle, flex: 1, borderLeft: `3px solid ${tenant?.login_bg_color || '#f5f7fa'}` }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Background Image Upload */}
+                  <div style={{ marginBottom: 20 }}>
+                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgImage') || 'Imagem de Fundo'}</label>
+                    {tenant?.login_bg_image ? (
+                      <div style={{
+                        position: 'relative', borderRadius: 12, overflow: 'hidden', height: 120,
+                        backgroundImage: `url(${tenant.login_bg_image})`, backgroundSize: 'cover', backgroundPosition: 'center',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                      }}>
+                        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+                          <label style={{
+                            padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
+                            background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 13, fontWeight: 600,
+                            backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)',
+                          }}>
+                            🔄 {t('adminChangeImage') || 'Trocar'}
+                            <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
+                          </label>
+                          <button onClick={() => updateField('login_bg_image', '')} style={{
+                            padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(255,100,100,0.3)',
+                            background: 'rgba(255,80,80,0.2)', color: '#ff8a8a', cursor: 'pointer',
+                            fontSize: 13, fontWeight: 600, fontFamily: 'inherit', backdropFilter: 'blur(4px)',
+                          }}>✕ {t('sharedRemove')}</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <label style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
+                        padding: '24px 16px', borderRadius: 12, cursor: 'pointer',
+                        border: '2px dashed rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)',
+                        color: '#64748b', transition: 'all 0.2s',
+                      }}>
+                        <span style={{ fontSize: 28 }}>🖼️</span>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{uploadingBgImage ? t('adminUploading') : (t('adminUploadBgImage') || 'Enviar imagem de fundo')}</span>
+                        <span style={{ fontSize: 11, color: '#475569' }}>{t('adminFileMaxSize')}</span>
                         <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
                       </label>
-                      <button onClick={() => updateField('login_bg_image', '')} style={{
-                        padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(255,100,100,0.3)',
-                        background: 'rgba(255,80,80,0.2)', color: '#ff8a8a', cursor: 'pointer',
-                        fontSize: 13, fontWeight: 600, fontFamily: 'inherit', backdropFilter: 'blur(4px)',
-                      }}>✕ {t('sharedRemove')}</button>
-                    </div>
-                  </div>
-                ) : (
-                  <label style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    padding: '24px 16px', borderRadius: 12, cursor: 'pointer',
-                    border: '2px dashed rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)',
-                    color: '#64748b', transition: 'all 0.2s',
-                  }}>
-                    <span style={{ fontSize: 28 }}>🖼️</span>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>{uploadingBgImage ? t('adminUploading') : (t('adminUploadBgImage') || 'Enviar imagem de fundo')}</span>
-                    <span style={{ fontSize: 11, color: '#475569' }}>{t('adminFileMaxSize')}</span>
-                    <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
-                  </label>
-                )}
-              </div>
-
-              {/* Realistic Preview */}
-              <div>
-                <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginPreview') || 'Pré-visualização'}</label>
-                <div style={{
-                  display: 'flex', height: 140, borderRadius: 12, overflow: 'hidden',
-                  border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                }}>
-                  {/* Sidebar Preview */}
-                  <div style={{
-                    width: 80,
-                    background: `linear-gradient(180deg, ${tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'} 0%, ${(tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e')}cc 100%)`,
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8,
-                  }}>
-                    <div style={{ width: 28, height: 28, borderRadius: 6, background: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ width: 14, height: 14, borderRadius: 3, background: 'rgba(255,255,255,0.5)' }} />
-                    </div>
-                    <div style={{ width: 36, height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.2)' }} />
-                  </div>
-                  {/* Content Preview */}
-                  <div style={{
-                    flex: 1, position: 'relative',
-                    background: tenant?.login_bg_image
-                      ? `url(${tenant.login_bg_image}) center/cover`
-                      : (tenant?.login_bg_color || '#f5f7fa'),
-                  }}>
-                    {tenant?.login_bg_image && (
-                      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
                     )}
+                  </div>
+
+                  {/* Realistic Preview */}
+                  <div>
+                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginPreview') || 'Pré-visualização'}</label>
                     <div style={{
-                      position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column',
-                      alignItems: 'center', justifyContent: 'center', height: '100%', gap: 6, padding: 16,
+                      display: 'flex', height: 200, borderRadius: 12, overflow: 'hidden',
+                      border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
                     }}>
-                      <div style={{ width: '60%', height: 6, borderRadius: 3, background: tenant?.login_bg_image ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.08)' }} />
-                      <div style={{ width: '50%', height: 6, borderRadius: 3, background: tenant?.login_bg_image ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.06)' }} />
                       <div style={{
-                        width: '40%', height: 12, borderRadius: 4, marginTop: 4,
-                        background: tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e',
-                        opacity: 0.8,
-                      }} />
+                        width: 100,
+                        background: `linear-gradient(180deg, ${tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e'} 0%, ${(tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e')}cc 100%)`,
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10,
+                      }}>
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 16, height: 16, borderRadius: 4, background: 'rgba(255,255,255,0.5)' }} />
+                        </div>
+                        <div style={{ width: 40, height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.2)' }} />
+                        <div style={{ width: 36, height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.15)' }} />
+                        <div style={{ width: 44, height: 10, borderRadius: 4, background: 'rgba(255,255,255,0.2)', marginTop: 6 }} />
+                      </div>
+                      <div style={{
+                        flex: 1, position: 'relative',
+                        background: tenant?.login_bg_image
+                          ? `url(${tenant.login_bg_image}) center/cover`
+                          : (tenant?.login_bg_color || '#f5f7fa'),
+                      }}>
+                        {tenant?.login_bg_image && (
+                          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
+                        )}
+                        <div style={{
+                          position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column',
+                          alignItems: 'center', justifyContent: 'center', height: '100%', gap: 8, padding: 20,
+                        }}>
+                          <div style={{ width: '60%', height: 6, borderRadius: 3, background: tenant?.login_bg_image ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.08)' }} />
+                          <div style={{ width: '50%', height: 6, borderRadius: 3, background: tenant?.login_bg_image ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.06)' }} />
+                          <div style={{
+                            width: '40%', height: 14, borderRadius: 5, marginTop: 6,
+                            background: tenant?.login_sidebar_color || tenant?.color_primary || '#0f766e',
+                            opacity: 0.8,
+                          }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Technical Config */}
+                <div style={cardStyle}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    ⚙️ {t('adminTechnicalConfig')}
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div>
+                      <label style={labelStyle}>{t('adminTraccarUrl')}</label>
+                      <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
+                      <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
+                        URL do seu servidor Traccar (ex: https://demo.traccar.org)
+                      </p>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>{t('adminCustomDomain')}</label>
+                      <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
+                      <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
+                        Opcional: configure um domínio próprio para seu app
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
+            {/* Message + Save Button - Full Width */}
             {message && (
               <p style={{
                 textAlign: 'center', fontSize: 14, fontWeight: 600, margin: 0,
@@ -495,12 +511,13 @@ const AdminDashboard = () => {
             )}
 
             <button onClick={handleSave} disabled={saving} style={{
-              width: '100%', padding: '14px 0', borderRadius: 10, border: 'none',
-              cursor: 'pointer', fontWeight: 700, fontSize: 15, fontFamily: 'inherit',
+              width: '100%', padding: '16px 0', borderRadius: 12, border: 'none',
+              cursor: saving ? 'default' : 'pointer', fontWeight: 700, fontSize: 16, fontFamily: 'inherit',
               background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
-              opacity: saving ? 0.5 : 1,
+              opacity: saving ? 0.5 : 1, transition: 'opacity 0.2s, transform 0.1s',
+              letterSpacing: '0.02em',
             }}>
-              {saving ? t('adminSaving') : t('adminSaveChanges')}
+              {saving ? t('adminSaving') : `💾 ${t('adminSaveChanges')}`}
             </button>
           </div>
         )}
