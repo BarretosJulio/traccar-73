@@ -24,7 +24,7 @@ const OnboardingPage = () => {
   };
 
   const canAdvance = () => {
-    if (step === 1) return form.company_name.trim().length >= 3 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.owner_email);
+    if (step === 1) return form.company_name.trim().length >= 3 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.owner_email) && form.password.length >= 6;
     if (step === 2) {
       try { new URL(form.traccar_url); return true; } catch { return false; }
     }
