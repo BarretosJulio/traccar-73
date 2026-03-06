@@ -52,6 +52,9 @@ const AdminDashboard = () => {
           logo_url: tenant.logo_url,
           custom_domain: tenant.custom_domain,
           traccar_url: tenant.traccar_url,
+          login_sidebar_color: tenant.login_sidebar_color,
+          login_bg_image: tenant.login_bg_image,
+          login_bg_color: tenant.login_bg_color,
         })
         .eq('id', tenant.id);
       if (error) throw error;
