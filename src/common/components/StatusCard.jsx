@@ -461,6 +461,9 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     </div>
                   )}
 
+                  {/* Quick Actions */}
+                  <QuickActionsBar deviceId={deviceId} position={position} attrs={attrs} />
+
                   {/* Address */}
                   {position.address && (
                     <Box sx={{ display: 'flex', gap: 0.4, mb: 0.3, alignItems: 'center' }}>
