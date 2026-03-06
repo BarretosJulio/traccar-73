@@ -48,7 +48,7 @@ const GroupsPage = () => {
     key: 'connections',
     title: t('sharedConnections'),
     icon: <LinkIcon fontSize="small" />,
-    handler: (groupId) => navigate(`/settings/group/${groupId}/connections`),
+    handler: (groupId) => navigate(`/app/settings/group/${groupId}/connections`),
   };
 
   return (

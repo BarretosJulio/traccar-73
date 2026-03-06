@@ -176,7 +176,7 @@ const EventReportPage = () => {
       report.attributes.types = eventTypes.join(',');
     }
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate('/app/reports/scheduled');
   });
 
   const formatValue = (item, key) => {

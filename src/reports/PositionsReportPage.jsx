@@ -107,7 +107,7 @@ const PositionsReportPage = () => {
   const onSchedule = useCatch(async (deviceIds, groupIds, report) => {
     report.type = 'route';
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate('/app/reports/scheduled');
   });
 
   return (

@@ -111,7 +111,7 @@ const SummaryReportPage = () => {
     report.type = 'summary';
     report.attributes.daily = daily;
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate('/app/reports/scheduled');
   });
 
   const formatValue = (item, key) => {

@@ -160,7 +160,7 @@ const TripReportPage = () => {
   const onSchedule = useCatch(async (deviceIds, groupIds, report) => {
     report.type = 'trips';
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate('/app/reports/scheduled');
   });
 
   const navigateToReplay = (item) => {

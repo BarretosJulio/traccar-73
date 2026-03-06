@@ -87,7 +87,7 @@ const DevicesPage = () => {
     key: 'connections',
     title: t('sharedConnections'),
     icon: <LinkIcon fontSize="small" />,
-    handler: (deviceId) => navigate(`/settings/device/${deviceId}/connections`),
+    handler: (deviceId) => navigate(`/app/settings/device/${deviceId}/connections`),
   };
 
   return (

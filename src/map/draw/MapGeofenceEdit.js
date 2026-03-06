@@ -81,7 +81,7 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
           body: JSON.stringify(newItem),
         });
         const item = await response.json();
-        navigate(`/settings/geofence/${item.id}`);
+        navigate(`/app/settings/geofence/${item.id}`);
       } catch (error) {
         dispatch(errorsActions.push(error.message));
       }

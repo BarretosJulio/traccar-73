@@ -67,7 +67,7 @@ const EventsDrawer = ({ open, onClose }) => {
         {events.map((event) => (
           <ListItemButton
             key={event.id}
-            onClick={() => navigate(`/event/${event.id}`)}
+            onClick={() => navigate(`/app/event/${event.id}`)}
             disabled={!event.id}
             sx={{ borderRadius: '12px', mx: 1, mb: 0.5 }}
           >
