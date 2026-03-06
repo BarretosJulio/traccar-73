@@ -526,7 +526,7 @@ const AdminDashboard = () => {
               background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
             }}>
               <p style={{ color: '#64748b', fontSize: 14 }}>
-                📊 Estatísticas detalhadas estarão disponíveis em breve.
+                📊 {t('adminStatsComingSoon')}
               </p>
             </div>
           </div>
