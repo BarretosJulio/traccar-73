@@ -672,10 +672,10 @@ const DashboardPage = () => {
         }}>
           <ScienceIcon sx={{ color: '#f59e0b', fontSize: 14 }} />
           <Typography sx={{ color: '#fbbf24', fontWeight: 600, fontSize: '0.7rem', flex: 1 }}>
-            Modo demo ativo
+            {t('dashboardDemoActive')}
           </Typography>
           <Chip
-            label="Sair"
+            label={t('dashboardExit')}
             size="small"
             onClick={() => setDemoMode?.(false)}
             sx={{ height: 20, fontSize: '0.6rem', bgcolor: 'rgba(245,158,11,0.2)', color: '#fbbf24', fontWeight: 700, cursor: 'pointer', '&:hover': { bgcolor: 'rgba(245,158,11,0.35)' } }}
