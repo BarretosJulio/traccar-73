@@ -36,7 +36,6 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     }}
   >
-    {/* Glow pill behind active icon */}
     <Box
       sx={{
         display: 'flex',
@@ -51,7 +50,7 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         '& .MuiSvgIcon-root': {
           fontSize: active ? '1.3rem' : '1.2rem',
-          color: active ? '#2dd4bf' : 'rgba(255,255,255,0.4)',
+          color: active ? '#2dd4bf' : 'rgba(255,255,255,0.55)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           filter: active ? 'drop-shadow(0 0 8px rgba(45,212,191,0.5))' : 'none',
         },
@@ -67,7 +66,7 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
       sx={{
         fontSize: '0.6rem',
         fontWeight: active ? 700 : 500,
-        color: active ? '#2dd4bf' : 'rgba(255,255,255,0.35)',
+        color: active ? '#2dd4bf' : 'rgba(255,255,255,0.5)',
         letterSpacing: '0.03em',
         textTransform: 'uppercase',
         transition: 'all 0.3s ease',
@@ -76,7 +75,6 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
     >
       {label}
     </Typography>
-    {/* Active indicator dot */}
     <Box
       sx={{
         width: 4,

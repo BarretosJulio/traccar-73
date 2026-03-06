@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Divider, Typography, IconButton, Toolbar, Paper } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
+import { Divider, Typography, IconButton, Toolbar, Paper, Tooltip } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { useNavigate } from 'react-router-dom';
@@ -95,9 +94,11 @@ const GeofencesPage = () => {
       <div className={classes.content}>
         <Paper square className={classes.drawer}>
           <Toolbar>
-            <IconButton edge="start" sx={{ mr: 2 }} onClick={() => navigate(-1)}>
-              <BackIcon />
-            </IconButton>
+            <Tooltip title={t('sharedBack')}>
+              <IconButton edge="start" sx={{ mr: 2 }} onClick={() => navigate(-1)}>
+                <BackIcon />
+              </IconButton>
+            </Tooltip>
             <Typography variant="h6" className={classes.title}>
               {t('sharedGeofences')}
             </Typography>
@@ -109,11 +110,11 @@ const GeofencesPage = () => {
                 className={classes.fileInput}
                 onChange={handleFile}
               />
-              <IconButton edge="end" component="span" onClick={() => {}}>
-                <Tooltip title={t('sharedUpload')}>
+              <Tooltip title={t('sharedUpload')}>
+                <IconButton edge="end" component="span" onClick={() => {}}>
                   <UploadFileIcon />
-                </Tooltip>
-              </IconButton>
+                </IconButton>
+              </Tooltip>
             </label>
           </Toolbar>
           <Divider />

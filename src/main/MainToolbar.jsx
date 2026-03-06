@@ -79,13 +79,15 @@ const MainToolbar = ({
 
   return (
     <Toolbar ref={toolbarRef} className={classes.toolbar}>
-      <IconButton
-        edge="start"
-        onClick={() => setDevicesOpen(!devicesOpen)}
-        sx={{ borderRadius: '12px' }}
-      >
-        {devicesOpen ? <MapIcon /> : <DnsIcon />}
-      </IconButton>
+      <Tooltip title={devicesOpen ? t('mapTitle') : t('deviceTitle')}>
+        <IconButton
+          edge="start"
+          onClick={() => setDevicesOpen(!devicesOpen)}
+          sx={{ borderRadius: '12px' }}
+        >
+          {devicesOpen ? <MapIcon /> : <DnsIcon />}
+        </IconButton>
+      </Tooltip>
       <OutlinedInput
         ref={inputRef}
         placeholder={t('sharedSearchDevices')}
@@ -100,15 +102,17 @@ const MainToolbar = ({
         }
         endAdornment={
           <InputAdornment position="end">
-            <IconButton size="small" edge="end" onClick={() => setFilterAnchorEl(inputRef.current)}>
-              <Badge
-                color="info"
-                variant="dot"
-                invisible={!filter.statuses.length && !filter.groups.length}
-              >
-                <TuneIcon fontSize="small" />
-              </Badge>
-            </IconButton>
+            <Tooltip title={t('sharedSearch')}>
+              <IconButton size="small" edge="end" onClick={() => setFilterAnchorEl(inputRef.current)}>
+                <Badge
+                  color="info"
+                  variant="dot"
+                  invisible={!filter.statuses.length && !filter.groups.length}
+                >
+                  <TuneIcon fontSize="small" />
+                </Badge>
+              </IconButton>
+            </Tooltip>
           </InputAdornment>
         }
         size="small"
@@ -208,29 +212,27 @@ const MainToolbar = ({
           </FormGroup>
         </div>
       </Popover>
-      <IconButton
-        edge="end"
-        onClick={() => navigate('/app/settings/device')}
-        disabled={deviceReadonly}
-        sx={{
-          borderRadius: '12px',
-          bgcolor: 'primary.main',
-          color: 'primary.contrastText',
-          width: 36,
-          height: 36,
-          '&:hover': {
-            bgcolor: 'primary.dark',
-          },
-        }}
-      >
-        <Tooltip
-          open={!deviceReadonly && Object.keys(devices).length === 0}
-          title={t('deviceRegisterFirst')}
-          arrow
-        >
-          <AddIcon fontSize="small" />
-        </Tooltip>
-      </IconButton>
+      <Tooltip title={!deviceReadonly ? t('sharedAdd') : ''}>
+        <span>
+          <IconButton
+            edge="end"
+            onClick={() => navigate('/app/settings/device')}
+            disabled={deviceReadonly}
+            sx={{
+              borderRadius: '12px',
+              bgcolor: 'primary.main',
+              color: (th) => th.palette.mode === 'dark' ? '#1e293b' : 'primary.contrastText',
+              width: 36,
+              height: 36,
+              '&:hover': {
+                bgcolor: 'primary.dark',
+              },
+            }}
+          >
+            <AddIcon fontSize="small" />
+          </IconButton>
+        </span>
+      </Tooltip>
     </Toolbar>
   );
 };
