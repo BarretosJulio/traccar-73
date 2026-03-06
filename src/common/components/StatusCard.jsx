@@ -51,7 +51,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';
 import { useDeviceReadonly, useRestriction } from '../util/permissions';
-import { devicesActions } from '../../store';
+import { devicesActions, errorsActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
 import { useAttributePreference } from '../util/preferences';
 import { formatAlarm, formatBoolean } from '../util/formatter';
