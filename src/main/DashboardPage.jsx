@@ -617,16 +617,16 @@ const DashboardPage = () => {
               }}
             />
             <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              {socket ? 'Tempo Real' : 'Desconectado'}
+              {socket ? t('dashboardRealTime') : t('dashboardDisconnected')}
             </Typography>
           </Box>
           <Typography className={classes.greeting}>
-            {user?.name ? `Olá, ${user.name}` : 'Dashboard'}
+            {user?.name ? t('dashboardGreeting').replace('{0}', user.name) : t('dashboardTitle')}
           </Typography>
           <Typography className={classes.subtitle}>
             {deviceStats.total > 0
-              ? `${deviceStats.online} de ${deviceStats.total} veículos online · ${deviceStats.moving} em movimento`
-              : 'Painel de controle de frota'}
+              ? t('dashboardFleetStatus').replace('{0}', deviceStats.online).replace('{1}', deviceStats.total).replace('{2}', deviceStats.moving)
+              : t('dashboardFleetPanel')}
           </Typography>
         </div>
         <Box sx={{ display: 'flex', gap: 1, zIndex: 1, alignItems: 'center' }}>
