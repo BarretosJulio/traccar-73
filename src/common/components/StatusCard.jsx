@@ -670,7 +670,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
                   {/* More details */}
                   <Typography sx={{ fontSize: '0.62rem', mt: 0.2 }}>
-                    <Link component={RouterLink} to={`/app/position/${position.id}`}>
+                    <Link
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); setPositionDialogOpen(true); }}
+                    >
                       {t('sharedShowDetails')}
                     </Link>
                   </Typography>
