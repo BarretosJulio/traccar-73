@@ -237,9 +237,13 @@ const LoginPage = () => {
               onChange={(e) => setLocalLanguage(e.target.value)}
               sx={{
                 color: '#fff',
-                '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.3)' },
+                bgcolor: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(8px)',
+                borderRadius: '10px',
+                fontWeight: 600,
+                '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.25)' },
                 '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.5)' },
-                '.MuiSvgIcon-root': { color: 'rgba(255,255,255,0.7)' },
+                '.MuiSvgIcon-root': { color: '#fff' },
               }}
             >
               {languageList.map((it) => (
