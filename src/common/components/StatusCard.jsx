@@ -309,7 +309,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ deviceId: position.deviceId, geofenceId: item.id }),
     });
-    navigate(`/settings/geofence/${item.id}`);
+    navigate(`/app/settings/geofence/${item.id}`);
   }, [navigate, position]);
 
   // Build chips
