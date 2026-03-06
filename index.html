@@ -40,5 +40,16 @@
     <div id="root" class="root"></div>
     <div class="loader"></div>
     <script type="module" src="/src/index.jsx" onerror="alert('Loading error.')"></script>
+    <script>
+      // Hide the initial loader once React mounts
+      const observer = new MutationObserver(() => {
+        if (document.getElementById('root')?.children.length > 0) {
+          const loader = document.querySelector('.loader');
+          if (loader) loader.style.display = 'none';
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.getElementById('root'), { childList: true });
+    </script>
   </body>
 </html>
