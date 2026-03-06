@@ -1,1 +1,4 @@
 project_id = "foifugnuaehjtjftpkrk"
+
+[functions.traccar-proxy]
+verify_jwt = false
