@@ -146,7 +146,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             <Tooltip title={t('sharedBack')}>
               <IconButton
                 size="small"
-                onClick={() => navigate('/app')}
+                onClick={() => navigate(-1)}
                 sx={{ mr: 1.5 }}
               >
                 <ArrowBackIcon fontSize="small" />
