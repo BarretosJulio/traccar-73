@@ -31,6 +31,7 @@ export type Database = {
           traccar_url: string
           trial_ends_at: string | null
           updated_at: string
+          user_id: string | null
           whatsapp_message: string | null
           whatsapp_number: string | null
         }
@@ -50,6 +51,7 @@ export type Database = {
           traccar_url: string
           trial_ends_at?: string | null
           updated_at?: string
+          user_id?: string | null
           whatsapp_message?: string | null
           whatsapp_number?: string | null
         }
@@ -69,6 +71,7 @@ export type Database = {
           traccar_url?: string
           trial_ends_at?: string | null
           updated_at?: string
+          user_id?: string | null
           whatsapp_message?: string | null
           whatsapp_number?: string | null
         }
