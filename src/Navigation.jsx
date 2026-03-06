@@ -1,4 +1,5 @@
 import { Route, Routes, useSearchParams } from 'react-router-dom';
+import LandingPage from './landing/LandingPage';
 import { useDispatch } from 'react-redux';
 import DashboardPage from './main/DashboardPage';
 import MapPage from './main/MapPage';
@@ -114,6 +115,7 @@ const Navigation = () => {
   }
   return (
     <Routes>
+      <Route path="/landing" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
