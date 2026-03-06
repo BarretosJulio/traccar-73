@@ -296,6 +296,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   });
 
   const handleGeofence = useCatchCallback(async () => {
+    if (demoMode) {
+      dispatch(errorsActions.push('Função indisponível no modo demo'));
+      return;
+    }
     const newItem = {
       name: t('sharedGeofence'),
       area: `CIRCLE (${position.latitude} ${position.longitude}, 50)`,
@@ -312,7 +316,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       body: JSON.stringify({ deviceId: position.deviceId, geofenceId: item.id }),
     });
     navigate(`/app/settings/geofence/${item.id}`);
-  }, [navigate, position]);
+  }, [navigate, position, demoMode]);
 
   // Build chips
   const chips = [];
