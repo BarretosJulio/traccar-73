@@ -41,13 +41,13 @@ const buildSegments = (events, fromTimestamp, toTimestamp) => {
   return segments;
 };
 
-const MotionController = () => {
+const MotionController = ({ demoMode = false }) => {
   const dispatch = useDispatch();
 
   const deviceSecondary = useAttributePreference('deviceSecondary', '');
 
   useEffectAsync(async () => {
-    if (deviceSecondary !== 'motion') {
+    if (demoMode || deviceSecondary !== 'motion') {
       dispatch(motionActions.clear());
       return;
     }
@@ -95,7 +95,7 @@ const MotionController = () => {
       active = false;
       clearInterval(interval);
     };
-  }, [deviceSecondary]);
+  }, [demoMode, deviceSecondary]);
 
   return null;
 };

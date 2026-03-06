@@ -90,7 +90,7 @@ const App = () => {
       <SocketController demoMode={demoMode} />
       <CachingController demoMode={demoMode} />
       <UpdateController />
-      <MotionController />
+      <MotionController demoMode={demoMode} />
       <DemoController active={demoMode} />
       {desktop && isSettingsRoute && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
