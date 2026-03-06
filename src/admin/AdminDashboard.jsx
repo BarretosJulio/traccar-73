@@ -262,7 +262,7 @@ const AdminDashboard = () => {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div>
-                    <label style={labelStyle}>Cor Principal</label>
+                    <label style={labelStyle}>{t('adminPrimaryColor')}</label>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <input type="color" value={tenant?.color_primary || '#1a73e8'} onChange={(e) => updateField('color_primary', e.target.value)}
                         style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
