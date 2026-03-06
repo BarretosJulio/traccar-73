@@ -1,33 +1,41 @@
 
 
-# Modernizar Controles do Mapa + Botão WhatsApp
+## Auditoria de Contraste — Problemas Identificados e Correções
 
-## O que será feito
+### Problema Principal: `contrastText` incorreto no Dark Mode
 
-1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
-2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
+No `palette.js`, `primary.contrastText` é `#ffffff` (branco), mas no dark mode o `primary.main` é `#5eead4` (teal claro). Branco sobre teal claro tem contraste péssimo (~1.6:1). Isso afeta **todos os botões `contained`** do MUI globalmente — login, save, ações, etc.
 
-## Mudanças Técnicas
+Alguns componentes já corrigem isso manualmente (`MenuItem.jsx`, `CollectionFab.jsx`, `MainToolbar.jsx` usam `#1e293b` no dark mode), mas a correção correta é no tema.
 
-### 1. CSS Global dos controles do mapa (`public/styles.css`)
-- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
-- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
-- Adicionar separadores sutis entre botões
-- Manter responsivo para mobile
+### Problemas Encontrados
 
-### 2. Geocoder (`src/map/geocoder/geocoder.css`)
-- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
-- Border-radius mais arredondado, sombra premium
+| Local | Problema | Correção |
+|---|---|---|
+| `palette.js` L18 | `contrastText: '#ffffff'` fixo | Mudar para dinâmico: dark → `#0f172a`, light → `#ffffff` |
+| `LoginPage.jsx` L303 | `color: 'white'` hardcoded no botão | Remover override, usar `contrastText` do tema |
+| `LoginPage.jsx` L322 | `color: 'white'` no botão OpenID | Idem |
+| `public/styles.css` L92 | Ícones do mapa `invert(0.7)` = 70% branco, baixo contraste | Aumentar para `invert(0.85)` |
+| `public/styles.css` L88 | Separadores entre botões do mapa quase invisíveis | Aumentar opacidade de `0.06` para `0.1` |
+| `BottomMenu.jsx` L53 | Ícones inativos `rgba(255,255,255,0.55)` | Já aceitável, mas subir para `0.6` |
 
-### 3. Notificação (`src/map/notification/notification.css`)
-- Atualizar ícones SVG com cores teal para combinar com o tema
+### Arquivos a Modificar
 
-### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
-- Criar controle customizado maplibre similar ao `MapNotification`
-- Ícone WhatsApp em SVG verde
-- Ao clicar, abre `https://wa.me/{numero}` em nova aba
-- Número configurável via atributos do servidor ou hardcoded
+**1. `src/common/theme/palette.js`**
+- Mudar `contrastText` do primary para ser dinâmico: `darkMode ? '#0f172a' : '#ffffff'`
+- Isso corrige automaticamente todos os botões contained do app
 
-### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
-- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
+**2. `src/login/LoginPage.jsx`**
+- Remover `color: 'white'` hardcoded dos botões (linhas 303 e 322)
+- O tema agora fornece o contrastText correto
+
+**3. `public/styles.css`**
+- Ícones do mapa: `invert(0.7)` → `invert(0.85)` para maior visibilidade
+- Separadores: `rgba(255, 255, 255, 0.06)` → `rgba(255, 255, 255, 0.1)`
+
+**4. `src/common/components/BottomMenu.jsx`**
+- Ícones inativos: `rgba(255,255,255,0.55)` → `rgba(255,255,255,0.6)`
+
+**5. Limpeza de overrides manuais** (já funcionam, podem ser simplificados)
+- `MenuItem.jsx`, `CollectionFab.jsx`, `MainToolbar.jsx`: trocar condicionais por `'primary.contrastText'` (agora que o tema está correto)
 
