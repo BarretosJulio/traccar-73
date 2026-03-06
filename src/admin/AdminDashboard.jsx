@@ -9,6 +9,7 @@ const AdminDashboard = () => {
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('pwa');
   const [message, setMessage] = useState('');
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
