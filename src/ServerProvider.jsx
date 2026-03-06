@@ -9,7 +9,7 @@ import Loader from './common/components/Loader';
 import { apiUrl } from './common/util/apiUrl';
 
 // Routes that don't need the Traccar server to be loaded
-const PUBLIC_ROUTES = ['/', '/landing'];
+const PUBLIC_ROUTES = ['/', '/landing', '/onboarding'];
 
 const ServerProvider = ({ children }) => {
   const dispatch = useDispatch();
