@@ -4,9 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const plans = [
   {
     name: 'Starter',
-    monthlyPrice: 97,
-    yearlyPrice: 77,
-    devices: 50,
+    monthlyPrice: '24,90',
+    yearlyPrice: '21,90',
     features: [
       'App PWA com sua marca',
       'Rastreamento em tempo real',
@@ -17,9 +16,8 @@ const plans = [
   },
   {
     name: 'Professional',
-    monthlyPrice: 197,
-    yearlyPrice: 157,
-    devices: 200,
+    monthlyPrice: '49,90',
+    yearlyPrice: '43,90',
     popular: true,
     features: [
       'Tudo do Starter +',
@@ -32,9 +30,8 @@ const plans = [
   },
   {
     name: 'Enterprise',
-    monthlyPrice: 397,
-    yearlyPrice: 317,
-    devices: 'Ilimitado',
+    monthlyPrice: '99,90',
+    yearlyPrice: '87,90',
     features: [
       'Tudo do Professional +',
       'Multi-operador',
