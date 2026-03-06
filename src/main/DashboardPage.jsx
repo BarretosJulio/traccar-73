@@ -577,7 +577,7 @@ const DashboardPage = () => {
     { label: t('deviceTitle'), icon: <DevicesIcon />, path: '/app/settings/devices', show: true },
     { label: t('settingsGroups'), icon: <GroupsIcon />, path: '/app/settings/groups', show: true },
     { label: t('sharedDrivers'), icon: <PersonIcon />, path: '/app/settings/drivers', show: true },
-    { label: 'Cercas', icon: <FenceIcon />, path: '/app/geofences', show: true },
+    { label: t('sharedGeofences'), icon: <FenceIcon />, path: '/app/geofences', show: true },
     { label: t('sharedNotifications'), icon: <NotificationsIcon />, path: '/app/settings/notifications', show: true },
     { label: t('sharedMaintenance'), icon: <BuildIcon />, path: '/app/settings/maintenances', show: true },
     { label: t('sharedPreferences'), icon: <SettingsIcon />, path: '/app/settings/preferences', show: true },
