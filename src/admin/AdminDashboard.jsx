@@ -74,6 +74,34 @@ const AdminDashboard = () => {
     setTenant((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setMessage('Erro: Arquivo deve ter no máximo 2MB');
+      return;
+    }
+    setUploadingLogo(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const path = `${tenant.id}/logo.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from('logos')
+        .upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage
+        .from('logos')
+        .getPublicUrl(path);
+      updateField('logo_url', publicUrl);
+      setMessage('Logo enviado com sucesso!');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setMessage('Erro ao enviar logo: ' + err.message);
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{
