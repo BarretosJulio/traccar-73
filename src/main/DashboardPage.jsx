@@ -526,7 +526,7 @@ const DashboardPage = () => {
   const stats = [
     {
       key: 'all',
-      label: 'Total',
+      label: t('sharedTotal'),
       value: deviceStats.total,
       icon: <DirectionsCarIcon sx={{ fontSize: 26, color: '#fff' }} />,
       bg: 'linear-gradient(135deg, #6366f1, #818cf8)',
@@ -555,7 +555,7 @@ const DashboardPage = () => {
     },
     {
       key: 'blocked',
-      label: 'Bloqueados',
+      label: t('statusBlocked'),
       value: deviceStats.blocked,
       icon: <BlockIcon sx={{ fontSize: 26, color: '#fff' }} />,
       bg: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
@@ -564,7 +564,7 @@ const DashboardPage = () => {
     },
     {
       key: 'moving',
-      label: 'Em Movimento',
+      label: t('statusMoving'),
       value: deviceStats.moving,
       icon: <TrendingUpIcon sx={{ fontSize: 26, color: '#fff' }} />,
       bg: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
