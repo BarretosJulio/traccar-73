@@ -420,7 +420,7 @@ const AdminDashboard = () => {
 
             <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 12px' }}>
-                Informações do App
+                {t('adminAppInfo')}
               </h3>
               {[
                 ['Slug', tenant?.slug],
