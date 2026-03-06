@@ -184,8 +184,44 @@ const AdminDashboard = () => {
                   <input value={tenant?.company_name || ''} onChange={(e) => updateField('company_name', e.target.value)} style={inputStyle} />
                 </div>
                 <div>
-                  <label style={labelStyle}>URL do Logo</label>
-                  <input value={tenant?.logo_url || ''} onChange={(e) => updateField('logo_url', e.target.value)} placeholder="https://..." style={inputStyle} />
+                  <label style={labelStyle}>Logo da Empresa</label>
+                  {tenant?.logo_url && (
+                    <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <img
+                        src={tenant.logo_url}
+                        alt="Logo"
+                        style={{
+                          maxWidth: 120, maxHeight: 60, width: 'auto', height: 'auto',
+                          borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
+                          objectFit: 'contain', background: 'rgba(255,255,255,0.05)', padding: 4,
+                        }}
+                      />
+                      <button
+                        onClick={() => updateField('logo_url', '')}
+                        style={{
+                          padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
+                          background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
+                          fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
+                        }}
+                      >Remover</button>
+                    </div>
+                  )}
+                  <label style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    padding: '14px 16px', borderRadius: 8, cursor: 'pointer',
+                    border: '2px dashed rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)',
+                    color: '#94a3b8', fontSize: 13, fontWeight: 600, transition: 'all 0.2s',
+                  }}>
+                    <span>{uploadingLogo ? 'Enviando...' : '📁 Clique para enviar logo'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      disabled={uploadingLogo}
+                      onChange={handleLogoUpload}
+                    />
+                  </label>
+                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>PNG, JPG ou SVG • Máx 2MB</p>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div>
