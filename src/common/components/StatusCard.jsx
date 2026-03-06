@@ -777,6 +777,60 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
         itemId={deviceId}
         onResult={(removed) => handleRemove(removed)}
       />
+      {position && (
+        <Dialog
+          open={positionDialogOpen}
+          onClose={() => setPositionDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
+            <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 700 }}>
+              {device?.name} — {t('sharedShowDetails')}
+            </Typography>
+            <IconButton size="small" onClick={() => setPositionDialogOpen(false)}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ p: 0 }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>{t('stateName')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>{t('sharedName')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>{t('stateValue')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.getOwnPropertyNames(position)
+                  .filter((it) => it !== 'attributes')
+                  .map((property) => (
+                    <TableRow key={property}>
+                      <TableCell sx={{ fontSize: '0.72rem' }}>{property}</TableCell>
+                      <TableCell sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                        {positionAttributes[property]?.name}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: '0.72rem' }}>
+                        <PositionValue position={position} property={property} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                {Object.getOwnPropertyNames(position.attributes).map((attribute) => (
+                  <TableRow key={attribute}>
+                    <TableCell sx={{ fontSize: '0.72rem' }}>{attribute}</TableCell>
+                    <TableCell sx={{ fontSize: '0.72rem', fontWeight: 600 }}>
+                      {positionAttributes[attribute]?.name}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '0.72rem' }}>
+                      <PositionValue position={position} attribute={attribute} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
