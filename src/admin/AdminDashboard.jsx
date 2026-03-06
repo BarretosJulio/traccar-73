@@ -298,7 +298,7 @@ const AdminDashboard = () => {
 
             {/* Technical Config */}
             <div style={cardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>Configuração Técnica</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>{t('adminTechnicalConfig')}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
                   <label style={labelStyle}>URL do Servidor Traccar</label>
