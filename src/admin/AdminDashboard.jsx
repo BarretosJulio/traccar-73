@@ -200,7 +200,7 @@ const AdminDashboard = () => {
           padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
           background: 'transparent', color: '#94a3b8', cursor: 'pointer',
           fontWeight: 600, fontSize: 13, fontFamily: 'inherit',
-        }}>Sair</button>
+        }}>{t('adminLogout')}</button>
       </header>
 
       <div style={{ maxWidth: 800, margin: '0 auto', padding: '32px 24px' }}>
