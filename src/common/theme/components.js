@@ -1,9 +1,4 @@
 export default {
-  MuiUseMediaQuery: {
-    defaultProps: {
-      noSsr: true,
-    },
-  },
   MuiCssBaseline: {
     styleOverrides: {
       body: {
