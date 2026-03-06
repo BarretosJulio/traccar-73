@@ -242,7 +242,7 @@ const AdminDashboard = () => {
         {/* Tabs */}
         <div style={{
           display: 'flex', gap: 4, marginBottom: 32, padding: 4, borderRadius: 12,
-          background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+          background: 'transparent', border: '1px solid rgba(255,255,255,0.06)',
           overflowX: 'auto',
         }}>
           {tabs.map((tab) => (
