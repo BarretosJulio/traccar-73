@@ -187,16 +187,19 @@ const getDefaultLanguage = () => {
   for (let i = 0; i < browserLanguages.length; i += 1) {
     let language = browserLanguages[i].replace('-', '_');
     if (language in languages) {
+      // Prefer pt_BR over pt for Brazilian SaaS
+      if (language === 'pt') return 'pt_BR';
       return language;
     }
     if (language.length > 2) {
       language = language.substring(0, 2);
       if (language in languages) {
+        if (language === 'pt') return 'pt_BR';
         return language;
       }
     }
   }
-  return 'en';
+  return 'pt_BR';
 };
 
 const LocalizationContext = createContext({
