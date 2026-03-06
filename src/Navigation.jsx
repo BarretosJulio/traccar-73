@@ -1,6 +1,8 @@
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 import LandingPage from './landing/LandingPage';
 import OnboardingPage from './landing/OnboardingPage';
+import AdminLoginPage from './admin/AdminLoginPage';
+import AdminDashboard from './admin/AdminDashboard';
 import { useDispatch } from 'react-redux';
 import DashboardPage from './main/DashboardPage';
 import MapPage from './main/MapPage';
