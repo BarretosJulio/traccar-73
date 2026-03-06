@@ -62,7 +62,7 @@ const App = () => {
   });
 
   useEffectAsync(async () => {
-    if (!user) {
+    if (!user && !demoMode) {
       const response = await fetch(apiUrl('/api/session'), {
         headers: {
           'x-tenant-slug': localStorage.getItem('tenantSlug') || 'mabtracker',
@@ -77,7 +77,7 @@ const App = () => {
       }
     }
     return null;
-  }, []);
+  }, [demoMode]);
 
   if (user == null) {
     return <Loader />;
@@ -87,8 +87,8 @@ const App = () => {
   }
   return (
     <>
-      <SocketController />
-      <CachingController />
+      <SocketController demoMode={demoMode} />
+      <CachingController demoMode={demoMode} />
       <UpdateController />
       <MotionController />
       <DemoController active={demoMode} />

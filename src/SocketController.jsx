@@ -17,7 +17,7 @@ import fetchOrThrow from './common/util/fetchOrThrow';
 
 const POLLING_INTERVAL = 5000; // 5 seconds
 
-const SocketController = () => {
+const SocketController = ({ demoMode }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -80,10 +80,9 @@ const SocketController = () => {
     }
   }, [dispatch, navigate]);
 
-  // Start polling when authenticated
+  // Start polling when authenticated (skip in demo mode)
   useEffect(() => {
-    if (authenticated) {
-      // Initial fetch
+    if (authenticated && !demoMode) {
       const initialFetch = async () => {
         try {
           const response = await fetchOrThrow('/api/devices');
@@ -96,8 +95,6 @@ const SocketController = () => {
       };
 
       initialFetch();
-
-      // Start polling
       pollingRef.current = setInterval(pollData, POLLING_INTERVAL);
 
       return () => {
@@ -108,12 +105,15 @@ const SocketController = () => {
         dispatch(sessionActions.updateSocket(false));
       };
     }
+    if (demoMode && authenticated) {
+      dispatch(sessionActions.updateSocket(true));
+    }
     return undefined;
-  }, [authenticated, pollData, dispatch]);
+  }, [authenticated, demoMode, pollData, dispatch]);
 
   // Reconnect on visibility change
   useEffect(() => {
-    if (!authenticated) return undefined;
+    if (!authenticated || demoMode) return undefined;
     const onVisibility = () => {
       if (!document.hidden && !pollingRef.current) {
         pollData();
@@ -122,7 +122,7 @@ const SocketController = () => {
     };
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, [authenticated, pollData]);
+  }, [authenticated, demoMode, pollData]);
 
   const handleNativeNotification = useCatchCallback(
     async (message) => {
