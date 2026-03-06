@@ -424,8 +424,8 @@ const AdminDashboard = () => {
               </h3>
               {[
                 ['Slug', tenant?.slug],
-                ['Domínio Personalizado', tenant?.custom_domain || 'Não configurado'],
-                ['Servidor Traccar', tenant?.traccar_url || 'Não configurado'],
+                [t('adminCustomDomain'), tenant?.custom_domain || t('adminCustomDomainNotSet')],
+                [t('adminTraccarUrl'), tenant?.traccar_url || t('adminCustomDomainNotSet')],
               ].map(([label, value]) => (
                 <div key={label} style={{
                   display: 'flex', justifyContent: 'space-between', padding: '10px 0',
