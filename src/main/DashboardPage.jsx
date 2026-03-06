@@ -832,7 +832,7 @@ const DashboardPage = () => {
 
                       {/* Blocked */}
                       {blocked !== undefined && (
-                        <Tooltip title={blocked ? 'Bloqueado' : 'Desbloqueado'}>
+                        <Tooltip title={blocked ? t('statusBlocked') : t('statusUnblocked')}>
                           <Box className={classes.metaItem}>
                             {blocked
                               ? <LockIcon sx={{ fontSize: 14, color: '#ef4444' }} />
