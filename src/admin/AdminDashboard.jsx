@@ -152,10 +152,10 @@ const AdminDashboard = () => {
     : 0;
 
   const tabs = [
-    { id: 'pwa', label: '🎨 Personalizar' },
-    { id: 'link', label: '🔗 Link do App' },
-    { id: 'plan', label: '📋 Plano' },
-    { id: 'stats', label: '📊 Estatísticas' },
+    { id: 'pwa', label: `🎨 ${t('adminCustomize')}` },
+    { id: 'link', label: `🔗 ${t('adminAppLink')}` },
+    { id: 'plan', label: `📋 ${t('adminPlan')}` },
+    { id: 'stats', label: `📊 ${t('adminStatistics')}` },
   ];
 
   return (
