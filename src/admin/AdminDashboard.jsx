@@ -177,7 +177,7 @@ const AdminDashboard = () => {
   };
 
   const cardStyle = {
-    padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.03)',
+    padding: 24, borderRadius: 16, background: 'transparent',
     border: '1px solid rgba(255,255,255,0.08)',
     transition: 'border-color 0.2s, box-shadow 0.2s',
   };
