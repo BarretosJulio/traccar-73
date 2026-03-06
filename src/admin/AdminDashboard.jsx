@@ -398,9 +398,9 @@ const AdminDashboard = () => {
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {[
-                  { step: '1', title: 'Envie o link', desc: 'Compartilhe o link acima com seus clientes via WhatsApp, e-mail ou SMS.' },
-                  { step: '2', title: 'Cliente acessa', desc: 'Seu cliente abre o link e faz login com as credenciais do Traccar.' },
-                  { step: '3', title: 'App personalizado', desc: 'O app aparece com sua marca, cores e logo configurados no painel.' },
+                  { step: '1', title: t('adminStep1Title'), desc: t('adminStep1Desc') },
+                  { step: '2', title: t('adminStep2Title'), desc: t('adminStep2Desc') },
+                  { step: '3', title: t('adminStep3Title'), desc: t('adminStep3Desc') },
                 ].map((item) => (
                   <div key={item.step} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                     <div style={{
