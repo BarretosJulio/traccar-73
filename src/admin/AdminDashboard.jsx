@@ -226,7 +226,7 @@ const AdminDashboard = () => {
             {/* Logo & Identity */}
             <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>
-                Identidade Visual
+                {t('adminVisualIdentity')}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
