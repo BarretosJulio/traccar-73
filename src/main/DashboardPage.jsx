@@ -645,7 +645,7 @@ const DashboardPage = () => {
             </IconButton>
           </Tooltip>
           {admin && (
-            <Tooltip title={demoMode ? 'Desativar Demo' : 'Ativar Demo (5 veículos fictícios)'}>
+            <Tooltip title={demoMode ? t('dashboardDemoDisable') : t('dashboardDemoEnable')}>
               <IconButton
                 onClick={() => setDemoMode?.(!demoMode)}
                 sx={{
