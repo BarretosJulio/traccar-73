@@ -16,6 +16,8 @@ import Loader from './common/components/Loader';
 import fetchOrThrow from './common/util/fetchOrThrow';
 import { apiUrl } from './common/util/apiUrl';
 import MainMap from './main/MainMap';
+import usePwaInstallTracker from './common/util/usePwaInstallTracker';
+import { useTenant } from './common/components/TenantProvider';
 
 const useStyles = makeStyles()(() => ({
   page: {
@@ -36,6 +38,8 @@ const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
+  const tenant = useTenant();
+  usePwaInstallTracker(tenant?.id);
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const isSettingsRoute = pathname.startsWith('/app/settings') || pathname.startsWith('/app/geofences');
