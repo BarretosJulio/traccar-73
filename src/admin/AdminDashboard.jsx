@@ -177,7 +177,7 @@ const AdminDashboard = () => {
   };
 
   const cardStyle = {
-    padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.03)',
+    padding: 24, borderRadius: 16, background: 'transparent',
     border: '1px solid rgba(255,255,255,0.08)',
     transition: 'border-color 0.2s, box-shadow 0.2s',
   };
@@ -242,7 +242,7 @@ const AdminDashboard = () => {
         {/* Tabs */}
         <div style={{
           display: 'flex', gap: 4, marginBottom: 32, padding: 4, borderRadius: 12,
-          background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+          background: 'transparent', border: '1px solid rgba(255,255,255,0.06)',
           overflowX: 'auto',
         }}>
           {tabs.map((tab) => (
@@ -357,7 +357,7 @@ const AdminDashboard = () => {
 
                   {/* Color Pickers */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-                    <div style={{ padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ padding: 16, borderRadius: 12, background: 'transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
                       <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginSidebarColor') || 'Cor do Painel Lateral'}</label>
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div style={{
@@ -374,7 +374,7 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div style={{ padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ padding: 16, borderRadius: 12, background: 'transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
                       <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgColor') || 'Cor de Fundo'}</label>
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div style={{
