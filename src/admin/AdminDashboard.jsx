@@ -168,6 +168,7 @@ const AdminDashboard = () => {
     width: '100%', padding: '12px 14px', borderRadius: 8,
     border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)',
     color: '#fff', fontSize: 14, outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
+    transition: 'border-color 0.2s',
   };
 
   const labelStyle = {
@@ -176,8 +177,9 @@ const AdminDashboard = () => {
   };
 
   const cardStyle = {
-    padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.02)',
+    padding: 24, borderRadius: 16, background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.08)',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
   };
 
   const trialDays = tenant?.trial_ends_at
