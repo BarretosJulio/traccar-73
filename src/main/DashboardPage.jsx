@@ -887,7 +887,7 @@ const DashboardPage = () => {
 
                       {/* Battery */}
                       {batteryLevel != null && (
-                        <Tooltip title={`Bateria: ${Math.round(batteryLevel)}%`}>
+                        <Tooltip title={`${t('positionBatteryLevel')}: ${Math.round(batteryLevel)}%`}>
                           <Box className={classes.metaItem} sx={{ color: batteryLevel > 70 ? '#10b981' : batteryLevel > 30 ? '#f59e0b' : '#ef4444' }}>
                             {batteryLevel > 70 ? <BatteryFullIcon sx={{ fontSize: 14 }} /> : batteryLevel > 30 ? <Battery60Icon sx={{ fontSize: 14 }} /> : <Battery20Icon sx={{ fontSize: 14 }} />}
                             {Math.round(batteryLevel)}%
