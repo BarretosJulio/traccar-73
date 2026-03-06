@@ -133,7 +133,7 @@ const LoginPage = () => {
     };
     dispatch(sessionActions.updateUser(demoUser));
     window.sessionStorage.setItem('demoMode', 'true');
-    navigate('/', { replace: true });
+    navigate('/app', { replace: true });
   };
 
   const handlePasswordLogin = async (event) => {
