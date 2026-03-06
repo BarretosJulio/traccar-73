@@ -80,10 +80,9 @@ const SocketController = ({ demoMode }) => {
     }
   }, [dispatch, navigate]);
 
-  // Start polling when authenticated
+  // Start polling when authenticated (skip in demo mode)
   useEffect(() => {
-    if (authenticated) {
-      // Initial fetch
+    if (authenticated && !demoMode) {
       const initialFetch = async () => {
         try {
           const response = await fetchOrThrow('/api/devices');
@@ -96,8 +95,6 @@ const SocketController = ({ demoMode }) => {
       };
 
       initialFetch();
-
-      // Start polling
       pollingRef.current = setInterval(pollData, POLLING_INTERVAL);
 
       return () => {
@@ -108,8 +105,11 @@ const SocketController = ({ demoMode }) => {
         dispatch(sessionActions.updateSocket(false));
       };
     }
+    if (demoMode && authenticated) {
+      dispatch(sessionActions.updateSocket(true));
+    }
     return undefined;
-  }, [authenticated, pollData, dispatch]);
+  }, [authenticated, demoMode, pollData, dispatch]);
 
   // Reconnect on visibility change
   useEffect(() => {
