@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useNavigate, Link as RouterLink, useOutletContext } from 'react-router-dom';
 import { Rnd } from 'react-rnd';
 import {
   Card,
