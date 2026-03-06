@@ -76,7 +76,7 @@ const EventPage = () => {
     <div className={classes.root}>
       <AppBar color="inherit" position="static" className={classes.toolbar}>
         <Toolbar>
-          <IconButton color="inherit" edge="start" sx={{ mr: 2 }} onClick={() => navigate('/')}>
+          <IconButton color="inherit" edge="start" sx={{ mr: 2 }} onClick={() => navigate('/app')}>
             <BackIcon />
           </IconButton>
           <Typography variant="h6">{event && formatType(event)}</Typography>

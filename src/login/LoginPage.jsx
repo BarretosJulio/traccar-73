@@ -173,7 +173,7 @@ const LoginPage = () => {
     const response = await fetchOrThrow(`/api/session?token=${encodeURIComponent(token)}`);
     const user = await response.json();
     dispatch(sessionActions.updateUser(user));
-    navigate('/');
+    navigate('/app');
   });
 
   const handleOpenIdLogin = () => {

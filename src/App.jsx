@@ -61,7 +61,9 @@ const App = () => {
 
   useEffectAsync(async () => {
     if (!user) {
-      const response = await fetch(apiUrl('/api/session'));
+      const response = await fetch(apiUrl('/api/session'), {
+        headers: { 'x-tenant-slug': localStorage.getItem('tenantSlug') || 'mabtracker' },
+      });
       if (response.ok) {
         dispatch(sessionActions.updateUser(await response.json()));
       } else {
