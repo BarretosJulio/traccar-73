@@ -286,7 +286,7 @@ const AdminDashboard = () => {
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>WhatsApp</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
-                  <label style={labelStyle}>Número WhatsApp</label>
+                  <label style={labelStyle}>{t('adminWhatsappNumber')}</label>
                   <input value={tenant?.whatsapp_number || ''} onChange={(e) => updateField('whatsapp_number', e.target.value)} placeholder="5511999999999" style={inputStyle} />
                 </div>
                 <div>
