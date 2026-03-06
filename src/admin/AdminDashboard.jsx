@@ -290,7 +290,7 @@ const AdminDashboard = () => {
                   <input value={tenant?.whatsapp_number || ''} onChange={(e) => updateField('whatsapp_number', e.target.value)} placeholder="5511999999999" style={inputStyle} />
                 </div>
                 <div>
-                  <label style={labelStyle}>Mensagem Padrão</label>
+                  <label style={labelStyle}>{t('adminDefaultMessage')}</label>
                   <input value={tenant?.whatsapp_message || ''} onChange={(e) => updateField('whatsapp_message', e.target.value)} placeholder="Olá, preciso de suporte" style={inputStyle} />
                 </div>
               </div>
