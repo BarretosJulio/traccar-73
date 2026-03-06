@@ -394,7 +394,7 @@ const AdminDashboard = () => {
 
             <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>
-                Como funciona
+                {t('adminHowItWorks')}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {[
