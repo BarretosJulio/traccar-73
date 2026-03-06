@@ -330,7 +330,7 @@ const AdminDashboard = () => {
               background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
               opacity: saving ? 0.5 : 1,
             }}>
-              {saving ? 'Salvando...' : 'Salvar Alterações'}
+              {saving ? t('adminSaving') : t('adminSaveChanges')}
             </button>
           </div>
         )}
