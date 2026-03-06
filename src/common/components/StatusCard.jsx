@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link as RouterLink, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Rnd } from 'react-rnd';
 import {
   Card,
@@ -16,6 +16,14 @@ import {
   Box,
   Chip,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { useTheme, useMediaQuery } from '@mui/material';
