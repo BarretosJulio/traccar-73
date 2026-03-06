@@ -971,7 +971,7 @@ const DashboardPage = () => {
             {filteredDevices.length > 10 && (
               <Box sx={{ textAlign: 'center', mt: 1 }}>
                 <Chip
-                  label={showAllDevices ? 'Mostrar menos' : `Ver todos (${filteredDevices.length})`}
+                  label={showAllDevices ? t('dashboardShowLess') : `${t('dashboardShowAll')} (${filteredDevices.length})`}
                   icon={showAllDevices ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                   onClick={() => setShowAllDevices(!showAllDevices)}
                   sx={{
