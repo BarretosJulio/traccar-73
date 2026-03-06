@@ -230,7 +230,7 @@ const AdminDashboard = () => {
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
-                  <label style={labelStyle}>Nome da Empresa</label>
+                  <label style={labelStyle}>{t('adminCompanyName')}</label>
                   <input value={tenant?.company_name || ''} onChange={(e) => updateField('company_name', e.target.value)} style={inputStyle} />
                 </div>
                 <div>
