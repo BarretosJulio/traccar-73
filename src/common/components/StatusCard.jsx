@@ -50,7 +50,6 @@ import dayjs from 'dayjs';
 
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';
-import QuickActionsBar from './QuickActionsBar';
 import { useDeviceReadonly, useRestriction } from '../util/permissions';
 import { devicesActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
@@ -460,9 +459,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                       ))}
                     </div>
                   )}
-
-                  {/* Quick Actions */}
-                  <QuickActionsBar deviceId={deviceId} position={position} attrs={attrs} />
 
                   {/* Address */}
                   {position.address && (
