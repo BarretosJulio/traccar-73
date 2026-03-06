@@ -50,7 +50,7 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         '& .MuiSvgIcon-root': {
           fontSize: active ? '1.3rem' : '1.2rem',
-          color: active ? '#2dd4bf' : 'rgba(255,255,255,0.55)',
+          color: active ? '#2dd4bf' : 'rgba(255,255,255,0.6)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           filter: active ? 'drop-shadow(0 0 8px rgba(45,212,191,0.5))' : 'none',
         },
