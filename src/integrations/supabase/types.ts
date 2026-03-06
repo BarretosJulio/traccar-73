@@ -22,6 +22,9 @@ export type Database = {
           created_at: string
           custom_domain: string | null
           id: string
+          login_bg_color: string | null
+          login_bg_image: string | null
+          login_sidebar_color: string | null
           logo_url: string | null
           max_devices: number
           owner_email: string | null
@@ -42,6 +45,9 @@ export type Database = {
           created_at?: string
           custom_domain?: string | null
           id?: string
+          login_bg_color?: string | null
+          login_bg_image?: string | null
+          login_sidebar_color?: string | null
           logo_url?: string | null
           max_devices?: number
           owner_email?: string | null
@@ -62,6 +68,9 @@ export type Database = {
           created_at?: string
           custom_domain?: string | null
           id?: string
+          login_bg_color?: string | null
+          login_bg_image?: string | null
+          login_sidebar_color?: string | null
           logo_url?: string | null
           max_devices?: number
           owner_email?: string | null
