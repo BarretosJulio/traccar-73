@@ -1,12 +1,10 @@
-const getApiBase = () => {
-  // In development with proxy, use relative URLs
-  if (import.meta.env.DEV) {
-    return '';
-  }
-  // In production, point to the actual Traccar server
-  return 'https://web.mabtracker.com.br';
+const SUPABASE_PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || 'foifugnuaehjtjftpkrk';
+
+export const EDGE_FUNCTION_BASE = `https://${SUPABASE_PROJECT_ID}.supabase.co/functions/v1`;
+
+export const apiUrl = (path) => {
+  return `${EDGE_FUNCTION_BASE}/traccar-proxy?path=${encodeURIComponent(path)}`;
 };
 
-export const API_BASE = getApiBase();
-
-export const apiUrl = (path) => `${API_BASE}${path}`;
+// Keep API_BASE for backward compatibility but it now points to the proxy
+export const API_BASE = EDGE_FUNCTION_BASE;

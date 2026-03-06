@@ -14,7 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      tenants: {
+        Row: {
+          color_primary: string | null
+          color_secondary: string | null
+          company_name: string
+          created_at: string
+          custom_domain: string | null
+          id: string
+          logo_url: string | null
+          max_devices: number
+          plan_type: string
+          slug: string
+          subscription_status: string
+          traccar_url: string
+          updated_at: string
+          whatsapp_message: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          color_primary?: string | null
+          color_secondary?: string | null
+          company_name: string
+          created_at?: string
+          custom_domain?: string | null
+          id?: string
+          logo_url?: string | null
+          max_devices?: number
+          plan_type?: string
+          slug: string
+          subscription_status?: string
+          traccar_url: string
+          updated_at?: string
+          whatsapp_message?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          color_primary?: string | null
+          color_secondary?: string | null
+          company_name?: string
+          created_at?: string
+          custom_domain?: string | null
+          id?: string
+          logo_url?: string | null
+          max_devices?: number
+          plan_type?: string
+          slug?: string
+          subscription_status?: string
+          traccar_url?: string
+          updated_at?: string
+          whatsapp_message?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      traccar_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          session_cookie: string
+          tenant_id: string
+          traccar_user_id: number | null
+          user_email: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          session_cookie: string
+          tenant_id: string
+          traccar_user_id?: number | null
+          user_email: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          session_cookie?: string
+          tenant_id?: string
+          traccar_user_id?: number | null
+          user_email?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "traccar_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

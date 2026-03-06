@@ -16,7 +16,10 @@ const ServerProvider = ({ children }) => {
   useEffectAsync(async () => {
     if (!error) {
       try {
-        const response = await fetch(apiUrl('/api/server'));
+        const tenantSlug = localStorage.getItem('tenantSlug') || 'mabtracker';
+        const response = await fetch(apiUrl('/api/server'), {
+          headers: { 'x-tenant-slug': tenantSlug },
+        });
         if (response.ok) {
           dispatch(sessionActions.updateServer(await response.json()));
         } else {

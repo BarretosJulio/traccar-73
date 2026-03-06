@@ -141,12 +141,18 @@ const LoginPage = () => {
     setFailed(false);
     try {
       const query = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
+      const tenantSlug = localStorage.getItem('tenantSlug') || 'mabtracker';
       const response = await fetch(apiUrl('/api/session'), {
         method: 'POST',
+        headers: {
+          'x-tenant-slug': tenantSlug,
+          'x-traccar-email': email,
+        },
         body: new URLSearchParams(code.length ? `${query}&code=${code}` : query),
       });
       if (response.ok) {
         const user = await response.json();
+        localStorage.setItem('traccarEmail', email);
         generateLoginToken();
         dispatch(sessionActions.updateUser(user));
         const target = window.sessionStorage.getItem('postLogin') || '/';

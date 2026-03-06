@@ -3,7 +3,7 @@ import { useDispatch, useSelector, connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
 import { devicesActions, sessionActions } from './store';
-import { useCatchCallback, useEffectAsync } from './reactHelper';
+import { useCatchCallback } from './reactHelper';
 import { snackBarDurationLongMs } from './common/util/duration';
 import alarm from './resources/alarm.mp3';
 import { eventsActions } from './store/events';
@@ -14,26 +14,17 @@ import {
   nativePostMessage,
 } from './common/components/NativeInterface';
 import fetchOrThrow from './common/util/fetchOrThrow';
-import { apiUrl, API_BASE } from './common/util/apiUrl';
 
-const logoutCode = 4000;
+const POLLING_INTERVAL = 5000; // 5 seconds
 
 const SocketController = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const authenticated = useSelector((state) => Boolean(state.session.user));
-  const includeLogs = useSelector((state) => state.session.includeLogs);
 
-  const socketRef = useRef();
-  const reconnectTimeoutRef = useRef();
-
-  const clearReconnectTimeout = () => {
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
-    }
-  };
+  const pollingRef = useRef(null);
+  const lastEventIdRef = useRef(0);
 
   const [notifications, setNotifications] = useState([]);
 
@@ -67,86 +58,77 @@ const SocketController = () => {
     [features, dispatch, soundEvents, soundAlarms],
   );
 
-  const connectSocket = () => {
-    clearReconnectTimeout();
-    if (socketRef.current && socketRef.current.readyState !== WebSocket.CLOSED) {
-      socketRef.current.close();
-    }
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsBase = API_BASE || `${protocol}//${window.location.host}`;
-    const socket = new WebSocket(`${wsBase.replace(/^http/, 'ws')}/api/socket`);
-    socketRef.current = socket;
+  const pollData = useCallback(async () => {
+    try {
+      const [devicesResponse, positionsResponse] = await Promise.all([
+        fetchOrThrow('/api/devices'),
+        fetchOrThrow('/api/positions'),
+      ]);
 
-    socket.onopen = () => {
+      const devices = await devicesResponse.json();
+      const positions = await positionsResponse.json();
+
+      dispatch(devicesActions.update(devices));
+      dispatch(sessionActions.updatePositions(positions));
       dispatch(sessionActions.updateSocket(true));
-    };
-
-    socket.onclose = async (event) => {
+    } catch (error) {
       dispatch(sessionActions.updateSocket(false));
-      if (event.code !== logoutCode) {
-        try {
-          const devicesResponse = await fetch(apiUrl('/api/devices'));
-          if (devicesResponse.ok) {
-            dispatch(devicesActions.update(await devicesResponse.json()));
-          }
-          const positionsResponse = await fetch(apiUrl('/api/positions'));
-          if (positionsResponse.ok) {
-            dispatch(sessionActions.updatePositions(await positionsResponse.json()));
-          }
-          if (devicesResponse.status === 401 || positionsResponse.status === 401) {
-            navigate('/login');
-          }
-        } catch {
-          // ignore errors
-        }
-        clearReconnectTimeout();
-        reconnectTimeoutRef.current = setTimeout(() => {
-          reconnectTimeoutRef.current = null;
-          connectSocket();
-        }, 60000);
+      if (error.message?.includes('401')) {
+        navigate('/login');
+        return;
       }
-    };
+    }
+  }, [dispatch, navigate]);
 
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.devices) {
-        dispatch(devicesActions.update(data.devices));
-      }
-      if (data.positions) {
-        dispatch(sessionActions.updatePositions(data.positions));
-      }
-      if (data.events) {
-        handleEvents(data.events);
-      }
-      if (data.logs) {
-        dispatch(sessionActions.updateLogs(data.logs));
-      }
-    };
-  };
-
+  // Start polling when authenticated
   useEffect(() => {
-    socketRef.current?.send(JSON.stringify({ logs: includeLogs }));
-  }, [includeLogs]);
-
-  useEffectAsync(async () => {
     if (authenticated) {
-      const response = await fetchOrThrow('/api/devices');
-      dispatch(devicesActions.refresh(await response.json()));
-      nativePostMessage('authenticated');
-      connectSocket();
+      // Initial fetch
+      const initialFetch = async () => {
+        try {
+          const response = await fetchOrThrow('/api/devices');
+          dispatch(devicesActions.refresh(await response.json()));
+          nativePostMessage('authenticated');
+          dispatch(sessionActions.updateSocket(true));
+        } catch (error) {
+          console.error('Initial device fetch failed:', error);
+        }
+      };
+
+      initialFetch();
+
+      // Start polling
+      pollingRef.current = setInterval(pollData, POLLING_INTERVAL);
+
       return () => {
-        clearReconnectTimeout();
-        socketRef.current?.close(logoutCode);
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+        }
+        dispatch(sessionActions.updateSocket(false));
       };
     }
-    return null;
-  }, [authenticated]);
+    return undefined;
+  }, [authenticated, pollData, dispatch]);
+
+  // Reconnect on visibility change
+  useEffect(() => {
+    if (!authenticated) return undefined;
+    const onVisibility = () => {
+      if (!document.hidden && !pollingRef.current) {
+        pollData();
+        pollingRef.current = setInterval(pollData, POLLING_INTERVAL);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [authenticated, pollData]);
 
   const handleNativeNotification = useCatchCallback(
     async (message) => {
       const eventId = message.data.eventId;
       if (eventId) {
-        const response = await fetch(apiUrl(`/api/events/${eventId}`));
+        const response = await fetchOrThrow(`/api/events/${eventId}`);
         if (response.ok) {
           const event = await response.json();
           const eventWithMessage = {
@@ -164,33 +146,6 @@ const SocketController = () => {
     handleNativeNotificationListeners.add(handleNativeNotification);
     return () => handleNativeNotificationListeners.delete(handleNativeNotification);
   }, [handleNativeNotification]);
-
-  useEffect(() => {
-    if (!authenticated) return;
-    const reconnectIfNeeded = () => {
-      const socket = socketRef.current;
-      if (!socket || socket.readyState === WebSocket.CLOSED) {
-        connectSocket();
-      } else if (socket.readyState === WebSocket.OPEN) {
-        try {
-          socket.send('{}');
-        } catch {
-          // test connection
-        }
-      }
-    };
-    const onVisibility = () => {
-      if (!document.hidden) {
-        reconnectIfNeeded();
-      }
-    };
-    window.addEventListener('online', reconnectIfNeeded);
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => {
-      window.removeEventListener('online', reconnectIfNeeded);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, [authenticated]);
 
   return (
     <>

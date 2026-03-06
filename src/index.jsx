@@ -11,6 +11,7 @@ import NativeInterface from './common/components/NativeInterface';
 import ServerProvider from './ServerProvider';
 import ErrorBoundary from './ErrorBoundary';
 import AppThemeProvider from './AppThemeProvider';
+import { TenantProvider } from './common/components/TenantProvider';
 
 preloadImages();
 
@@ -22,13 +23,15 @@ root.render(
         <StyledEngineProvider injectFirst>
           <AppThemeProvider>
             <CssBaseline />
-            <ServerProvider>
-              <BrowserRouter>
-                <Navigation />
-              </BrowserRouter>
-              <ErrorHandler />
-              <NativeInterface />
-            </ServerProvider>
+            <TenantProvider>
+              <ServerProvider>
+                <BrowserRouter>
+                  <Navigation />
+                </BrowserRouter>
+                <ErrorHandler />
+                <NativeInterface />
+              </ServerProvider>
+            </TenantProvider>
           </AppThemeProvider>
         </StyledEngineProvider>
       </LocalizationProvider>
