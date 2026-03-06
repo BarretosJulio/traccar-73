@@ -15,6 +15,7 @@ import TermsDialog from './common/components/TermsDialog';
 import Loader from './common/components/Loader';
 import fetchOrThrow from './common/util/fetchOrThrow';
 import { apiUrl } from './common/util/apiUrl';
+import MainMap from './main/MainMap';
 
 const useStyles = makeStyles()(() => ({
   page: {
@@ -37,6 +38,7 @@ const App = () => {
   const { pathname, search } = useLocation();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
+  const isSettingsRoute = pathname.startsWith('/app/settings') || pathname.startsWith('/app/geofences');
   const [demoMode, setDemoMode] = useState(() => {
     const saved = window.sessionStorage.getItem('demoMode');
     if (saved === 'true') {
@@ -90,6 +92,11 @@ const App = () => {
       <UpdateController />
       <MotionController />
       <DemoController active={demoMode} />
+      {desktop && isSettingsRoute && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+          <MainMap filteredPositions={[]} selectedPosition={null} onEventsClick={() => {}} />
+        </div>
+      )}
       <div className={classes.page}>
         <Outlet context={{ demoMode, setDemoMode }} />
       </div>

@@ -1,41 +1,33 @@
 
 
-## Problema
+# Modernizar Controles do Mapa + Botão WhatsApp
 
-Quando o painel de configurações abre no desktop, a rota muda de `/app` (DashboardPage com mapa) para `/app/settings/*`. O `<Outlet>` no `App.jsx` substitui o DashboardPage, então o mapa desaparece — restando apenas o backdrop cinza do overlay.
+## O que será feito
 
-Além disso, a largura do sidebar muda conforme o conteúdo de cada página de settings.
+1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
+2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
 
-## Solução
+## Mudanças Técnicas
 
-### 1. Renderizar o mapa atrás do overlay de settings (`App.jsx`)
+### 1. CSS Global dos controles do mapa (`public/styles.css`)
+- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
+- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
+- Adicionar separadores sutis entre botões
+- Manter responsivo para mobile
 
-No `App.jsx`, detectar quando estamos em uma rota de settings no desktop e renderizar o `MainMap` como fundo fixo, para que fique visível atrás do overlay com blur.
+### 2. Geocoder (`src/map/geocoder/geocoder.css`)
+- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
+- Border-radius mais arredondado, sombra premium
 
-```jsx
-// App.jsx — adicionar:
-const isSettingsRoute = pathname.startsWith('/app/settings') || pathname.startsWith('/app/geofences');
+### 3. Notificação (`src/map/notification/notification.css`)
+- Atualizar ícones SVG com cores teal para combinar com o tema
 
-// No render, antes do Outlet:
-{desktop && isSettingsRoute && (
-  <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
-    <MainMap filteredPositions={[]} selectedPosition={null} onEventsClick={() => {}} />
-  </div>
-)}
-```
+### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
+- Criar controle customizado maplibre similar ao `MapNotification`
+- Ícone WhatsApp em SVG verde
+- Ao clicar, abre `https://wa.me/{numero}` em nova aba
+- Número configurável via atributos do servidor ou hardcoded
 
-### 2. Fixar largura do sidebar no PageLayout (`PageLayout.jsx`)
-
-Atualmente o `floatingSidebar` tem `width: 250`. Precisa ser largo o suficiente para o maior item do menu ("Comandos Gravados", "Cercas Geográficas", etc.) sem quebrar. Fixar em `minWidth: 220, width: 220` e garantir que o card tenha tamanho fixo total para não mudar ao trocar de página.
-
-- `floatingCard`: adicionar `width: 960` (fixo, não só maxWidth) e `height: 80vh` (fixo)
-- `floatingSidebar`: `width: 220, minWidth: 220, flexShrink: 0`
-- `floatingContent`: `flexGrow: 1, minWidth: 0` (evita esticamento)
-
-### Arquivos a modificar
-
-| Arquivo | Mudança |
-|---|---|
-| `src/App.jsx` | Renderizar MainMap atrás quando em rota de settings (desktop) |
-| `src/common/components/PageLayout.jsx` | Fixar dimensões do card e sidebar |
+### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
+- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
 
