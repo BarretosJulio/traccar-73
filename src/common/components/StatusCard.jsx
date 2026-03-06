@@ -306,8 +306,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       setRemoving(false);
       return;
     }
-      return;
-    }
     if (removed) {
       const response = await fetchOrThrow('/api/devices');
       dispatch(devicesActions.refresh(await response.json()));
