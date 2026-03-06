@@ -22,11 +22,11 @@ const BASE_POSITIONS = [
 ];
 
 const ALERT_TYPES = [
-  { type: 'deviceOverspeed', message: 'Excesso de velocidade detectado!' },
-  { type: 'geofenceExit', message: 'Veículo saiu da cerca geográfica' },
-  { type: 'geofenceEnter', message: 'Veículo entrou na cerca geográfica' },
-  { type: 'deviceStopped', message: 'Veículo parado por muito tempo' },
-  { type: 'alarm', message: 'Alerta SOS acionado', alarm: 'sos' },
+  { type: 'deviceOverspeed', messageKey: 'demoOverspeed' },
+  { type: 'geofenceExit', messageKey: 'demoGeofenceExit' },
+  { type: 'geofenceEnter', messageKey: 'demoGeofenceEnter' },
+  { type: 'deviceStopped', messageKey: 'demoDeviceStopped' },
+  { type: 'alarm', messageKey: 'demoAlarmSos', alarm: 'sos' },
 ];
 
 const DemoController = ({ active }) => {
@@ -119,7 +119,7 @@ const DemoController = ({ active }) => {
         eventTime: new Date().toISOString(),
         deviceId: device.id,
         attributes: {
-          message: `[DEMO] ${device.name}: ${alert.message}`,
+          message: `[DEMO] ${device.name}: ${alert.messageKey}`,
           ...(alert.alarm ? { alarm: alert.alarm } : {}),
         },
       }]));

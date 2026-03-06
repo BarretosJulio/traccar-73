@@ -271,7 +271,7 @@ const DeviceRow = ({ devices, index, style }) => {
   if (ignition !== undefined) {
     chips.push({
       key: 'ignition',
-      label: ignition ? 'Ligado' : 'Desligado',
+      label: ignition ? t('statusIgnitionOn') : t('statusIgnitionOff'),
       icon: ignition
         ? <PowerIcon sx={{ color: '#10b981' }} />
         : <PowerOffIcon sx={{ color: '#94a3b8' }} />,
@@ -279,11 +279,10 @@ const DeviceRow = ({ devices, index, style }) => {
     });
   }
 
-  // Motion
   if (motion !== undefined) {
     chips.push({
       key: 'motion',
-      label: motion ? 'Movendo' : 'Parado',
+      label: motion ? t('statusMoving') : t('statusStopped'),
       icon: motion
         ? <DirectionsRunIcon sx={{ color: '#3b82f6' }} />
         : <NightlightIcon sx={{ color: '#94a3b8' }} />,
@@ -291,11 +290,10 @@ const DeviceRow = ({ devices, index, style }) => {
     });
   }
 
-  // Blocked
   if (blocked !== undefined) {
     chips.push({
       key: 'blocked',
-      label: blocked ? 'Bloqueado' : 'Desbloq.',
+      label: blocked ? t('statusBlocked') : t('statusUnblocked'),
       icon: blocked
         ? <LockIcon sx={{ color: '#ef4444' }} />
         : <LockOpenIcon sx={{ color: '#10b981' }} />,
@@ -303,7 +301,6 @@ const DeviceRow = ({ devices, index, style }) => {
     });
   }
 
-  // Alarm
   if (alarm) {
     chips.push({
       key: 'alarm',
@@ -313,21 +310,19 @@ const DeviceRow = ({ devices, index, style }) => {
     });
   }
 
-  // Anchor / Geofence
   if (geofenceIds?.length > 0) {
     chips.push({
       key: 'anchor',
-      label: `Âncora Ativa (${geofenceIds.length})`,
+      label: `${t('statusAnchorActive')} (${geofenceIds.length})`,
       icon: <AnchorIcon sx={{ color: '#8b5cf6' }} />,
       color: '#8b5cf6',
     });
   }
 
-  // Disabled device
   if (item.disabled) {
     chips.push({
       key: 'disabled',
-      label: 'Desativado',
+      label: t('statusDisabled'),
       icon: <WarningAmberIcon sx={{ color: '#f59e0b' }} />,
       color: '#f59e0b',
     });

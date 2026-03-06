@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
+import { useTranslation } from '../common/components/LocalizationProvider';
 
 const AdminDashboard = () => {
+  const t = useTranslation();
   const navigate = useNavigate();
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,10 +55,10 @@ const AdminDashboard = () => {
         })
         .eq('id', tenant.id);
       if (error) throw error;
-      setMessage('Salvo com sucesso!');
+      setMessage(t('adminSavedSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setMessage('Erro ao salvar: ' + err.message);
+      setMessage(`${t('adminErrorSave')}: ` + err.message);
     } finally {
       setSaving(false);
     }
@@ -75,7 +77,7 @@ const AdminDashboard = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
-      setMessage('Erro: Arquivo deve ter no máximo 2MB');
+      setMessage(t('adminErrorFileSize'));
       return;
     }
     setUploadingLogo(true);
@@ -90,10 +92,10 @@ const AdminDashboard = () => {
         .from('logos')
         .getPublicUrl(path);
       updateField('logo_url', publicUrl);
-      setMessage('Logo enviado com sucesso!');
+      setMessage(t('adminLogoSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setMessage('Erro ao enviar logo: ' + err.message);
+      setMessage(`${t('adminErrorLogo')}: ` + err.message);
     } finally {
       setUploadingLogo(false);
     }
@@ -122,7 +124,7 @@ const AdminDashboard = () => {
             borderTopColor: '#00f5a0', borderRadius: '50%',
             animation: 'spin 0.8s linear infinite', margin: '0 auto 16px',
           }} />
-          <p style={{ color: '#64748b', fontSize: 14 }}>Carregando painel...</p>
+          <p style={{ color: '#64748b', fontSize: 14 }}>{t('adminLoadingPanel')}</p>
           <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
         </div>
       </div>
@@ -150,10 +152,10 @@ const AdminDashboard = () => {
     : 0;
 
   const tabs = [
-    { id: 'pwa', label: '🎨 Personalizar' },
-    { id: 'link', label: '🔗 Link do App' },
-    { id: 'plan', label: '📋 Plano' },
-    { id: 'stats', label: '📊 Estatísticas' },
+    { id: 'pwa', label: `🎨 ${t('adminCustomize')}` },
+    { id: 'link', label: `🔗 ${t('adminAppLink')}` },
+    { id: 'plan', label: `📋 ${t('adminPlan')}` },
+    { id: 'stats', label: `📊 ${t('adminStatistics')}` },
   ];
 
   return (
@@ -190,7 +192,7 @@ const AdminDashboard = () => {
               color: tenant?.subscription_status === 'trial' ? '#ffc800' : '#00f5a0',
               fontWeight: 600,
             }}>
-              {tenant?.subscription_status === 'trial' ? `Trial • ${trialDays} dias` : 'Ativo'}
+              {tenant?.subscription_status === 'trial' ? `Trial • ${trialDays} dias` : t('adminPlanActive')}
             </span>
           </div>
         </div>
@@ -198,7 +200,7 @@ const AdminDashboard = () => {
           padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)',
           background: 'transparent', color: '#94a3b8', cursor: 'pointer',
           fontWeight: 600, fontSize: 13, fontFamily: 'inherit',
-        }}>Sair</button>
+        }}>{t('adminLogout')}</button>
       </header>
 
       <div style={{ maxWidth: 800, margin: '0 auto', padding: '32px 24px' }}>
@@ -224,15 +226,15 @@ const AdminDashboard = () => {
             {/* Logo & Identity */}
             <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>
-                Identidade Visual
+                {t('adminVisualIdentity')}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
-                  <label style={labelStyle}>Nome da Empresa</label>
+                  <label style={labelStyle}>{t('adminCompanyName')}</label>
                   <input value={tenant?.company_name || ''} onChange={(e) => updateField('company_name', e.target.value)} style={inputStyle} />
                 </div>
                 <div>
-                  <label style={labelStyle}>Logo da Empresa</label>
+                  <label style={labelStyle}>{t('adminCompanyLogo')}</label>
                   {tenant?.logo_url && (
                     <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
                       <img src={tenant.logo_url} alt="Logo" style={{
@@ -253,14 +255,14 @@ const AdminDashboard = () => {
                     border: '2px dashed rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)',
                     color: '#94a3b8', fontSize: 13, fontWeight: 600,
                   }}>
-                    <span>{uploadingLogo ? 'Enviando...' : '📁 Clique para enviar logo'}</span>
+                    <span>{uploadingLogo ? t('adminUploading') : `📁 ${t('adminUploadLogo')}`}</span>
                     <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingLogo} onChange={handleLogoUpload} />
                   </label>
-                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>PNG, JPG ou SVG • Máx 2MB</p>
+                  <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>{t('adminFileMaxSize')}</p>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div>
-                    <label style={labelStyle}>Cor Principal</label>
+                    <label style={labelStyle}>{t('adminPrimaryColor')}</label>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <input type="color" value={tenant?.color_primary || '#1a73e8'} onChange={(e) => updateField('color_primary', e.target.value)}
                         style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
@@ -268,7 +270,7 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   <div>
-                    <label style={labelStyle}>Cor Secundária</label>
+                    <label style={labelStyle}>{t('adminSecondaryColor')}</label>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <input type="color" value={tenant?.color_secondary || '#ffffff'} onChange={(e) => updateField('color_secondary', e.target.value)}
                         style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
@@ -284,11 +286,11 @@ const AdminDashboard = () => {
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>WhatsApp</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
-                  <label style={labelStyle}>Número WhatsApp</label>
+                  <label style={labelStyle}>{t('adminWhatsappNumber')}</label>
                   <input value={tenant?.whatsapp_number || ''} onChange={(e) => updateField('whatsapp_number', e.target.value)} placeholder="5511999999999" style={inputStyle} />
                 </div>
                 <div>
-                  <label style={labelStyle}>Mensagem Padrão</label>
+                  <label style={labelStyle}>{t('adminDefaultMessage')}</label>
                   <input value={tenant?.whatsapp_message || ''} onChange={(e) => updateField('whatsapp_message', e.target.value)} placeholder="Olá, preciso de suporte" style={inputStyle} />
                 </div>
               </div>
@@ -296,17 +298,17 @@ const AdminDashboard = () => {
 
             {/* Technical Config */}
             <div style={cardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>Configuração Técnica</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px' }}>{t('adminTechnicalConfig')}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
-                  <label style={labelStyle}>URL do Servidor Traccar</label>
+                  <label style={labelStyle}>{t('adminTraccarUrl')}</label>
                   <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
                   <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
                     URL do seu servidor Traccar (ex: https://demo.traccar.org)
                   </p>
                 </div>
                 <div>
-                  <label style={labelStyle}>Domínio Personalizado</label>
+                  <label style={labelStyle}>{t('adminCustomDomain')}</label>
                   <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
                   <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
                     Opcional: configure um domínio próprio para seu app
@@ -318,7 +320,7 @@ const AdminDashboard = () => {
             {message && (
               <p style={{
                 textAlign: 'center', fontSize: 14, fontWeight: 600, margin: 0,
-                color: message.includes('Erro') ? '#ff6b6b' : '#00f5a0',
+                color: message.includes('Erro') || message.includes('Error') ? '#ff6b6b' : '#00f5a0',
               }}>{message}</p>
             )}
 
@@ -328,7 +330,7 @@ const AdminDashboard = () => {
               background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
               opacity: saving ? 0.5 : 1,
             }}>
-              {saving ? 'Salvando...' : 'Salvar Alterações'}
+              {saving ? t('adminSaving') : t('adminSaveChanges')}
             </button>
           </div>
         )}
@@ -343,10 +345,10 @@ const AdminDashboard = () => {
             }}>
               <div style={{ fontSize: 48, marginBottom: 16 }}>🔗</div>
               <h2 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
-                Link do seu App
+                {t('adminYourAppLink')}
               </h2>
               <p style={{ color: '#94a3b8', fontSize: 14, margin: '0 0 24px' }}>
-                Compartilhe este link com seus clientes para acessarem o app de rastreamento
+                {t('adminShareLink')}
               </p>
 
               <div style={{
@@ -368,7 +370,7 @@ const AdminDashboard = () => {
                   color: copied ? '#0a0a0f' : '#00f5a0',
                   transition: 'all 0.2s',
                 }}>
-                  {copied ? '✓ Copiado!' : 'Copiar'}
+                  {copied ? t('adminCopied') : t('adminCopy')}
                 </button>
               </div>
 
@@ -385,20 +387,20 @@ const AdminDashboard = () => {
                     fontWeight: 600, fontSize: 13, textDecoration: 'none',
                   }}
                 >
-                  Abrir App ↗
+                  {t('adminOpenApp')} ↗
                 </a>
               </div>
             </div>
 
             <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>
-                Como funciona
+                {t('adminHowItWorks')}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {[
-                  { step: '1', title: 'Envie o link', desc: 'Compartilhe o link acima com seus clientes via WhatsApp, e-mail ou SMS.' },
-                  { step: '2', title: 'Cliente acessa', desc: 'Seu cliente abre o link e faz login com as credenciais do Traccar.' },
-                  { step: '3', title: 'App personalizado', desc: 'O app aparece com sua marca, cores e logo configurados no painel.' },
+                  { step: '1', title: t('adminStep1Title'), desc: t('adminStep1Desc') },
+                  { step: '2', title: t('adminStep2Title'), desc: t('adminStep2Desc') },
+                  { step: '3', title: t('adminStep3Title'), desc: t('adminStep3Desc') },
                 ].map((item) => (
                   <div key={item.step} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                     <div style={{
@@ -418,12 +420,12 @@ const AdminDashboard = () => {
 
             <div style={cardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 12px' }}>
-                Informações do App
+                {t('adminAppInfo')}
               </h3>
               {[
                 ['Slug', tenant?.slug],
-                ['Domínio Personalizado', tenant?.custom_domain || 'Não configurado'],
-                ['Servidor Traccar', tenant?.traccar_url || 'Não configurado'],
+                [t('adminCustomDomain'), tenant?.custom_domain || t('adminCustomDomainNotSet')],
+                [t('adminTraccarUrl'), tenant?.traccar_url || t('adminCustomDomainNotSet')],
               ].map(([label, value]) => (
                 <div key={label} style={{
                   display: 'flex', justifyContent: 'space-between', padding: '10px 0',
@@ -453,7 +455,7 @@ const AdminDashboard = () => {
                 color: tenant?.subscription_status === 'trial' ? '#ffc800' : '#00f5a0',
                 fontSize: 13, fontWeight: 700,
               }}>
-                {tenant?.subscription_status === 'trial' ? '⏳ Período de Teste' : '✅ Plano Ativo'}
+                {tenant?.subscription_status === 'trial' ? `⏳ ${t('adminTrialPeriod')}` : `✅ ${t('adminPlanActive')}`}
               </div>
               <h2 style={{ fontSize: 28, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
                 Plano Completo
@@ -467,7 +469,7 @@ const AdminDashboard = () => {
                   border: '1px solid rgba(255,200,0,0.15)', marginBottom: 16,
                 }}>
                   <p style={{ color: '#ffc800', fontSize: 14, fontWeight: 600, margin: 0 }}>
-                    Seu trial termina em {trialDays} dias
+                    {t('adminTrialEndsIn').replace('{0}', trialDays)}
                     ({tenant?.trial_ends_at ? new Date(tenant.trial_ends_at).toLocaleDateString('pt-BR') : ''})
                   </p>
                 </div>
@@ -477,17 +479,17 @@ const AdminDashboard = () => {
                 fontWeight: 700, fontSize: 15, fontFamily: 'inherit',
                 background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
               }}>
-                {tenant?.subscription_status === 'trial' ? 'Assinar Agora' : 'Gerenciar Plano'}
+                {tenant?.subscription_status === 'trial' ? t('adminSubscribeNow') : t('adminManagePlan')}
               </button>
             </div>
 
             <div style={cardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>Detalhes da Conta</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>{t('adminAccountDetails')}</h3>
               {[
                 ['Email', tenant?.owner_email],
-                ['Criado em', tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString('pt-BR') : '-'],
+                [t('adminCreatedAt'), tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString('pt-BR') : '-'],
                 ['Status', tenant?.subscription_status],
-                ['Plano', tenant?.plan_type],
+                [t('adminPlan'), tenant?.plan_type],
               ].map(([label, value]) => (
                 <div key={label} style={{
                   display: 'flex', justifyContent: 'space-between', padding: '10px 0',
@@ -506,9 +508,9 @@ const AdminDashboard = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
               {[
-                { label: 'Status', value: tenant?.subscription_status === 'trial' ? 'Trial' : 'Ativo', color: '#ffc800' },
-                { label: 'Máx. Dispositivos', value: tenant?.max_devices || 50, color: '#00f5a0' },
-                { label: 'Dias Restantes', value: trialDays, color: '#00d9f5' },
+                { label: 'Status', value: tenant?.subscription_status === 'trial' ? 'Trial' : t('adminPlanActive'), color: '#ffc800' },
+                { label: t('adminMaxDevices'), value: tenant?.max_devices || 50, color: '#00f5a0' },
+                { label: t('adminDaysRemaining'), value: trialDays, color: '#00d9f5' },
               ].map((stat) => (
                 <div key={stat.label} style={{
                   padding: 24, borderRadius: 16, textAlign: 'center',
@@ -524,7 +526,7 @@ const AdminDashboard = () => {
               background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
             }}>
               <p style={{ color: '#64748b', fontSize: 14 }}>
-                📊 Estatísticas detalhadas estarão disponíveis em breve.
+                📊 {t('adminStatsComingSoon')}
               </p>
             </div>
           </div>

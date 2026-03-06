@@ -526,7 +526,7 @@ const DashboardPage = () => {
   const stats = [
     {
       key: 'all',
-      label: 'Total',
+      label: t('sharedTotal'),
       value: deviceStats.total,
       icon: <DirectionsCarIcon sx={{ fontSize: 26, color: '#fff' }} />,
       bg: 'linear-gradient(135deg, #6366f1, #818cf8)',
@@ -555,7 +555,7 @@ const DashboardPage = () => {
     },
     {
       key: 'blocked',
-      label: 'Bloqueados',
+      label: t('statusBlocked'),
       value: deviceStats.blocked,
       icon: <BlockIcon sx={{ fontSize: 26, color: '#fff' }} />,
       bg: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
@@ -564,7 +564,7 @@ const DashboardPage = () => {
     },
     {
       key: 'moving',
-      label: 'Em Movimento',
+      label: t('statusMoving'),
       value: deviceStats.moving,
       icon: <TrendingUpIcon sx={{ fontSize: 26, color: '#fff' }} />,
       bg: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
@@ -577,7 +577,7 @@ const DashboardPage = () => {
     { label: t('deviceTitle'), icon: <DevicesIcon />, path: '/app/settings/devices', show: true },
     { label: t('settingsGroups'), icon: <GroupsIcon />, path: '/app/settings/groups', show: true },
     { label: t('sharedDrivers'), icon: <PersonIcon />, path: '/app/settings/drivers', show: true },
-    { label: 'Cercas', icon: <FenceIcon />, path: '/app/geofences', show: true },
+    { label: t('sharedGeofences'), icon: <FenceIcon />, path: '/app/geofences', show: true },
     { label: t('sharedNotifications'), icon: <NotificationsIcon />, path: '/app/settings/notifications', show: true },
     { label: t('sharedMaintenance'), icon: <BuildIcon />, path: '/app/settings/maintenances', show: true },
     { label: t('sharedPreferences'), icon: <SettingsIcon />, path: '/app/settings/preferences', show: true },
@@ -617,20 +617,20 @@ const DashboardPage = () => {
               }}
             />
             <Typography sx={{ fontSize: '0.72rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              {socket ? 'Tempo Real' : 'Desconectado'}
+              {socket ? t('dashboardRealTime') : t('dashboardDisconnected')}
             </Typography>
           </Box>
           <Typography className={classes.greeting}>
-            {user?.name ? `Olá, ${user.name}` : 'Dashboard'}
+            {user?.name ? t('dashboardGreeting').replace('{0}', user.name) : t('dashboardTitle')}
           </Typography>
           <Typography className={classes.subtitle}>
             {deviceStats.total > 0
-              ? `${deviceStats.online} de ${deviceStats.total} veículos online · ${deviceStats.moving} em movimento`
-              : 'Painel de controle de frota'}
+              ? t('dashboardFleetStatus').replace('{0}', deviceStats.online).replace('{1}', deviceStats.total).replace('{2}', deviceStats.moving)
+              : t('dashboardFleetPanel')}
           </Typography>
         </div>
         <Box sx={{ display: 'flex', gap: 1, zIndex: 1, alignItems: 'center' }}>
-          <Tooltip title={darkMode ? 'Modo Claro' : 'Modo Escuro'}>
+          <Tooltip title={darkMode ? t('dashboardLightMode') : t('dashboardDarkMode')}>
             <IconButton
               onClick={toggleDarkMode}
               sx={{
@@ -645,7 +645,7 @@ const DashboardPage = () => {
             </IconButton>
           </Tooltip>
           {admin && (
-            <Tooltip title={demoMode ? 'Desativar Demo' : 'Ativar Demo (5 veículos fictícios)'}>
+            <Tooltip title={demoMode ? t('dashboardDemoDisable') : t('dashboardDemoEnable')}>
               <IconButton
                 onClick={() => setDemoMode?.(!demoMode)}
                 sx={{
@@ -672,10 +672,10 @@ const DashboardPage = () => {
         }}>
           <ScienceIcon sx={{ color: '#f59e0b', fontSize: 14 }} />
           <Typography sx={{ color: '#fbbf24', fontWeight: 600, fontSize: '0.7rem', flex: 1 }}>
-            Modo demo ativo
+            {t('dashboardDemoActive')}
           </Typography>
           <Chip
-            label="Sair"
+            label={t('dashboardExit')}
             size="small"
             onClick={() => setDemoMode?.(false)}
             sx={{ height: 20, fontSize: '0.6rem', bgcolor: 'rgba(245,158,11,0.2)', color: '#fbbf24', fontWeight: 700, cursor: 'pointer', '&:hover': { bgcolor: 'rgba(245,158,11,0.35)' } }}
@@ -723,7 +723,7 @@ const DashboardPage = () => {
           <Box className={classes.sectionHeader}>
             <Box>
               <Typography className={classes.sectionTitle}>
-                Veículos
+                {t('sharedVehicles')}
                 <Chip
                   label={filteredDevices.length}
                   size="small"
@@ -733,7 +733,7 @@ const DashboardPage = () => {
             </Box>
             <Box className={classes.filterChips}>
               {['all', 'online', 'offline', 'moving', 'blocked'].map((key) => {
-                const labels = { all: 'Todos', online: 'Online', offline: 'Offline', moving: 'Movendo', blocked: 'Bloqueados' };
+                const labels = { all: t('sharedAll'), online: 'Online', offline: 'Offline', moving: t('statusMoving'), blocked: t('statusBlocked') };
                 const colors = { all: '#6366f1', online: '#10b981', offline: '#ef4444', moving: '#3b82f6', blocked: '#f59e0b' };
                 return (
                   <Chip
@@ -821,7 +821,7 @@ const DashboardPage = () => {
                     <Box className={classes.vehicleMeta}>
                       {/* Ignition */}
                       {ignition !== undefined && (
-                        <Tooltip title={ignition ? 'Ignição Ligada' : 'Ignição Desligada'}>
+                        <Tooltip title={ignition ? t('statusIgnitionOn') : t('statusIgnitionOff')}>
                           <Box className={classes.metaItem}>
                             {ignition
                               ? <PowerIcon sx={{ fontSize: 14, color: '#10b981' }} />
@@ -832,7 +832,7 @@ const DashboardPage = () => {
 
                       {/* Blocked */}
                       {blocked !== undefined && (
-                        <Tooltip title={blocked ? 'Bloqueado' : 'Desbloqueado'}>
+                        <Tooltip title={blocked ? t('statusBlocked') : t('statusUnblocked')}>
                           <Box className={classes.metaItem}>
                             {blocked
                               ? <LockIcon sx={{ fontSize: 14, color: '#ef4444' }} />
@@ -843,13 +843,13 @@ const DashboardPage = () => {
 
                       {/* Motion */}
                       {isMoving ? (
-                        <Tooltip title="Em movimento">
+                        <Tooltip title={t('statusMoving')}>
                           <Box className={classes.metaItem}>
                             <DirectionsRunIcon sx={{ fontSize: 14, color: '#3b82f6' }} />
                           </Box>
                         </Tooltip>
                       ) : (
-                        <Tooltip title="Parado">
+                        <Tooltip title={t('statusStopped')}>
                           <Box className={classes.metaItem}>
                             <NightlightIcon sx={{ fontSize: 14, color: '#94a3b8' }} />
                           </Box>
@@ -858,7 +858,7 @@ const DashboardPage = () => {
 
                       {/* Satellites */}
                       {satellites != null && (
-                        <Tooltip title={`${satellites} satélites`}>
+                        <Tooltip title={`${t('positionSat')}: ${satellites}`}>
                           <Box className={classes.metaItem}>
                             <SignalCellularAltIcon sx={{ fontSize: 13 }} />
                             {satellites}
@@ -868,7 +868,7 @@ const DashboardPage = () => {
 
                       {/* Course */}
                       {course != null && (
-                        <Tooltip title={`Direção: ${Math.round(course)}°`}>
+                        <Tooltip title={`${t('positionCourse')}: ${Math.round(course)}°`}>
                           <Box className={classes.metaItem}>
                             <NavigationIcon sx={{ fontSize: 13, transform: `rotate(${course}deg)` }} />
                           </Box>
@@ -877,7 +877,7 @@ const DashboardPage = () => {
 
                       {/* Fuel */}
                       {fuel != null && (
-                        <Tooltip title={`Combustível: ${Math.round(fuel)}%`}>
+                        <Tooltip title={`${t('positionFuel')}: ${Math.round(fuel)}%`}>
                           <Box className={classes.metaItem}>
                             <LocalGasStationIcon sx={{ fontSize: 13 }} />
                             {Math.round(fuel)}%
@@ -887,7 +887,7 @@ const DashboardPage = () => {
 
                       {/* Battery */}
                       {batteryLevel != null && (
-                        <Tooltip title={`Bateria: ${Math.round(batteryLevel)}%`}>
+                        <Tooltip title={`${t('positionBatteryLevel')}: ${Math.round(batteryLevel)}%`}>
                           <Box className={classes.metaItem} sx={{ color: batteryLevel > 70 ? '#10b981' : batteryLevel > 30 ? '#f59e0b' : '#ef4444' }}>
                             {batteryLevel > 70 ? <BatteryFullIcon sx={{ fontSize: 14 }} /> : batteryLevel > 30 ? <Battery60Icon sx={{ fontSize: 14 }} /> : <Battery20Icon sx={{ fontSize: 14 }} />}
                             {Math.round(batteryLevel)}%
@@ -908,7 +908,7 @@ const DashboardPage = () => {
                       </Box>
 
                       {/* Last update */}
-                      <Tooltip title="Última atualização">
+                      <Tooltip title={t('dashboardLastUpdate')}>
                         <Box className={classes.metaItem}>
                           <AccessTimeIcon sx={{ fontSize: 13 }} />
                           {getLastUpdate(device)}
@@ -932,7 +932,7 @@ const DashboardPage = () => {
                       {device.disabled && (
                         <Chip
                           icon={<BlockIcon sx={{ fontSize: 12 }} />}
-                          label="Bloq."
+                          label={t('statusBlocked')}
                           size="small"
                           sx={{
                             borderRadius: '8px',
@@ -954,11 +954,11 @@ const DashboardPage = () => {
                 <Box className={classes.emptyState}>
                   <SignalCellularAltIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
                   <Typography color="textSecondary" sx={{ fontWeight: 600 }}>
-                    Nenhum veículo {activeFilter !== 'all' ? 'nesta categoria' : 'encontrado'}
+                    {t('dashboardNoVehicles')} {activeFilter !== 'all' ? t('dashboardNoCategory') : t('dashboardNoFound')}
                   </Typography>
                   {activeFilter !== 'all' && (
                     <Chip
-                      label="Ver todos"
+                      label={t('dashboardShowAll')}
                       size="small"
                       onClick={() => setActiveFilter('all')}
                       sx={{ fontWeight: 600, cursor: 'pointer' }}
@@ -971,7 +971,7 @@ const DashboardPage = () => {
             {filteredDevices.length > 10 && (
               <Box sx={{ textAlign: 'center', mt: 1 }}>
                 <Chip
-                  label={showAllDevices ? 'Mostrar menos' : `Ver todos (${filteredDevices.length})`}
+                  label={showAllDevices ? t('dashboardShowLess') : `${t('dashboardShowAll')} (${filteredDevices.length})`}
                   icon={showAllDevices ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                   onClick={() => setShowAllDevices(!showAllDevices)}
                   sx={{
@@ -991,7 +991,7 @@ const DashboardPage = () => {
 
         {/* Quick Actions Menu */}
         <div>
-          <Typography className={classes.sectionTitle} sx={{ mb: 1.5 }}>Acesso Rápido</Typography>
+          <Typography className={classes.sectionTitle} sx={{ mb: 1.5 }}>{t('dashboardQuickAccess')}</Typography>
           <div className={classes.menuGrid}>
             {menuItems.map((item) => (
               <div
