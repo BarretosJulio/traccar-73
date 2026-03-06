@@ -40,7 +40,7 @@ const LogsPage = () => {
 
   const registerDevice = (uniqueId) => {
     const query = new URLSearchParams({ uniqueId });
-    navigate(`/settings/device?${query.toString()}`);
+    navigate(`/app/settings/device?${query.toString()}`);
   };
 
   return (

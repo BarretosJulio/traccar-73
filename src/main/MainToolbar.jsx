@@ -210,7 +210,7 @@ const MainToolbar = ({
       </Popover>
       <IconButton
         edge="end"
-        onClick={() => navigate('/settings/device')}
+        onClick={() => navigate('/app/settings/device')}
         disabled={deviceReadonly}
         sx={{
           borderRadius: '12px',

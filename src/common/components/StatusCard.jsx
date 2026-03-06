@@ -309,7 +309,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ deviceId: position.deviceId, geofenceId: item.id }),
     });
-    navigate(`/settings/geofence/${item.id}`);
+    navigate(`/app/settings/geofence/${item.id}`);
   }, [navigate, position]);
 
   // Build chips
@@ -646,7 +646,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
                   {/* More details */}
                   <Typography sx={{ fontSize: '0.62rem', mt: 0.2 }}>
-                    <Link component={RouterLink} to={`/position/${position.id}`}>
+                    <Link component={RouterLink} to={`/app/position/${position.id}`}>
                       {t('sharedShowDetails')}
                     </Link>
                   </Typography>
@@ -665,7 +665,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('reportReplay')}>
                   <IconButton
-                    onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
+                    onClick={() => navigate(`/app/replay?deviceId=${deviceId}`)}
                     disabled={disableActions || !position}
                   >
                     <RouteIcon />
@@ -673,7 +673,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('commandTitle')}>
                   <IconButton
-                    onClick={() => navigate(`/settings/device/${deviceId}/command`)}
+                    onClick={() => navigate(`/app/settings/device/${deviceId}/command`)}
                     disabled={disableActions}
                   >
                     <SendIcon />
@@ -681,7 +681,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
                   <IconButton
-                    onClick={() => navigate(`/settings/device/${deviceId}`)}
+                    onClick={() => navigate(`/app/settings/device/${deviceId}`)}
                     disabled={disableActions || deviceReadonly}
                   >
                     <EditIcon />
@@ -738,7 +738,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
             </MenuItem>
           )}
           {!shareDisabled && !user.temporary && (
-            <MenuItem onClick={() => navigate(`/settings/device/${deviceId}/share`)}>
+            <MenuItem onClick={() => navigate(`/app/settings/device/${deviceId}/share`)}>
               <Typography color="secondary">{t('deviceShare')}</Typography>
             </MenuItem>
           )}

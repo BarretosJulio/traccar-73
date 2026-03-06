@@ -41,14 +41,14 @@ const GroupsPage = () => {
     key: 'command',
     title: t('deviceCommand'),
     icon: <PublishIcon fontSize="small" />,
-    handler: (groupId) => navigate(`/settings/group/${groupId}/command`),
+    handler: (groupId) => navigate(`/app/settings/group/${groupId}/command`),
   };
 
   const actionConnections = {
     key: 'connections',
     title: t('sharedConnections'),
     icon: <LinkIcon fontSize="small" />,
-    handler: (groupId) => navigate(`/settings/group/${groupId}/connections`),
+    handler: (groupId) => navigate(`/app/settings/group/${groupId}/connections`),
   };
 
   return (

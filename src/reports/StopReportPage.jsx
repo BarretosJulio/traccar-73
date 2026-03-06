@@ -105,7 +105,7 @@ const StopReportPage = () => {
   const onSchedule = useCatch(async (deviceIds, groupIds, report) => {
     report.type = 'stops';
     await scheduleReport(deviceIds, groupIds, report);
-    navigate('/reports/scheduled');
+    navigate('/app/reports/scheduled');
   });
 
   const formatValue = (item, key) => {

@@ -59,18 +59,18 @@ const MapSideMenu = () => {
   const admin = useAdministrator();
 
   const items = [
-    { label: 'Dashboard', icon: <DashboardIcon className={classes.icon} />, path: '/' },
-    { label: t('deviceTitle'), icon: <DevicesIcon className={classes.icon} />, path: '/settings/devices' },
-    { label: t('settingsGroups'), icon: <GroupsIcon className={classes.icon} />, path: '/settings/groups' },
-    { label: t('sharedDrivers'), icon: <PersonIcon className={classes.icon} />, path: '/settings/drivers' },
-    { label: 'Cercas', icon: <FenceIcon className={classes.icon} />, path: '/geofences' },
-    { label: t('sharedNotifications'), icon: <NotificationsIcon className={classes.icon} />, path: '/settings/notifications' },
-    { label: t('sharedMaintenance'), icon: <BuildIcon className={classes.icon} />, path: '/settings/maintenances' },
-    { label: t('sharedPreferences'), icon: <SettingsIcon className={classes.icon} />, path: '/settings/preferences' },
-    { label: t('reportTitle'), icon: <DescriptionIcon className={classes.icon} />, path: '/reports/combined' },
+    { label: 'Dashboard', icon: <DashboardIcon className={classes.icon} />, path: '/app' },
+    { label: t('deviceTitle'), icon: <DevicesIcon className={classes.icon} />, path: '/app/settings/devices' },
+    { label: t('settingsGroups'), icon: <GroupsIcon className={classes.icon} />, path: '/app/settings/groups' },
+    { label: t('sharedDrivers'), icon: <PersonIcon className={classes.icon} />, path: '/app/settings/drivers' },
+    { label: 'Cercas', icon: <FenceIcon className={classes.icon} />, path: '/app/geofences' },
+    { label: t('sharedNotifications'), icon: <NotificationsIcon className={classes.icon} />, path: '/app/settings/notifications' },
+    { label: t('sharedMaintenance'), icon: <BuildIcon className={classes.icon} />, path: '/app/settings/maintenances' },
+    { label: t('sharedPreferences'), icon: <SettingsIcon className={classes.icon} />, path: '/app/settings/preferences' },
+    { label: t('reportTitle'), icon: <DescriptionIcon className={classes.icon} />, path: '/app/reports/combined' },
     ...(admin ? [
-      { label: t('settingsUsers'), icon: <PeopleIcon className={classes.icon} />, path: '/settings/users' },
-      { label: t('settingsServer'), icon: <StorageIcon className={classes.icon} />, path: '/settings/server' },
+      { label: t('settingsUsers'), icon: <PeopleIcon className={classes.icon} />, path: '/app/settings/users' },
+      { label: t('settingsServer'), icon: <StorageIcon className={classes.icon} />, path: '/app/settings/server' },
     ] : []),
   ];
 
