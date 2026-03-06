@@ -932,7 +932,7 @@ const DashboardPage = () => {
                       {device.disabled && (
                         <Chip
                           icon={<BlockIcon sx={{ fontSize: 12 }} />}
-                          label="Bloq."
+                          label={t('statusBlocked')}
                           size="small"
                           sx={{
                             borderRadius: '8px',
