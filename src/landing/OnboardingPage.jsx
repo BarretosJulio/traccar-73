@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { EDGE_FUNCTION_BASE } from '../common/util/apiUrl';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(null);
 
   const [form, setForm] = useState({
     company_name: '',
-    traccar_url: '',
     owner_email: '',
     password: '',
-    color_primary: '#00f5a0',
-    color_secondary: '#ffffff',
   });
 
   const updateField = (field, value) => {
@@ -23,15 +18,13 @@ const OnboardingPage = () => {
     setError('');
   };
 
-  const canAdvance = () => {
-    if (step === 1) return form.company_name.trim().length >= 3 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.owner_email) && form.password.length >= 6;
-    if (step === 2) {
-      try { new URL(form.traccar_url); return true; } catch { return false; }
-    }
-    return true;
-  };
+  const isValid = form.company_name.trim().length >= 3
+    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.owner_email)
+    && form.password.length >= 6;
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isValid) return;
     setLoading(true);
     setError('');
     try {
@@ -44,15 +37,18 @@ const OnboardingPage = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${supabaseKey}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          company_name: form.company_name,
+          owner_email: form.owner_email,
+          password: form.password,
+          traccar_url: 'https://pending-setup.example.com',
+        }),
       });
 
       const data = await response.json();
 
       if (data.success) {
         setSuccess(data.data);
-        localStorage.setItem('tenantSlug', data.data.slug);
-        setStep(4);
       } else {
         setError(data.message || 'Erro ao criar conta');
       }
@@ -64,69 +60,22 @@ const OnboardingPage = () => {
   };
 
   const inputStyle = {
-    width: '100%',
-    padding: '14px 16px',
-    borderRadius: 10,
-    border: '1px solid rgba(255,255,255,0.12)',
-    background: 'rgba(255,255,255,0.05)',
-    color: '#fff',
-    fontSize: 15,
-    outline: 'none',
-    fontFamily: 'inherit',
-    boxSizing: 'border-box',
+    width: '100%', padding: '14px 16px', borderRadius: 10,
+    border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)',
+    color: '#fff', fontSize: 15, outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
   };
 
   const labelStyle = {
-    display: 'block',
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#94a3b8',
-    marginBottom: 6,
-  };
-
-  const btnPrimary = {
-    width: '100%',
-    padding: '14px 0',
-    borderRadius: 10,
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: 700,
-    fontSize: 15,
-    background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
-    color: '#0a0a0f',
-    fontFamily: 'inherit',
-    opacity: canAdvance() && !loading ? 1 : 0.5,
-    pointerEvents: canAdvance() && !loading ? 'auto' : 'none',
-  };
-
-  const btnSecondary = {
-    width: '100%',
-    padding: '12px 0',
-    borderRadius: 10,
-    border: '1px solid rgba(255,255,255,0.1)',
-    cursor: 'pointer',
-    fontWeight: 600,
-    fontSize: 14,
-    background: 'transparent',
-    color: '#94a3b8',
-    fontFamily: 'inherit',
+    display: 'block', fontSize: 13, fontWeight: 600, color: '#94a3b8', marginBottom: 6,
   };
 
   return (
     <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#0a0a0f',
-      color: '#e2e8f0',
-      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '24px',
+      minHeight: '100vh', backgroundColor: '#0a0a0f', color: '#e2e8f0',
+      fontFamily: "'Inter', -apple-system, sans-serif",
+      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
     }}>
-      <div style={{
-        width: '100%',
-        maxWidth: 440,
-      }}>
+      <div style={{ width: '100%', maxWidth: 420 }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{
@@ -135,42 +84,26 @@ const OnboardingPage = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontWeight: 900, fontSize: 22, color: '#0a0a0f',
           }}>H</div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: '#fff', margin: 0 }}>
-            {step === 4 ? '🎉 Conta Criada!' : 'Criar sua conta'}
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>
+            {success ? '🎉 Conta Criada!' : 'Criar sua conta'}
           </h1>
-          {step < 4 && (
-            <p style={{ color: '#64748b', fontSize: 14, marginTop: 6 }}>
-              Passo {step} de 3 — {step === 1 ? 'Dados da Empresa' : step === 2 ? 'Servidor Traccar' : 'Personalização'}
+          {!success && (
+            <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
+              Cadastre sua empresa e comece a usar em minutos
             </p>
           )}
         </div>
 
-        {/* Progress */}
-        {step < 4 && (
-          <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
-            {[1, 2, 3].map((s) => (
-              <div key={s} style={{
-                flex: 1, height: 4, borderRadius: 2,
-                background: s <= step ? 'linear-gradient(135deg, #00f5a0, #00d9f5)' : 'rgba(255,255,255,0.08)',
-              }} />
-            ))}
-          </div>
-        )}
-
         <div style={{
-          padding: 28,
-          borderRadius: 16,
-          background: 'rgba(255,255,255,0.02)',
+          padding: 28, borderRadius: 16, background: 'rgba(255,255,255,0.02)',
           border: '1px solid rgba(255,255,255,0.08)',
         }}>
-          {/* Step 1 - Company Info */}
-          {step === 1 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {!success ? (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
                 <label style={labelStyle}>Nome da Empresa *</label>
                 <input
-                  type="text"
-                  placeholder="Ex: MabTracker Rastreamento"
+                  type="text" placeholder="Ex: MabTracker Rastreamento"
                   value={form.company_name}
                   onChange={(e) => updateField('company_name', e.target.value)}
                   style={inputStyle}
@@ -179,146 +112,75 @@ const OnboardingPage = () => {
               <div>
                 <label style={labelStyle}>Seu Email *</label>
                 <input
-                  type="email"
-                  placeholder="seu@email.com"
+                  type="email" placeholder="seu@email.com"
                   value={form.owner_email}
                   onChange={(e) => updateField('owner_email', e.target.value)}
                   style={inputStyle}
                 />
               </div>
               <div>
-                <label style={labelStyle}>Senha * <span style={{ color: '#475569', fontWeight: 400 }}>(mín. 6 caracteres)</span></label>
+                <label style={labelStyle}>
+                  Senha * <span style={{ color: '#475569', fontWeight: 400 }}>(mín. 6 caracteres)</span>
+                </label>
                 <input
-                  type="password"
-                  placeholder="••••••"
+                  type="password" placeholder="••••••"
                   value={form.password}
                   onChange={(e) => updateField('password', e.target.value)}
                   style={inputStyle}
                 />
               </div>
-              <button onClick={() => setStep(2)} style={btnPrimary}>
-                Continuar
-              </button>
-            </div>
-          )}
 
-          {/* Step 2 - Traccar URL */}
-          {step === 2 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div>
-                <label style={labelStyle}>URL do seu servidor Traccar *</label>
-                <input
-                  type="url"
-                  placeholder="https://traccar.suaempresa.com.br"
-                  value={form.traccar_url}
-                  onChange={(e) => updateField('traccar_url', e.target.value)}
-                  style={inputStyle}
-                />
-                <p style={{ fontSize: 12, color: '#64748b', marginTop: 6, lineHeight: 1.5 }}>
-                  Informe o endereço completo do seu servidor Traccar (com https://)
-                </p>
-              </div>
-              <button onClick={() => setStep(3)} style={btnPrimary}>
-                Continuar
-              </button>
-              <button onClick={() => setStep(1)} style={btnSecondary}>
-                ← Voltar
-              </button>
-            </div>
-          )}
+              {error && <p style={{ color: '#ff6b6b', fontSize: 13, margin: 0 }}>{error}</p>}
 
-          {/* Step 3 - Customization */}
-          {step === 3 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div>
-                <label style={labelStyle}>Cor Principal</label>
-                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <input
-                    type="color"
-                    value={form.color_primary}
-                    onChange={(e) => updateField('color_primary', e.target.value)}
-                    style={{ width: 48, height: 40, border: 'none', borderRadius: 8, cursor: 'pointer', background: 'transparent' }}
-                  />
-                  <input
-                    type="text"
-                    value={form.color_primary}
-                    onChange={(e) => updateField('color_primary', e.target.value)}
-                    style={{ ...inputStyle, flex: 1 }}
-                  />
-                </div>
-              </div>
-              <div>
-                <label style={labelStyle}>Cor Secundária</label>
-                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <input
-                    type="color"
-                    value={form.color_secondary}
-                    onChange={(e) => updateField('color_secondary', e.target.value)}
-                    style={{ width: 48, height: 40, border: 'none', borderRadius: 8, cursor: 'pointer', background: 'transparent' }}
-                  />
-                  <input
-                    type="text"
-                    value={form.color_secondary}
-                    onChange={(e) => updateField('color_secondary', e.target.value)}
-                    style={{ ...inputStyle, flex: 1 }}
-                  />
-                </div>
-              </div>
-
-              {error && (
-                <p style={{ color: '#ff6b6b', fontSize: 13, margin: 0 }}>{error}</p>
-              )}
-
-              <button onClick={handleSubmit} style={btnPrimary}>
+              <button type="submit" disabled={!isValid || loading} style={{
+                width: '100%', padding: '14px 0', borderRadius: 10, border: 'none',
+                cursor: 'pointer', fontWeight: 700, fontSize: 15, fontFamily: 'inherit',
+                background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
+                opacity: !isValid || loading ? 0.5 : 1,
+              }}>
                 {loading ? 'Criando conta...' : 'Criar Conta — 7 Dias Grátis'}
               </button>
-              <button onClick={() => setStep(2)} style={btnSecondary}>
-                ← Voltar
-              </button>
-            </div>
-          )}
-
-          {/* Step 4 - Success */}
-          {step === 4 && success && (
+            </form>
+          ) : (
             <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
-                Sua conta <strong style={{ color: '#00f5a0' }}>{success.company_name}</strong> foi criada com sucesso!
-                <br />Seu trial gratuito é válido até{' '}
+              <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7, margin: 0 }}>
+                Sua empresa <strong style={{ color: '#00f5a0' }}>{success.company_name}</strong> foi criada!
+                <br />Trial gratuito até{' '}
                 <strong style={{ color: '#fff' }}>
                   {new Date(success.trial_ends_at).toLocaleDateString('pt-BR')}
                 </strong>.
               </p>
-              <div style={{
-                padding: 16, borderRadius: 10,
-                background: 'rgba(0,245,160,0.06)',
-                border: '1px solid rgba(0,245,160,0.15)',
-              }}>
-                <p style={{ fontSize: 12, color: '#64748b', margin: '0 0 4px' }}>Seu slug de acesso:</p>
-                <p style={{ fontSize: 18, fontWeight: 700, color: '#00f5a0', margin: 0 }}>{success.slug}</p>
-              </div>
+              <p style={{ color: '#64748b', fontSize: 13, margin: 0, lineHeight: 1.6 }}>
+                Acesse o painel para configurar seu app: URL do Traccar, logo, cores e WhatsApp.
+              </p>
               <button
                 onClick={() => navigate('/admin/login')}
-                style={{ ...btnPrimary, opacity: 1, pointerEvents: 'auto' }}
+                style={{
+                  width: '100%', padding: '14px 0', borderRadius: 10, border: 'none',
+                  cursor: 'pointer', fontWeight: 700, fontSize: 15, fontFamily: 'inherit',
+                  background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
+                }}
               >
                 Entrar no Painel
-              </button>
-              <button onClick={() => navigate('/')} style={btnSecondary}>
-                Voltar ao Início
               </button>
             </div>
           )}
         </div>
 
-        {step < 4 && (
-          <p style={{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 20 }}>
-            Já tem uma conta?{' '}
-            <span
-              onClick={() => navigate('/admin/login')}
-              style={{ color: '#00f5a0', cursor: 'pointer', fontWeight: 600 }}
-            >
-              Entrar
-            </span>
-          </p>
+        {!success && (
+          <div style={{ textAlign: 'center', marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ color: '#475569', fontSize: 13, margin: 0 }}>
+              Já tem uma conta?{' '}
+              <span onClick={() => navigate('/admin/login')} style={{ color: '#00f5a0', cursor: 'pointer', fontWeight: 600 }}>
+                Entrar
+              </span>
+            </p>
+            <p style={{ color: '#475569', fontSize: 13, margin: 0 }}>
+              <span onClick={() => navigate('/')} style={{ color: '#64748b', cursor: 'pointer' }}>
+                ← Voltar ao início
+              </span>
+            </p>
+          </div>
         )}
       </div>
     </div>
