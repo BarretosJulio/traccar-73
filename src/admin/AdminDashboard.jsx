@@ -484,7 +484,7 @@ const AdminDashboard = () => {
             </div>
 
             <div style={cardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>Detalhes da Conta</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>{t('adminAccountDetails')}</h3>
               {[
                 ['Email', tenant?.owner_email],
                 ['Criado em', tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString('pt-BR') : '-'],
