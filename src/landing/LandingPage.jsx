@@ -118,31 +118,32 @@ const LandingPage = () => {
       {/* Nav */}
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-        padding: '16px 24px',
+        padding: '12px 16px',
         background: 'rgba(10,10,15,0.8)',
         backdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(0,245,160,0.1)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
           <div style={{
-            width: 36, height: 36, borderRadius: 10,
+            width: 32, height: 32, borderRadius: 8, flexShrink: 0,
             background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 900, fontSize: 18, color: '#0a0a0f',
+            fontWeight: 900, fontSize: 16, color: '#0a0a0f',
           }}>H</div>
-          <span style={{ fontWeight: 800, fontSize: 20, color: '#fff' }}>HyperTraccar</span>
+          <span style={{ fontWeight: 800, fontSize: 16, color: '#fff', whiteSpace: 'nowrap' }}>HyperTraccar</span>
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
           <button onClick={() => navigate('/login')} style={{
-            padding: '10px 24px', borderRadius: 8, border: '1px solid rgba(0,245,160,0.3)',
+            padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(0,245,160,0.3)',
             background: 'transparent', color: '#00f5a0', cursor: 'pointer',
-            fontWeight: 600, fontSize: 14, transition: 'all 0.2s',
+            fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap',
           }}>Entrar</button>
           <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} style={{
-            padding: '10px 24px', borderRadius: 8, border: 'none',
+            padding: '8px 16px', borderRadius: 8, border: 'none',
             background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
-            color: '#0a0a0f', cursor: 'pointer', fontWeight: 700, fontSize: 14,
+            color: '#0a0a0f', cursor: 'pointer', fontWeight: 700, fontSize: 13,
+            whiteSpace: 'nowrap', display: window.innerWidth < 480 ? 'none' : 'block',
           }}>Começar Agora</button>
         </div>
       </nav>
