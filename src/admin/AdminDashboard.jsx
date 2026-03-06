@@ -13,6 +13,8 @@ const AdminDashboard = () => {
   const [message, setMessage] = useState('');
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [statsData, setStatsData] = useState({ installations: 0, activeSessions: 0, expiredSessions: 0 });
+  const [statsLoading, setStatsLoading] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {

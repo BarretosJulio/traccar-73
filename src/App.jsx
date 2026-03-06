@@ -38,6 +38,8 @@ const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
+  const tenant = useTenant();
+  usePwaInstallTracker(tenant?.id);
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const isSettingsRoute = pathname.startsWith('/app/settings') || pathname.startsWith('/app/geofences');
