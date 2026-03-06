@@ -104,6 +104,36 @@ const AdminDashboard = () => {
     }
   };
 
+  const [uploadingBgImage, setUploadingBgImage] = useState(false);
+
+  const handleBgImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setMessage(t('adminErrorFileSize'));
+      return;
+    }
+    setUploadingBgImage(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const path = `${tenant.id}/login-bg.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from('logos')
+        .upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage
+        .from('logos')
+        .getPublicUrl(path);
+      updateField('login_bg_image', publicUrl);
+      setMessage(t('adminBgImageSuccess'));
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setMessage(`${t('adminErrorLogo')}: ` + err.message);
+    } finally {
+      setUploadingBgImage(false);
+    }
+  };
+
   const getPwaLink = () => {
     if (tenant?.custom_domain) return `https://${tenant.custom_domain}`;
     return `${window.location.origin}/login?tenant=${tenant?.slug}`;
