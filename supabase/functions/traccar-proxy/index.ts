@@ -132,7 +132,7 @@ Deno.serve(async (req: Request) => {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body,
-        redirect: "manual",
+        redirect: "follow",
       });
 
       const setCookie = traccarResponse.headers.get("set-cookie");
