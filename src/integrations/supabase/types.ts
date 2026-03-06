@@ -24,10 +24,12 @@ export type Database = {
           id: string
           logo_url: string | null
           max_devices: number
+          owner_email: string | null
           plan_type: string
           slug: string
           subscription_status: string
           traccar_url: string
+          trial_ends_at: string | null
           updated_at: string
           whatsapp_message: string | null
           whatsapp_number: string | null
@@ -41,10 +43,12 @@ export type Database = {
           id?: string
           logo_url?: string | null
           max_devices?: number
+          owner_email?: string | null
           plan_type?: string
           slug: string
           subscription_status?: string
           traccar_url: string
+          trial_ends_at?: string | null
           updated_at?: string
           whatsapp_message?: string | null
           whatsapp_number?: string | null
@@ -58,10 +62,12 @@ export type Database = {
           id?: string
           logo_url?: string | null
           max_devices?: number
+          owner_email?: string | null
           plan_type?: string
           slug?: string
           subscription_status?: string
           traccar_url?: string
+          trial_ends_at?: string | null
           updated_at?: string
           whatsapp_message?: string | null
           whatsapp_number?: string | null
