@@ -370,7 +370,7 @@ const AdminDashboard = () => {
                   color: copied ? '#0a0a0f' : '#00f5a0',
                   transition: 'all 0.2s',
                 }}>
-                  {copied ? '✓ Copiado!' : 'Copiar'}
+                  {copied ? t('adminCopied') : t('adminCopy')}
                 </button>
               </div>
 
