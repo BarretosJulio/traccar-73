@@ -108,16 +108,16 @@ const BottomMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const currentSelection = () => {
-    if (location.pathname === `/settings/user/${user.id}`) {
+    if (location.pathname === `/app/settings/user/${user.id}`) {
       return 'account';
     }
-    if (location.pathname.startsWith('/settings')) {
+    if (location.pathname.startsWith('/app/settings')) {
       return 'settings';
     }
-    if (location.pathname.startsWith('/reports')) {
+    if (location.pathname.startsWith('/app/reports')) {
       return 'reports';
     }
-    if (location.pathname === '/' || location.pathname === '/map') {
+    if (location.pathname === '/app' || location.pathname === '/app/map') {
       return 'map';
     }
     return null;
