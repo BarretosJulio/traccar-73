@@ -65,6 +65,8 @@ import { useAttributePreference } from '../util/preferences';
 import { formatAlarm, formatBoolean } from '../util/formatter';
 import { mapIconKey, mapIcons } from '../../map/core/preloadImages';
 import fetchOrThrow from '../util/fetchOrThrow';
+import usePositionAttributes from '../attributes/usePositionAttributes';
+import PositionValue from './PositionValue';
 
 const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
