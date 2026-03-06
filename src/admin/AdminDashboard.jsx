@@ -387,7 +387,7 @@ const AdminDashboard = () => {
                     fontWeight: 600, fontSize: 13, textDecoration: 'none',
                   }}
                 >
-                  Abrir App ↗
+                  {t('adminOpenApp')} ↗
                 </a>
               </div>
             </div>
