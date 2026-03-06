@@ -186,6 +186,16 @@ const OnboardingPage = () => {
                   style={inputStyle}
                 />
               </div>
+              <div>
+                <label style={labelStyle}>Senha * <span style={{ color: '#475569', fontWeight: 400 }}>(mín. 6 caracteres)</span></label>
+                <input
+                  type="password"
+                  placeholder="••••••"
+                  value={form.password}
+                  onChange={(e) => updateField('password', e.target.value)}
+                  style={inputStyle}
+                />
+              </div>
               <button onClick={() => setStep(2)} style={btnPrimary}>
                 Continuar
               </button>
