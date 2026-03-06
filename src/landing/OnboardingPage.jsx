@@ -313,7 +313,7 @@ const OnboardingPage = () => {
           <p style={{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 20 }}>
             Já tem uma conta?{' '}
             <span
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/admin/login')}
               style={{ color: '#00f5a0', cursor: 'pointer', fontWeight: 600 }}
             >
               Entrar
