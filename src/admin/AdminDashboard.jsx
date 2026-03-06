@@ -192,7 +192,7 @@ const AdminDashboard = () => {
               color: tenant?.subscription_status === 'trial' ? '#ffc800' : '#00f5a0',
               fontWeight: 600,
             }}>
-              {tenant?.subscription_status === 'trial' ? `Trial • ${trialDays} dias` : 'Ativo'}
+              {tenant?.subscription_status === 'trial' ? `Trial • ${trialDays} dias` : t('adminPlanActive')}
             </span>
           </div>
         </div>
