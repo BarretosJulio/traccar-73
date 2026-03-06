@@ -345,10 +345,10 @@ const AdminDashboard = () => {
             }}>
               <div style={{ fontSize: 48, marginBottom: 16 }}>🔗</div>
               <h2 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
-                Link do seu App
+                {t('adminYourAppLink')}
               </h2>
               <p style={{ color: '#94a3b8', fontSize: 14, margin: '0 0 24px' }}>
-                Compartilhe este link com seus clientes para acessarem o app de rastreamento
+                {t('adminShareLink')}
               </p>
 
               <div style={{
