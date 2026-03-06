@@ -1,19 +1,20 @@
 import { Divider, List } from '@mui/material';
-import TuneIcon from '@mui/icons-material/Tune';
-import DrawIcon from '@mui/icons-material/Draw';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import FolderIcon from '@mui/icons-material/Folder';
-import PersonIcon from '@mui/icons-material/Person';
-import SettingsIcon from '@mui/icons-material/Settings';
-import BuildIcon from '@mui/icons-material/Build';
-import PeopleIcon from '@mui/icons-material/People';
-import TodayIcon from '@mui/icons-material/Today';
-import SendIcon from '@mui/icons-material/Send';
-import DnsIcon from '@mui/icons-material/Dns';
-import HelpIcon from '@mui/icons-material/Help';
-import PaymentIcon from '@mui/icons-material/Payment';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import CalculateIcon from '@mui/icons-material/Calculate';
+import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
+import ShareLocationOutlinedIcon from '@mui/icons-material/ShareLocationOutlined';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import TodayOutlinedIcon from '@mui/icons-material/TodayOutlined';
+import TerminalOutlinedIcon from '@mui/icons-material/TerminalOutlined';
+import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '../../common/components/LocalizationProvider';
@@ -39,91 +40,91 @@ const SettingsMenu = () => {
       <List>
         <MenuItem
           title={t('sharedPreferences')}
-          link="/settings/preferences"
-          icon={<TuneIcon />}
-          selected={location.pathname === '/settings/preferences'}
+          link="/app/settings/preferences"
+          icon={<SettingsSuggestOutlinedIcon />}
+          selected={location.pathname === '/app/settings/preferences'}
         />
         {!readonly && (
           <>
             <MenuItem
               title={t('sharedNotifications')}
-              link="/settings/notifications"
-              icon={<NotificationsIcon />}
-              selected={location.pathname.startsWith('/settings/notification')}
+              link="/app/settings/notifications"
+              icon={<NotificationsOutlinedIcon />}
+              selected={location.pathname.startsWith('/app/settings/notification')}
             />
             <MenuItem
               title={t('settingsUser')}
-              link={`/settings/user/${userId}`}
-              icon={<PersonIcon />}
-              selected={location.pathname === `/settings/user/${userId}`}
+              link={`/app/settings/user/${userId}`}
+              icon={<AccountCircleOutlinedIcon />}
+              selected={location.pathname === `/app/settings/user/${userId}`}
             />
             <MenuItem
               title={t('deviceTitle')}
-              link="/settings/devices"
-              icon={<DnsIcon />}
-              selected={location.pathname.startsWith('/settings/device')}
+              link="/app/settings/devices"
+              icon={<DirectionsCarOutlinedIcon />}
+              selected={location.pathname.startsWith('/app/settings/device')}
             />
             <MenuItem
               title={t('sharedGeofences')}
-              link="/geofences"
-              icon={<DrawIcon />}
-              selected={location.pathname.startsWith('/settings/geofence')}
+              link="/app/geofences"
+              icon={<ShareLocationOutlinedIcon />}
+              selected={location.pathname.startsWith('/app/settings/geofence')}
             />
             {!features.disableGroups && (
               <MenuItem
                 title={t('settingsGroups')}
-                link="/settings/groups"
-                icon={<FolderIcon />}
-                selected={location.pathname.startsWith('/settings/group')}
+                link="/app/settings/groups"
+                icon={<FolderOpenOutlinedIcon />}
+                selected={location.pathname.startsWith('/app/settings/group')}
               />
             )}
             {!features.disableDrivers && (
               <MenuItem
                 title={t('sharedDrivers')}
-                link="/settings/drivers"
-                icon={<PersonIcon />}
-                selected={location.pathname.startsWith('/settings/driver')}
+                link="/app/settings/drivers"
+                icon={<BadgeOutlinedIcon />}
+                selected={location.pathname.startsWith('/app/settings/driver')}
               />
             )}
             {!features.disableCalendars && (
               <MenuItem
                 title={t('sharedCalendars')}
-                link="/settings/calendars"
-                icon={<TodayIcon />}
-                selected={location.pathname.startsWith('/settings/calendar')}
+                link="/app/settings/calendars"
+                icon={<TodayOutlinedIcon />}
+                selected={location.pathname.startsWith('/app/settings/calendar')}
               />
             )}
             {!features.disableComputedAttributes && (
               <MenuItem
                 title={t('sharedComputedAttributes')}
-                link="/settings/attributes"
-                icon={<CalculateIcon />}
-                selected={location.pathname.startsWith('/settings/attribute')}
+                link="/app/settings/attributes"
+                icon={<DataObjectOutlinedIcon />}
+                selected={location.pathname.startsWith('/app/settings/attribute')}
               />
             )}
             {!features.disableMaintenance && (
               <MenuItem
                 title={t('sharedMaintenance')}
-                link="/settings/maintenances"
-                icon={<BuildIcon />}
-                selected={location.pathname.startsWith('/settings/maintenance')}
+                link="/app/settings/maintenances"
+                icon={<HandymanOutlinedIcon />}
+                selected={location.pathname.startsWith('/app/settings/maintenance')}
               />
             )}
             {!features.disableSavedCommands && (
               <MenuItem
                 title={t('sharedSavedCommands')}
-                link="/settings/commands"
-                icon={<SendIcon />}
-                selected={location.pathname.startsWith('/settings/command')}
+                link="/app/settings/commands"
+                icon={<TerminalOutlinedIcon />}
+                selected={location.pathname.startsWith('/app/settings/command')}
               />
             )}
           </>
         )}
         {billingLink && (
-          <MenuItem title={t('userBilling')} link={billingLink} icon={<PaymentIcon />} />
+          <MenuItem title={t('userBilling')} link={billingLink} icon={<PaymentOutlinedIcon />} />
         )}
         {supportLink && (
-          <MenuItem title={t('settingsSupport')} link={supportLink} icon={<HelpIcon />} />
+          <MenuItem title={t('settingsSupport')} link={supportLink} icon={<HelpOutlineOutlinedIcon />} />
         )}
       </List>
       {manager && (
@@ -132,25 +133,25 @@ const SettingsMenu = () => {
           <List>
             <MenuItem
               title={t('serverAnnouncement')}
-              link="/settings/announcement"
-              icon={<CampaignIcon />}
-              selected={location.pathname === '/settings/announcement'}
+              link="/app/settings/announcement"
+              icon={<CampaignOutlinedIcon />}
+              selected={location.pathname === '/app/settings/announcement'}
             />
             {admin && (
               <MenuItem
                 title={t('settingsServer')}
-                link="/settings/server"
-                icon={<SettingsIcon />}
-                selected={location.pathname === '/settings/server'}
+                link="/app/settings/server"
+                icon={<AdminPanelSettingsOutlinedIcon />}
+                selected={location.pathname === '/app/settings/server'}
               />
             )}
             <MenuItem
               title={t('settingsUsers')}
-              link="/settings/users"
-              icon={<PeopleIcon />}
+              link="/app/settings/users"
+              icon={<GroupOutlinedIcon />}
               selected={
-                location.pathname.startsWith('/settings/user') &&
-                location.pathname !== `/settings/user/${userId}`
+                location.pathname.startsWith('/app/settings/user') &&
+                location.pathname !== `/app/settings/user/${userId}`
               }
             />
           </List>
