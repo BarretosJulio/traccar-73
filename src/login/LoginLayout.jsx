@@ -1,4 +1,4 @@
-import { useMediaQuery, Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { useTheme } from '@mui/material/styles';
 import LogoImage from './LogoImage';
@@ -13,10 +13,11 @@ const useStyles = makeStyles()((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'space-between',
     width: theme.dimensions.sidebarWidth,
     position: 'relative',
     overflow: 'auto',
-    padding: theme.spacing(4, 3),
+    padding: theme.spacing(5, 3),
     [theme.breakpoints.down('lg')]: {
       width: '100%',
     },
@@ -26,6 +27,25 @@ const useStyles = makeStyles()((theme) => ({
     inset: 0,
     background: 'radial-gradient(circle at 30% 80%, rgba(255,255,255,0.08) 0%, transparent 60%)',
     pointerEvents: 'none',
+  },
+  logoZone: {
+    flex: '0 0 auto',
+    position: 'relative',
+    zIndex: 1,
+    textAlign: 'center',
+  },
+  formZone: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'relative',
+    zIndex: 1,
+  },
+  form: {
+    width: '100%',
+    maxWidth: '340px',
   },
   contentArea: {
     flex: 1,
@@ -39,13 +59,6 @@ const useStyles = makeStyles()((theme) => ({
     inset: 0,
     background: 'rgba(0,0,0,0.3)',
     zIndex: 0,
-  },
-  form: {
-    width: '100%',
-    maxWidth: '340px',
-    position: 'relative',
-    zIndex: 1,
-    marginTop: theme.spacing(3),
   },
 }));
 
@@ -78,21 +91,23 @@ const LoginLayout = ({ children }) => {
     <main className={classes.root}>
       <div className={classes.sidebar} style={{ background: sidebarBg }}>
         <div className={classes.sidebarOverlay} />
-        <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center', mt: 2 }}>
+        <div className={classes.logoZone}>
           <LogoImage color="#ffffff" />
           <Typography
-            variant="body2"
             sx={{
               color: 'rgba(255,255,255,0.7)',
-              mt: 1,
+              mt: 0.5,
               fontWeight: 400,
+              fontSize: '0.9rem',
               letterSpacing: '0.05em',
             }}
           >
             Rastreamento Inteligente
           </Typography>
-        </Box>
-        <form className={classes.form}>{children}</form>
+        </div>
+        <div className={classes.formZone}>
+          <form className={classes.form}>{children}</form>
+        </div>
       </div>
       <div className={classes.contentArea} style={contentStyle}>
         {bgImage && <div className={classes.bgOverlay} />}

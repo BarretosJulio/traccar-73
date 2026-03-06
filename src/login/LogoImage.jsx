@@ -8,10 +8,10 @@ const useStyles = makeStyles()((theme) => ({
   image: {
     alignSelf: 'center',
     maxWidth: '100%',
-    maxHeight: '120px',
+    maxHeight: '200px',
     width: 'auto',
     height: 'auto',
-    margin: theme.spacing(2),
+    margin: theme.spacing(3),
     objectFit: 'contain',
   },
 }));
