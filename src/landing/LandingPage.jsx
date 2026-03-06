@@ -8,10 +8,10 @@ const plans = [
     yearlyPrice: 77,
     devices: 50,
     features: [
+      'App PWA com sua marca',
       'Rastreamento em tempo real',
       'Histórico de rotas (30 dias)',
-      'Alertas de velocidade e cerca',
-      'Painel personalizado com sua logo',
+      'Alertas de velocidade e cercas',
       'Suporte por e-mail',
     ],
   },
@@ -24,9 +24,9 @@ const plans = [
     features: [
       'Tudo do Starter +',
       'Histórico ilimitado',
-      'Relatórios avançados',
-      'WhatsApp integrado',
-      'Domínio personalizado',
+      'Relatórios avançados (Excel/PDF)',
+      'Botão WhatsApp personalizado',
+      'Domínio próprio',
       'Suporte prioritário',
     ],
   },
@@ -37,68 +37,72 @@ const plans = [
     devices: 'Ilimitado',
     features: [
       'Tudo do Professional +',
-      'API completa',
       'Multi-operador',
+      'Notificações push nativas',
       'SLA garantido 99.9%',
       'Gerente de conta dedicado',
-      'Integração sob medida',
+      'Personalização sob medida',
     ],
   },
 ];
 
 const features = [
   {
-    icon: '📡',
-    title: 'Rastreamento em Tempo Real',
-    description: 'Monitore toda sua frota com atualizações a cada 5 segundos diretamente no mapa.',
+    icon: '📱',
+    title: 'App PWA Instalável',
+    description: 'Seus clientes instalam direto do navegador no celular. Sem loja de apps, sem aprovação. Funciona como app nativo.',
   },
   {
     icon: '🎨',
-    title: 'Marca Própria (White Label)',
-    description: 'Sua logo, suas cores, seu domínio. Seus clientes nunca saberão que é HyperTraccar.',
+    title: 'Sua Marca, Seu App',
+    description: 'Logo, cores, domínio e WhatsApp personalizados. Seu cliente vê apenas a sua empresa — 100% white label.',
+  },
+  {
+    icon: '🗺️',
+    title: 'Mapa em Tempo Real',
+    description: 'Seus clientes acompanham veículos ao vivo com ícones por categoria, status de ignição e direção.',
   },
   {
     icon: '📊',
-    title: 'Relatórios Completos',
-    description: 'Rotas, paradas, velocidade, quilometragem e mais. Exporte para Excel ou PDF.',
+    title: 'Relatórios para o Cliente',
+    description: 'Rotas, paradas, viagens, velocidade e quilometragem. Seus clientes exportam para Excel ou PDF.',
   },
   {
     icon: '🔔',
-    title: 'Alertas Inteligentes',
-    description: 'Cercas virtuais, excesso de velocidade, ignição, bateria. Notificações em tempo real.',
+    title: 'Alertas em Tempo Real',
+    description: 'Cercas virtuais, excesso de velocidade, ignição, bateria baixa. O cliente recebe alertas instantâneos.',
   },
   {
     icon: '💬',
     title: 'WhatsApp Integrado',
-    description: 'Botão de suporte via WhatsApp direto no painel para atendimento rápido.',
-  },
-  {
-    icon: '🔒',
-    title: 'Segurança Total',
-    description: 'Dados criptografados, acesso por HTTPS, isolamento total entre empresas.',
+    description: 'Botão flutuante no app do cliente que abre direto o WhatsApp da sua empresa. Suporte instantâneo.',
   },
 ];
 
 const faqs = [
   {
-    q: 'Preciso ter servidor Traccar próprio?',
-    a: 'Sim, cada empresa utiliza seu próprio servidor Traccar. Nós fornecemos a interface web profissional que se conecta ao seu servidor.',
+    q: 'O que exatamente é o HyperTraccar?',
+    a: 'É o aplicativo web (PWA) que você entrega aos seus clientes finais para eles rastrearem os veículos. Ele se conecta ao seu servidor Traccar existente e exibe os dados com a sua marca.',
+  },
+  {
+    q: 'Preciso ter servidor Traccar?',
+    a: 'Sim, você já precisa ter um servidor Traccar configurado e funcionando. O HyperTraccar é apenas o app do cliente final — não inclui servidor nem painel de gerenciamento.',
+  },
+  {
+    q: 'O que NÃO está incluído?',
+    a: 'Não vendemos servidor Traccar, não vendemos o Traccar Manager (painel administrativo). Vendemos apenas o app PWA que seus clientes usam para rastrear.',
+  },
+  {
+    q: 'Meus clientes precisam baixar na loja?',
+    a: 'Não! É um PWA — seu cliente acessa pelo link e instala direto no celular como se fosse um app. Sem Google Play, sem App Store.',
   },
   {
     q: 'Posso usar meu domínio próprio?',
-    a: 'Sim! No plano Professional e Enterprise você pode configurar seu domínio personalizado (ex: rastreamento.suaempresa.com.br).',
-  },
-  {
-    q: 'Quanto tempo leva para configurar?',
-    a: 'Menos de 10 minutos. Basta informar o endereço do seu servidor Traccar, enviar sua logo e definir suas cores.',
+    a: 'Sim! No plano Professional e Enterprise seu app fica acessível no seu domínio (ex: app.suaempresa.com.br).',
   },
   {
     q: 'Posso cancelar a qualquer momento?',
     a: 'Sim, sem multa e sem fidelidade. Cancele quando quiser pelo próprio painel.',
-  },
-  {
-    q: 'Vocês oferecem suporte técnico?',
-    a: 'Sim! Todos os planos incluem suporte. Os planos Professional e Enterprise contam com suporte prioritário.',
   },
 ];
 
@@ -143,7 +147,7 @@ const LandingPage = () => {
             padding: '8px 16px', borderRadius: 8, border: 'none',
             background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
             color: '#0a0a0f', cursor: 'pointer', fontWeight: 700, fontSize: 13,
-            whiteSpace: 'nowrap', display: window.innerWidth < 480 ? 'none' : 'block',
+            whiteSpace: 'nowrap',
           }}>Começar Agora</button>
         </div>
       </nav>
@@ -165,22 +169,28 @@ const LandingPage = () => {
           border: '1px solid rgba(0,245,160,0.2)', background: 'rgba(0,245,160,0.05)',
           fontSize: 13, fontWeight: 600, color: '#00f5a0', marginBottom: 24, letterSpacing: 1,
         }}>
-          🚀 PLATAFORMA #1 PARA EMPRESAS DE RASTREAMENTO
+          📱 APP PWA WHITE LABEL PARA RASTREAMENTO
         </div>
         <h1 style={{
-          fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 900,
+          fontSize: 'clamp(32px, 5.5vw, 68px)', fontWeight: 900,
           lineHeight: 1.1, maxWidth: 900, margin: '0 0 24px',
           background: 'linear-gradient(135deg, #fff 30%, #00f5a0 70%, #00d9f5)',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
         }}>
-          Transforme seu Traccar em um sistema profissional
+          O app que seus clientes vão usar para rastrear
         </h1>
         <p style={{
           fontSize: 'clamp(16px, 2vw, 20px)', color: '#94a3b8',
-          maxWidth: 640, margin: '0 0 40px', lineHeight: 1.7,
+          maxWidth: 640, margin: '0 0 16px', lineHeight: 1.7,
         }}>
-          Interface moderna, marca própria e painel completo para sua empresa de rastreamento.
-          Sem programação. Configuração em minutos.
+          Entregue um app PWA profissional com a sua marca para seus clientes finais.
+          Ele se conecta ao seu Traccar e exibe tudo em tempo real.
+        </p>
+        <p style={{
+          fontSize: 14, color: '#64748b', maxWidth: 500, margin: '0 0 40px', lineHeight: 1.6,
+          fontStyle: 'italic',
+        }}>
+          Não vendemos servidor nem painel administrativo — apenas o app do cliente final.
         </p>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
           <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} style={{
@@ -204,9 +214,9 @@ const LandingPage = () => {
           display: 'flex', gap: 40, marginTop: 60, flexWrap: 'wrap', justifyContent: 'center',
         }}>
           {[
-            { n: '500+', l: 'Empresas ativas' },
-            { n: '50K+', l: 'Veículos monitorados' },
-            { n: '99.9%', l: 'Uptime garantido' },
+            { n: '500+', l: 'Empresas usando' },
+            { n: '50K+', l: 'Clientes finais ativos' },
+            { n: '99.9%', l: 'Uptime do app' },
           ].map((s) => (
             <div key={s.l} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 32, fontWeight: 900, color: '#00f5a0' }}>{s.n}</div>
@@ -216,27 +226,47 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* What it is */}
+      <section style={{
+        padding: '80px 24px', maxWidth: 900, margin: '0 auto', textAlign: 'center',
+      }}>
+        <div style={{
+          padding: 32, borderRadius: 20, background: 'rgba(0,245,160,0.03)',
+          border: '1px solid rgba(0,245,160,0.1)',
+        }}>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 16 }}>
+            O que é o HyperTraccar?
+          </h2>
+          <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: 16, maxWidth: 700, margin: '0 auto' }}>
+            É o <strong style={{ color: '#00f5a0' }}>app final que seu cliente usa</strong> para acompanhar os veículos.
+            Pense nele como o "aplicativo da sua empresa" — com sua logo, suas cores e seu domínio.
+            Ele se conecta ao servidor Traccar que você já tem e exibe mapa ao vivo, histórico, alertas e relatórios.
+            <br /><br />
+            <strong style={{ color: '#fff' }}>Não é servidor. Não é Traccar Manager. É o app do cliente.</strong>
+          </p>
+        </div>
+      </section>
+
       {/* Features */}
       <section id="features" style={{
-        padding: '100px 24px', maxWidth: 1200, margin: '0 auto',
+        padding: '80px 24px', maxWidth: 1200, margin: '0 auto',
       }}>
         <div style={{ textAlign: 'center', marginBottom: 60 }}>
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: '#fff', marginBottom: 16 }}>
-            Tudo que sua empresa precisa
+            O que seu cliente recebe
           </h2>
           <p style={{ color: '#94a3b8', fontSize: 18, maxWidth: 600, margin: '0 auto' }}>
-            Funcionalidades profissionais para escalar seu negócio de rastreamento
+            Um app profissional e completo, com a cara da sua empresa
           </p>
         </div>
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24,
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24,
         }}>
           {features.map((f) => (
             <div key={f.title} style={{
               padding: 32, borderRadius: 16,
               background: 'rgba(255,255,255,0.02)',
               border: '1px solid rgba(255,255,255,0.06)',
-              transition: 'all 0.3s',
             }}>
               <div style={{ fontSize: 40, marginBottom: 16 }}>{f.icon}</div>
               <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{f.title}</h3>
@@ -255,13 +285,13 @@ const LandingPage = () => {
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: '#fff', marginBottom: 16 }}>
             Como funciona?
           </h2>
-          <p style={{ color: '#94a3b8', fontSize: 18 }}>3 passos simples para começar</p>
+          <p style={{ color: '#94a3b8', fontSize: 18 }}>3 passos para entregar o app aos seus clientes</p>
         </div>
         {[
-          { step: '01', title: 'Cadastre sua empresa', desc: 'Informe o endereço do seu servidor Traccar e os dados da sua empresa.' },
-          { step: '02', title: 'Personalize sua marca', desc: 'Envie sua logo, defina suas cores e configure o WhatsApp de suporte.' },
-          { step: '03', title: 'Pronto para usar', desc: 'Compartilhe o link com seus clientes. Eles acessam com a sua marca.' },
-        ].map((s, i) => (
+          { step: '01', title: 'Conecte seu Traccar', desc: 'Informe o endereço do seu servidor Traccar. Nós nos conectamos automaticamente.' },
+          { step: '02', title: 'Personalize o app', desc: 'Envie sua logo, defina suas cores e configure o WhatsApp de suporte.' },
+          { step: '03', title: 'Entregue ao cliente', desc: 'Seus clientes acessam pelo link e instalam como PWA no celular. Pronto para rastrear.' },
+        ].map((s) => (
           <div key={s.step} style={{
             display: 'flex', gap: 24, alignItems: 'flex-start', marginBottom: 48,
           }}>
@@ -278,6 +308,57 @@ const LandingPage = () => {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* Included vs Not Included */}
+      <section style={{
+        padding: '80px 24px', maxWidth: 900, margin: '0 auto',
+      }}>
+        <h2 style={{
+          fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: '#fff',
+          textAlign: 'center', marginBottom: 48,
+        }}>
+          O que está incluído?
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+          <div style={{
+            padding: 28, borderRadius: 16, background: 'rgba(0,245,160,0.04)',
+            border: '1px solid rgba(0,245,160,0.15)',
+          }}>
+            <h3 style={{ color: '#00f5a0', fontSize: 18, fontWeight: 700, marginBottom: 16 }}>✅ Incluído</h3>
+            {[
+              'App PWA com sua marca',
+              'Mapa ao vivo para o cliente',
+              'Histórico de rotas',
+              'Relatórios (viagens, paradas, etc)',
+              'Alertas e cercas virtuais',
+              'Botão WhatsApp',
+              'Domínio personalizado',
+            ].map((item) => (
+              <div key={item} style={{ padding: '6px 0', fontSize: 14, color: '#cbd5e1', display: 'flex', gap: 8 }}>
+                <span style={{ color: '#00f5a0' }}>✓</span> {item}
+              </div>
+            ))}
+          </div>
+          <div style={{
+            padding: 28, borderRadius: 16, background: 'rgba(255,100,100,0.03)',
+            border: '1px solid rgba(255,100,100,0.1)',
+          }}>
+            <h3 style={{ color: '#ff6b6b', fontSize: 18, fontWeight: 700, marginBottom: 16 }}>❌ Não incluído</h3>
+            {[
+              'Servidor Traccar',
+              'Traccar Manager (admin)',
+              'Chips / SIM cards',
+              'Rastreadores / equipamentos',
+              'Instalação de GPS',
+              'Suporte ao servidor',
+            ].map((item) => (
+              <div key={item} style={{ padding: '6px 0', fontSize: 14, color: '#94a3b8', display: 'flex', gap: 8 }}>
+                <span style={{ color: '#ff6b6b' }}>✗</span> {item}
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Pricing */}
@@ -297,13 +378,13 @@ const LandingPage = () => {
           }}>
             <button onClick={() => setAnnual(false)} style={{
               padding: '10px 24px', borderRadius: 8, border: 'none', cursor: 'pointer',
-              fontWeight: 600, fontSize: 14, transition: 'all 0.2s',
+              fontWeight: 600, fontSize: 14,
               background: !annual ? 'rgba(0,245,160,0.15)' : 'transparent',
               color: !annual ? '#00f5a0' : '#94a3b8',
             }}>Mensal</button>
             <button onClick={() => setAnnual(true)} style={{
               padding: '10px 24px', borderRadius: 8, border: 'none', cursor: 'pointer',
-              fontWeight: 600, fontSize: 14, transition: 'all 0.2s',
+              fontWeight: 600, fontSize: 14,
               background: annual ? 'rgba(0,245,160,0.15)' : 'transparent',
               color: annual ? '#00f5a0' : '#94a3b8',
             }}>
@@ -356,7 +437,7 @@ const LandingPage = () => {
               </ul>
               <button style={{
                 width: '100%', padding: '14px 0', borderRadius: 12, border: 'none',
-                cursor: 'pointer', fontWeight: 700, fontSize: 15, transition: 'all 0.2s',
+                cursor: 'pointer', fontWeight: 700, fontSize: 15,
                 background: plan.popular
                   ? 'linear-gradient(135deg, #00f5a0, #00d9f5)'
                   : 'rgba(255,255,255,0.06)',
@@ -414,10 +495,10 @@ const LandingPage = () => {
         <h2 style={{
           fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: '#fff', marginBottom: 16,
         }}>
-          Pronto para profissionalizar seu rastreamento?
+          Entregue um app profissional aos seus clientes
         </h2>
-        <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 40, maxWidth: 500, margin: '0 auto 40px' }}>
-          Junte-se a mais de 500 empresas que já transformaram seu Traccar com o HyperTraccar.
+        <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 40, maxWidth: 550, margin: '0 auto 40px' }}>
+          Configure em minutos, com sua marca. Seus clientes instalam no celular e rastreiam ao vivo.
         </p>
         <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} style={{
           padding: '18px 48px', borderRadius: 12, border: 'none',
