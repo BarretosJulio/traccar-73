@@ -270,7 +270,7 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   <div>
-                    <label style={labelStyle}>Cor Secundária</label>
+                    <label style={labelStyle}>{t('adminSecondaryColor')}</label>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <input type="color" value={tenant?.color_secondary || '#ffffff'} onChange={(e) => updateField('color_secondary', e.target.value)}
                         style={{ width: 40, height: 36, border: 'none', borderRadius: 6, cursor: 'pointer', background: 'transparent' }} />
