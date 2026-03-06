@@ -38,6 +38,32 @@ const AdminDashboard = () => {
     checkAuth();
   }, [navigate]);
 
+  useEffect(() => {
+    if (!tenant?.id || activeTab !== 'stats') return;
+    const fetchStats = async () => {
+      setStatsLoading(true);
+      try {
+        const [installRes, activeRes, expiredRes] = await Promise.all([
+          supabase.from('pwa_installations').select('id', { count: 'exact', head: true }).eq('tenant_id', tenant.id),
+          supabase.from('traccar_sessions').select('id', { count: 'exact', head: true }).eq('tenant_id', tenant.id).gt('expires_at', new Date().toISOString()),
+          supabase.from('traccar_sessions').select('id', { count: 'exact', head: true }).eq('tenant_id', tenant.id).lte('expires_at', new Date().toISOString()),
+        ]);
+        setStatsData({
+          installations: installRes.count || 0,
+          activeSessions: activeRes.count || 0,
+          expiredSessions: expiredRes.count || 0,
+        });
+      } catch (err) {
+        console.error('Error fetching stats:', err);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, [tenant?.id, activeTab]);
+
   const handleSave = async () => {
     if (!tenant) return;
     setSaving(true);
