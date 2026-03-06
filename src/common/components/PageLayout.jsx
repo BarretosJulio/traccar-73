@@ -136,7 +136,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
 
   if (desktop) {
     return (
-      <div className={classes.overlay} onClick={() => navigate('/app')}>
+      <div className={classes.overlay} onClick={() => navigate(-1)}>
         <Paper
           className={classes.floatingCard}
           elevation={24}
