@@ -454,7 +454,7 @@ const LandingPage = () => {
         <p style={{ color: '#94a3b8', fontSize: 18, marginBottom: 40, maxWidth: 550, margin: '0 auto 40px' }}>
           Configure em minutos, com sua marca. Seus clientes instalam no celular e rastreiam ao vivo.
         </p>
-        <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} style={{
+        <button onClick={() => navigate('/onboarding')} style={{
           padding: '18px 48px', borderRadius: 12, border: 'none',
           background: 'linear-gradient(135deg, #00f5a0, #00d9f5)',
           color: '#0a0a0f', cursor: 'pointer', fontWeight: 800, fontSize: 18,
