@@ -129,7 +129,7 @@ const MapPage = () => {
   return (
     <div className={classes.root}>
       <Tooltip title="Voltar ao Dashboard">
-        <IconButton className={classes.backButton} onClick={() => navigate('/')} size="small">
+        <IconButton className={classes.backButton} onClick={() => navigate('/app')} size="small">
           <ArrowBackIcon fontSize="small" />
         </IconButton>
       </Tooltip>

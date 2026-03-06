@@ -24,13 +24,13 @@ root.render(
           <AppThemeProvider>
             <CssBaseline />
             <TenantProvider>
-              <ServerProvider>
-                <BrowserRouter>
+              <BrowserRouter>
+                <ServerProvider>
                   <Navigation />
-                </BrowserRouter>
+                </ServerProvider>
                 <ErrorHandler />
                 <NativeInterface />
-              </ServerProvider>
+              </BrowserRouter>
             </TenantProvider>
           </AppThemeProvider>
         </StyledEngineProvider>

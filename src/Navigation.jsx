@@ -115,12 +115,12 @@ const Navigation = () => {
   }
   return (
     <Routes>
-      <Route path="/landing" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/change-server" element={<ChangeServerPage />} />
-      <Route path="/" element={<App />}>
+      <Route path="/app" element={<App />}>
         <Route index element={<DashboardPage />} />
         <Route path="map" element={<MapPage />} />
 

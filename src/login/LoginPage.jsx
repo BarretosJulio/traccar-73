@@ -133,7 +133,7 @@ const LoginPage = () => {
     };
     dispatch(sessionActions.updateUser(demoUser));
     window.sessionStorage.setItem('demoMode', 'true');
-    navigate('/', { replace: true });
+    navigate('/app', { replace: true });
   };
 
   const handlePasswordLogin = async (event) => {
@@ -155,7 +155,7 @@ const LoginPage = () => {
         localStorage.setItem('traccarEmail', email);
         generateLoginToken();
         dispatch(sessionActions.updateUser(user));
-        const target = window.sessionStorage.getItem('postLogin') || '/';
+        const target = window.sessionStorage.getItem('postLogin') || '/app';
         window.sessionStorage.removeItem('postLogin');
         navigate(target, { replace: true });
       } else if (response.status === 401 && response.headers.get('WWW-Authenticate') === 'TOTP') {
@@ -173,7 +173,7 @@ const LoginPage = () => {
     const response = await fetchOrThrow(`/api/session?token=${encodeURIComponent(token)}`);
     const user = await response.json();
     dispatch(sessionActions.updateUser(user));
-    navigate('/');
+    navigate('/app');
   });
 
   const handleOpenIdLogin = () => {
