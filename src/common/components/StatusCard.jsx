@@ -288,6 +288,11 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
 
   const handleRemove = useCatch(async (removed) => {
+    if (demoMode) {
+      dispatch(errorsActions.push('Função indisponível no modo demo'));
+      setRemoving(false);
+      return;
+    }
     if (removed) {
       const response = await fetchOrThrow('/api/devices');
       dispatch(devicesActions.refresh(await response.json()));
