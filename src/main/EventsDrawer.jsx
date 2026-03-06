@@ -7,6 +7,7 @@ import {
   ListItemButton,
   ListItemText,
   Toolbar,
+  Tooltip,
   Typography,
   Box,
 } from '@mui/material';
@@ -37,7 +38,6 @@ const EventsDrawer = ({ open, onClose }) => {
   const t = useTranslation();
 
   const devices = useSelector((state) => state.devices.items);
-
   const events = useSelector((state) => state.events.items);
 
   const formatType = (event) =>
@@ -54,14 +54,16 @@ const EventsDrawer = ({ open, onClose }) => {
         <Typography variant="h6" className={classes.title}>
           {t('reportEvents')}
         </Typography>
-        <IconButton
-          size="small"
-          color="inherit"
-          onClick={() => dispatch(eventsActions.deleteAll())}
-          sx={{ borderRadius: '10px' }}
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
+        <Tooltip title={t('notificationClearAll')}>
+          <IconButton
+            size="small"
+            color="inherit"
+            onClick={() => dispatch(eventsActions.deleteAll())}
+            sx={{ borderRadius: '10px' }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       </Toolbar>
       <List className={classes.drawer} dense>
         {events.map((event) => (
@@ -79,15 +81,17 @@ const EventsDrawer = ({ open, onClose }) => {
                 secondary: { sx: { fontSize: '0.75rem' } },
               }}
             />
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(eventsActions.delete(event));
-              }}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
+            <Tooltip title={t('sharedRemove')}>
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  dispatch(eventsActions.delete(event));
+                }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </ListItemButton>
         ))}
       </List>

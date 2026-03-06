@@ -8,6 +8,7 @@ import {
   IconButton,
   Paper,
   Toolbar,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -141,21 +142,25 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className={classes.floatingHeader}>
-            <IconButton
-              size="small"
-              onClick={() => navigate('/app')}
-              sx={{ mr: 1.5 }}
-            >
-              <ArrowBackIcon fontSize="small" />
-            </IconButton>
+            <Tooltip title={t('sharedBack')}>
+              <IconButton
+                size="small"
+                onClick={() => navigate('/app')}
+                sx={{ mr: 1.5 }}
+              >
+                <ArrowBackIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
             <PageTitle breadcrumbs={breadcrumbs} />
             <Box sx={{ flexGrow: 1 }} />
-            <IconButton
-              size="small"
-              onClick={() => navigate('/app')}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
+            <Tooltip title={t('sharedHide')}>
+              <IconButton
+                size="small"
+                onClick={() => navigate('/app')}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </div>
           <div className={classes.floatingBody}>
             <div className={classes.floatingSidebar}>
@@ -184,22 +189,26 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
         sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
       >
         <Toolbar sx={{ minHeight: { xs: 52, sm: 64 }, px: { xs: 1, sm: 2 } }}>
-          <IconButton
-            color="inherit"
-            edge="start"
-            sx={{ mr: 1 }}
-            onClick={() => navigate(-1)}
-          >
-            <ArrowBackIcon />
-          </IconButton>
+          <Tooltip title={t('sharedBack')}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              sx={{ mr: 1 }}
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
           <MobilePageTitle breadcrumbs={breadcrumbs} />
-          <IconButton
-            color="inherit"
-            sx={{ ml: 'auto' }}
-            onClick={() => setOpenDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
+          <Tooltip title={t('settingsTitle')}>
+            <IconButton
+              color="inherit"
+              sx={{ ml: 'auto' }}
+              onClick={() => setOpenDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <div className={classes.content}>{children}</div>
