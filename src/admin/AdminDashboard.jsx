@@ -92,7 +92,7 @@ const AdminDashboard = () => {
         .from('logos')
         .getPublicUrl(path);
       updateField('logo_url', publicUrl);
-      setMessage('Logo enviado com sucesso!');
+      setMessage(t('adminLogoSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       setMessage('Erro ao enviar logo: ' + err.message);
