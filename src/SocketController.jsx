@@ -17,7 +17,7 @@ import fetchOrThrow from './common/util/fetchOrThrow';
 
 const POLLING_INTERVAL = 5000; // 5 seconds
 
-const SocketController = () => {
+const SocketController = ({ demoMode }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
