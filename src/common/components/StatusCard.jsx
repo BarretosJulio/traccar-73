@@ -317,7 +317,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
   const handleGeofence = useCatchCallback(async () => {
     if (demoMode) {
-      dispatch(errorsActions.push('Função indisponível no modo demo'));
+      dispatch(errorsActions.push(t('demoModeUnavailable')));
       return;
     }
     const newItem = {
