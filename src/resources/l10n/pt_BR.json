@@ -736,5 +736,12 @@
     "adminErrorFileSize": "Erro: Arquivo deve ter no máximo 2MB",
     "adminLogoSuccess": "Logo enviado com sucesso!",
     "adminErrorSave": "Erro ao salvar",
-    "adminErrorLogo": "Erro ao enviar logo"
+    "adminErrorLogo": "Erro ao enviar logo",
+    "adminLoginPageSection": "Tela de Login",
+    "adminLoginSidebarColor": "Cor do Painel Lateral",
+    "adminLoginBgColor": "Cor de Fundo",
+    "adminLoginBgImage": "Imagem de Fundo",
+    "adminUploadBgImage": "Enviar imagem de fundo",
+    "adminBgImageSuccess": "Imagem de fundo enviada!",
+    "adminLoginPreview": "Pré-visualização"
 }
