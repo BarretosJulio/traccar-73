@@ -9,6 +9,7 @@ import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import TodayOutlinedIcon from '@mui/icons-material/TodayOutlined';
 import TerminalOutlinedIcon from '@mui/icons-material/TerminalOutlined';
+import SettingsRemoteOutlinedIcon from '@mui/icons-material/SettingsRemoteOutlined';
 import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
