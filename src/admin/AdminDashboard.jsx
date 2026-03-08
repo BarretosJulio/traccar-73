@@ -660,7 +660,7 @@ const AdminDashboard = () => {
                 {t('adminFullPlanTitle')}
               </h2>
               <p style={{ color: '#94a3b8', fontSize: 15, margin: '0 0 24px' }}>
-                R$ 24,90/mês • Todas as funcionalidades
+                {t('adminFullPlanPrice')}
               </p>
               {tenant?.subscription_status === 'trial' && (
                 <div style={{
