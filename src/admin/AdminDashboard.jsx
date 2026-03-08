@@ -506,7 +506,7 @@ const AdminDashboard = () => {
                       <label style={labelStyle}>{t('adminCustomDomain')}</label>
                       <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
-                        Opcional: configure um domínio próprio para seu app
+                        {t('adminCustomDomainHint')}
                       </p>
                     </div>
                   </div>
