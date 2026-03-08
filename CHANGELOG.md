@@ -4,6 +4,25 @@ Formato: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [0.10.0] — 2026-03-08
+
+### Added
+- **Documentação completa das APIs** (`API_DOCS.md`)
+  - Contexto: Documentação técnica das 4 Edge Functions com endpoints, autenticação, parâmetros e exemplos
+  - Impacto em banco: Nenhum
+  - Impacto em APIs: Nenhum (apenas documentação)
+
+- **Guia de deploy** (`DEPLOY_GUIDE.md`)
+  - Contexto: Instruções de deploy, variáveis de ambiente, configuração Supabase, troubleshooting
+  - Impacto em banco: Nenhum
+
+- **AI System Prompt** (`AI_SYSTEM_PROMPT.md`)
+  - Contexto: 5º e último arquivo de controle da IA — contém regras de comportamento, padrões de código, segurança e fluxo de trabalho obrigatório
+  - Justificativa: Exigido pelo Knowledge do projeto para manter consistência da IA
+  - Impacto em banco: Nenhum
+
+---
+
 ## [0.9.0] — 2026-03-08
 
 ### Fixed
