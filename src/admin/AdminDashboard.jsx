@@ -437,7 +437,7 @@ const AdminDashboard = () => {
                         color: '#64748b', transition: 'all 0.2s',
                       }}>
                         <span style={{ fontSize: 28 }}>🖼️</span>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{uploadingBgImage ? t('adminUploading') : (t('adminUploadBgImage') || 'Enviar imagem de fundo')}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{uploadingBgImage ? t('adminUploading') : t('adminUploadBgImage')}</span>
                         <span style={{ fontSize: 11, color: '#475569' }}>{t('adminFileMaxSize')}</span>
                         <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
                       </label>
