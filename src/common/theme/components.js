@@ -171,6 +171,14 @@ export default {
       },
     },
   },
+  MuiDialog: {
+    styleOverrides: {
+      paper: {
+        borderRadius: 20,
+        boxShadow: '0 24px 80px rgba(0,0,0,0.25), 0 8px 32px rgba(0,0,0,0.15)',
+      },
+    },
+  },
   MuiMenu: {
     styleOverrides: {
       paper: {
