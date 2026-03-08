@@ -151,8 +151,8 @@ const SettingsMenu = () => {
                 />
                 <MenuItem
                   title={t('whatsappSettings')}
-                  link="/admin?tab=whatsapp"
                   icon={<WhatsAppIcon />}
+                  onClick={() => setWhatsappOpen(true)}
                 />
               </>
             )}
@@ -168,6 +168,7 @@ const SettingsMenu = () => {
           </List>
         </>
       )}
+      <WhatsAppAlertsDialog open={whatsappOpen} onClose={() => setWhatsappOpen(false)} />
     </>
   );
 };
