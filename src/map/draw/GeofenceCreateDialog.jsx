@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import dayjs from 'dayjs';
 import {
   Dialog,
   DialogTitle,
@@ -17,18 +18,71 @@ import {
 } from '@mui/material';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 
-const DAYS = [
-  { value: 'mon', label: 'S' },
-  { value: 'tue', label: 'T' },
-  { value: 'wed', label: 'Q' },
-  { value: 'thu', label: 'Q' },
-  { value: 'fri', label: 'S' },
-  { value: 'sat', label: 'S' },
-  { value: 'sun', label: 'D' },
+const DAYS_CONFIG = [
+  { value: 'MO', label: 'Seg' },
+  { value: 'TU', label: 'Ter' },
+  { value: 'WE', label: 'Qua' },
+  { value: 'TH', label: 'Qui' },
+  { value: 'FR', label: 'Sex' },
+  { value: 'SA', label: 'Sáb' },
+  { value: 'SU', label: 'Dom' },
 ];
 
-const ALL_DAYS = DAYS.map((d) => d.value);
-const WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri'];
+const ALL_DAYS = DAYS_CONFIG.map((d) => d.value);
+const WEEKDAYS = ['MO', 'TU', 'WE', 'TH', 'FR'];
+
+const formatCalendarTime = (time) => {
+  const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return `TZID=${tzid}:${time.locale('en').format('YYYYMMDDTHHmmss')}`;
+};
+
+/**
+ * Generates a Base64-encoded iCalendar (ICS) string compatible with Traccar.
+ */
+const generateICS = ({ startDate, endDate, startTime, endTime, selectedDays, dayMode }) => {
+  const start = startTime || '00:00';
+  const end = endTime || '23:59';
+
+  const dtStart = startDate
+    ? dayjs(`${startDate}T${start}`)
+    : dayjs().startOf('day').hour(parseInt(start.split(':')[0], 10)).minute(parseInt(start.split(':')[1], 10));
+
+  const dtEnd = startDate
+    ? dayjs(`${startDate}T${end}`)
+    : dayjs().startOf('day').hour(parseInt(end.split(':')[0], 10)).minute(parseInt(end.split(':')[1], 10));
+
+  // Build RRULE
+  let rrule;
+  if (endDate && endDate !== startDate) {
+    // Date range with recurrence
+    const until = dayjs(`${endDate}T23:59:59`).locale('en').format('YYYYMMDDTHHmmss') + 'Z';
+    if (dayMode === 'all' || selectedDays.length === 7) {
+      rrule = `RRULE:FREQ=DAILY;UNTIL=${until}`;
+    } else {
+      rrule = `RRULE:FREQ=WEEKLY;BYDAY=${selectedDays.join(',')};UNTIL=${until}`;
+    }
+  } else if (dayMode === 'all' || selectedDays.length === 7) {
+    rrule = 'RRULE:FREQ=DAILY';
+  } else {
+    rrule = `RRULE:FREQ=WEEKLY;BYDAY=${selectedDays.join(',')}`;
+  }
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Traccar//NONSGML Traccar//EN',
+    'BEGIN:VEVENT',
+    'UID:' + crypto.randomUUID(),
+    `DTSTART;${formatCalendarTime(dtStart)}`,
+    `DTEND;${formatCalendarTime(dtEnd)}`,
+    rrule,
+    'SUMMARY:Geocerca',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ];
+
+  return window.btoa(lines.join('\n'));
+};
 
 const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
   const t = useTranslation();
@@ -43,40 +97,44 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
   const [selectedDays, setSelectedDays] = useState([...ALL_DAYS]);
   const [hide, setHide] = useState(false);
 
+  const hasSchedule = startTime || endTime || startDate || endDate || dayMode !== 'all';
+
   const handleDayModeChange = (e) => {
     const mode = e.target.value;
     setDayMode(mode);
     if (mode === 'all') setSelectedDays([...ALL_DAYS]);
     else if (mode === 'weekdays') setSelectedDays([...WEEKDAYS]);
-    // 'custom' keeps current selection
   };
 
   const handleDayToggle = (_, newDays) => {
     if (newDays.length > 0) {
       setSelectedDays(newDays);
-      // auto-detect mode
       if (newDays.length === 7) setDayMode('all');
-      else if (
-        newDays.length === 5 &&
-        WEEKDAYS.every((d) => newDays.includes(d))
-      ) setDayMode('weekdays');
+      else if (newDays.length === 5 && WEEKDAYS.every((d) => newDays.includes(d))) setDayMode('weekdays');
       else setDayMode('custom');
     }
   };
 
   const handleSave = () => {
     if (!name.trim()) return;
-    const attributes = { hide };
-    if (startDate) attributes.startDate = startDate;
-    if (endDate) attributes.endDate = endDate;
-    if (startTime) attributes.startTime = startTime;
-    if (endTime) attributes.endTime = endTime;
-    attributes.activeDays = selectedDays;
+
+    let calendarData = null;
+    if (hasSchedule) {
+      calendarData = generateICS({
+        startDate,
+        endDate,
+        startTime,
+        endTime,
+        selectedDays,
+        dayMode,
+      });
+    }
 
     const data = {
       name: name.trim(),
       description: description.trim() || undefined,
-      attributes,
+      attributes: { hide },
+      calendarData,
     };
     onSave(data);
     resetForm();
@@ -113,6 +171,7 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
           autoFocus
           fullWidth
         />
+
         <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
           Período de ativação (opcional)
         </Typography>
@@ -152,6 +211,7 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
             InputLabelProps={{ shrink: true }}
           />
         </Box>
+
         <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
           Dias da semana
         </Typography>
@@ -172,6 +232,7 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
             label={<Typography variant="body2">Personalizado</Typography>}
           />
         </RadioGroup>
+
         <ToggleButtonGroup
           value={selectedDays}
           onChange={handleDayToggle}
@@ -198,12 +259,13 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
             },
           }}
         >
-          {DAYS.map((day, idx) => (
+          {DAYS_CONFIG.map((day) => (
             <ToggleButton key={day.value} value={day.value}>
-              {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'][idx]}
+              {day.label}
             </ToggleButton>
           ))}
         </ToggleButtonGroup>
+
         <TextField
           label={t('sharedDescription')}
           value={description}
