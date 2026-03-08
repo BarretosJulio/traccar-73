@@ -137,17 +137,7 @@ const LoginPage = () => {
   const announcement = useSelector((state) => state.session.server.announcement);
 
   const handleDemoLogin = () => {
-    const demoUser = {
-      id: 99999,
-      name: 'Cliente Demo',
-      email: 'demo@mabtracker.com.br',
-      administrator: false,
-      readonly: false,
-      deviceReadonly: false,
-      userLimit: 0,
-      attributes: {},
-    };
-    dispatch(sessionActions.updateUser(demoUser));
+    dispatch(sessionActions.updateUser(DEMO_USER));
     window.sessionStorage.setItem('demoMode', 'true');
     navigate('/app', { replace: true });
   };
