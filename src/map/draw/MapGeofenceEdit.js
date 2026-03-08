@@ -65,7 +65,7 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
   useEffect(() => {
     refreshGeofences();
 
-    map.addControl(draw, theme.direction === 'rtl' ? 'top-right' : 'top-left');
+    map.addControl(draw, 'top-right');
     return () => map.removeControl(draw);
   }, [refreshGeofences]);
 

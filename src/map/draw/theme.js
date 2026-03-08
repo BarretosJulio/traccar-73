@@ -12,9 +12,9 @@ export default [
       ['!=', 'mode', 'static'],
     ],
     paint: {
-      'fill-color': '#3bb2d0',
-      'fill-outline-color': '#3bb2d0',
-      'fill-opacity': 0.1,
+      'fill-color': '#2dd4bf',
+      'fill-outline-color': '#2dd4bf',
+      'fill-opacity': 0.12,
     },
   },
   {
