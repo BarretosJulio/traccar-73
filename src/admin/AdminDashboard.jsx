@@ -498,7 +498,7 @@ const AdminDashboard = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     <div>
                       <label style={labelStyle}>{t('adminTraccarUrl')}</label>
-                      <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
+                      <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://traccar.example.com" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
                         {t('adminTraccarUrlHint')}
                       </p>
