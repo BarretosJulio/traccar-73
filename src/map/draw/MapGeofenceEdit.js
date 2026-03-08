@@ -1,10 +1,9 @@
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import maplibregl from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { map } from '../core/MapView';
 import { findFonts, geofenceToFeature, geometryToArea } from '../core/mapUtil';
@@ -14,6 +13,7 @@ import drawTheme from './theme';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import fetchOrThrow from '../../common/util/fetchOrThrow';
 import CircleControl from './CircleControl';
+import GeofenceCreateDialog from './GeofenceCreateDialog';
 
 MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
 MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
@@ -22,8 +22,9 @@ MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
 const MapGeofenceEdit = ({ selectedGeofenceId }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const t = useTranslation();
+
+  const [pendingArea, setPendingArea] = useState(null);
 
   const draw = useMemo(
     () =>
@@ -63,25 +64,40 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
     dispatch(geofencesActions.refresh(await response.json()));
   }, [dispatch]);
 
-  const handleCircleCreated = useCallback(async (area) => {
-    const newItem = { name: t('sharedGeofence'), area };
-    try {
-      const response = await fetchOrThrow('/api/geofences', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newItem),
-      });
-      const item = await response.json();
-      navigate(`/app/settings/geofence/${item.id}`);
-    } catch (error) {
-      dispatch(errorsActions.push(error.message));
-    }
-  }, [t, dispatch, navigate]);
+  const handleCircleCreated = useCallback((area) => {
+    setPendingArea(area);
+  }, []);
 
   const circleControl = useMemo(
     () => new CircleControl({ onCircleCreated: handleCircleCreated }),
     [handleCircleCreated],
   );
+
+  const handleDialogSave = useCallback(async (data) => {
+    if (!pendingArea) return;
+    try {
+      const newItem = {
+        name: data.name,
+        area: pendingArea,
+        description: data.description,
+        calendarId: data.calendarId,
+        attributes: data.attributes || {},
+      };
+      await fetchOrThrow('/api/geofences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newItem),
+      });
+      refreshGeofences();
+    } catch (error) {
+      dispatch(errorsActions.push(error.message));
+    }
+    setPendingArea(null);
+  }, [pendingArea, dispatch, refreshGeofences]);
+
+  const handleDialogCancel = useCallback(() => {
+    setPendingArea(null);
+  }, []);
 
   useEffect(() => {
     refreshGeofences();
@@ -95,30 +111,20 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
   }, [refreshGeofences, circleControl]);
 
   useEffect(() => {
-    const listener = async (event) => {
+    const listener = (event) => {
       const feature = event.features[0];
-      try {
-        const area = geometryToArea(feature.geometry);
-        if (!area) {
-          throw new Error('Invalid geometry — could not convert to WKT');
-        }
-        const newItem = { name: t('sharedGeofence'), area };
-        draw.delete(feature.id);
-        const response = await fetchOrThrow('/api/geofences', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newItem),
-        });
-        const item = await response.json();
-        navigate(`/app/settings/geofence/${item.id}`);
-      } catch (error) {
-        dispatch(errorsActions.push(error.message));
+      const area = geometryToArea(feature.geometry);
+      if (!area) {
+        dispatch(errorsActions.push('Invalid geometry — could not convert to WKT'));
+        return;
       }
+      draw.delete(feature.id);
+      setPendingArea(area);
     };
 
     map.on('draw.create', listener);
     return () => map.off('draw.create', listener);
-  }, [dispatch, navigate, t, draw]);
+  }, [dispatch, t, draw]);
 
   useEffect(() => {
     const listener = async (event) => {
@@ -182,7 +188,13 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
     }
   }, [selectedGeofenceId]);
 
-  return null;
+  return (
+    <GeofenceCreateDialog
+      open={pendingArea !== null}
+      onSave={handleDialogSave}
+      onCancel={handleDialogCancel}
+    />
+  );
 };
 
 export default MapGeofenceEdit;
