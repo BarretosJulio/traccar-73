@@ -297,7 +297,18 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   <div className={classes.detailRow}>
                     <CalendarTodayIcon className={classes.detailIcon} />
                     <Typography className={classes.detailLabel}>Dias ativos:</Typography>
-                    <Typography className={classes.detailValue}>{item.attributes.activeDays}</Typography>
+                    <Typography className={classes.detailValue}>
+                      {item.attributes.activeDays.split(',').map((d) => ({ MO: 'Seg', TU: 'Ter', WE: 'Qua', TH: 'Qui', FR: 'Sex', SA: 'Sáb', SU: 'Dom' })[d] || d).join(', ')}
+                    </Typography>
+                  </div>
+                )}
+                {(item.attributes?.startDate || item.attributes?.endDate) && (
+                  <div className={classes.detailRow}>
+                    <CalendarTodayIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Período:</Typography>
+                    <Typography className={classes.detailValue}>
+                      {item.attributes.startDate || '—'} até {item.attributes.endDate || '—'}
+                    </Typography>
                   </div>
                 )}
                 {item.attributes?.speedLimit && (
@@ -343,7 +354,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                 </div>
                 {/* Show all other attributes as key-value pairs */}
                 {Object.entries(item.attributes || {}).filter(
-                  ([key]) => !['disabled', 'hide', 'color', 'speedLimit', 'startTime', 'endTime', 'activeDays'].includes(key),
+                  ([key]) => !['disabled', 'hide', 'color', 'speedLimit', 'startTime', 'endTime', 'activeDays', 'startDate', 'endDate'].includes(key),
                 ).map(([key, value]) => (
                   <div className={classes.detailRow} key={key}>
                     <Typography className={classes.detailLabel}>{key}:</Typography>

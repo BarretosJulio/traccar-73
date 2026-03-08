@@ -156,10 +156,17 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
       });
     }
 
+    const scheduleAttrs = {};
+    if (startTime) scheduleAttrs.startTime = startTime;
+    if (endTime) scheduleAttrs.endTime = endTime;
+    if (startDate) scheduleAttrs.startDate = startDate;
+    if (endDate) scheduleAttrs.endDate = endDate;
+    if (dayMode !== 'all') scheduleAttrs.activeDays = selectedDays.join(',');
+
     const data = {
       name: name.trim(),
       description: description.trim() || undefined,
-      attributes: { hide },
+      attributes: { hide, ...scheduleAttrs },
       calendarData,
       linkMode,
       selectedDeviceIds: selectedDevices.map((d) => d.id),
