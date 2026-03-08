@@ -298,6 +298,66 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
           ))}
         </ToggleButtonGroup>
 
+        <Divider sx={{ my: 1 }} />
+        <Typography variant="caption" color="text.secondary">
+          Vincular a dispositivos
+        </Typography>
+        <RadioGroup row value={linkMode} onChange={(e) => setLinkMode(e.target.value)} sx={{ gap: 1 }}>
+          <FormControlLabel
+            value="all"
+            control={<Radio size="small" />}
+            label={<Typography variant="body2">Todos os dispositivos</Typography>}
+          />
+          <FormControlLabel
+            value="devices"
+            control={<Radio size="small" />}
+            label={<Typography variant="body2">Dispositivos específicos</Typography>}
+          />
+          <FormControlLabel
+            value="groups"
+            control={<Radio size="small" />}
+            label={<Typography variant="body2">Por grupo</Typography>}
+          />
+        </RadioGroup>
+
+        {linkMode === 'devices' && (
+          <Autocomplete
+            multiple
+            options={devices}
+            getOptionLabel={(opt) => opt.name || `ID ${opt.id}`}
+            value={selectedDevices}
+            onChange={(_, val) => setSelectedDevices(val)}
+            renderInput={(params) => (
+              <TextField {...params} label="Selecionar dispositivos" placeholder="Buscar..." />
+            )}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip {...getTagProps({ index })} key={option.id} label={option.name} size="small" />
+              ))
+            }
+            size="small"
+          />
+        )}
+
+        {linkMode === 'groups' && (
+          <Autocomplete
+            multiple
+            options={groups}
+            getOptionLabel={(opt) => opt.name || `ID ${opt.id}`}
+            value={selectedGroups}
+            onChange={(_, val) => setSelectedGroups(val)}
+            renderInput={(params) => (
+              <TextField {...params} label="Selecionar grupos" placeholder="Buscar..." />
+            )}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip {...getTagProps({ index })} key={option.id} label={option.name} size="small" />
+              ))
+            }
+            size="small"
+          />
+        )}
+
         <TextField
           label={t('sharedDescription')}
           value={description}
