@@ -105,6 +105,7 @@ export class SwitcherControl {
     this.mapStyleContainer.classList.add('maplibregl-style-list');
     this.styleButton.classList.add('maplibregl-ctrl-icon');
     this.styleButton.classList.add('maplibregl-style-switcher');
+    this.styleButton.title = 'Mapas';
     this.styleButton.addEventListener('click', this.onToggleMenu);
     document.addEventListener('click', this.onDocumentClick);
     this.controlContainer.appendChild(this.styleButton);
