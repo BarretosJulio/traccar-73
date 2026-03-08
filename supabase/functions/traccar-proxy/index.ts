@@ -219,6 +219,15 @@ Deno.serve(async (req: Request) => {
       await deleteSession(tenant.id, email);
     }
 
+    // Null-body statuses (204, 304) cannot have a body
+    const nullBodyStatuses = [204, 304];
+    if (nullBodyStatuses.includes(traccarResponse.status)) {
+      return new Response(null, {
+        status: traccarResponse.status,
+        headers: corsHeaders,
+      });
+    }
+
     const responseBody = await traccarResponse.arrayBuffer();
 
     return new Response(responseBody, {
