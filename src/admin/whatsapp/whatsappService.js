@@ -28,7 +28,9 @@ const callProxy = async (action, body = null, params = {}) => {
   const res = await fetch(url, options);
   const data = await res.json();
   if (!res.ok || !data.success) {
-    throw new Error(data.message || 'Request failed');
+    const err = new Error(data.message || 'Request failed');
+    err.statusCode = res.status;
+    throw err;
   }
   return data;
 };
