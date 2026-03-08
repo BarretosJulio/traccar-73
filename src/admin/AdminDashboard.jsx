@@ -89,9 +89,11 @@ const AdminDashboard = () => {
         })
         .eq('id', tenant.id);
       if (error) throw error;
+      setIsError(false);
       setMessage(t('adminSavedSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
+      setIsError(true);
       setMessage(`${t('adminErrorSave')}: ` + err.message);
     } finally {
       setSaving(false);
