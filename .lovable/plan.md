@@ -1,43 +1,33 @@
 
 
-# Diagnóstico: Veículos Demo Não Visíveis
+# Modernizar Controles do Mapa + Botão WhatsApp
 
-## Causa Provável
+## O que será feito
 
-O usuário está na rota `/admin` (painel SaaS). Os veículos de demonstração só existem na rota `/app` (app principal de rastreamento). O painel admin (`AdminDashboard`) usa dados do Supabase, não do Redux store onde os veículos demo são injetados.
+1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
+2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
 
-Porém, ao revisar o código do `DemoController`, encontrei problemas que podem causar falhas mesmo ao navegar para `/app`:
+## Mudanças Técnicas
 
-## Problemas Identificados
+### 1. CSS Global dos controles do mapa (`public/styles.css`)
+- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
+- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
+- Adicionar separadores sutis entre botões
+- Manter responsivo para mobile
 
-### 1. Categoria inválida `pickup`
-O veículo `S10 MAB-05` usa `category: 'pickup'`, que não existe no sistema de ícones (`deviceCategories.js`, `preloadImages.js`). Pode causar erro no mapa.
+### 2. Geocoder (`src/map/geocoder/geocoder.css`)
+- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
+- Border-radius mais arredondado, sombra premium
 
-### 2. Campos obrigatórios ausentes nos veículos demo
-Os objetos `DEMO_VEHICLES` não têm `lastUpdate`, `groupId`, `disabled`, `positionId` — campos que o `useFilter`, `DashboardPage` e `DeviceRow` esperam. Isso pode causar erros silenciosos.
+### 3. Notificação (`src/map/notification/notification.css`)
+- Atualizar ícones SVG com cores teal para combinar com o tema
 
-### 3. `devicesActions.update` mistura com veículos reais
-Quando o demo é ativado pelo toggle no Dashboard (usuário já logado), os 5 veículos demo são ADICIONADOS aos reais. Se o Traccar retornar 0 veículos (setup incompleto), funciona. Mas se retornar veículos reais com erros, pode confundir.
+### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
+- Criar controle customizado maplibre similar ao `MapNotification`
+- Ícone WhatsApp em SVG verde
+- Ao clicar, abre `https://wa.me/{numero}` em nova aba
+- Número configurável via atributos do servidor ou hardcoded
 
-## Plano de Correção
-
-### Arquivo: `src/main/DemoController.jsx`
-
-1. **Corrigir categoria** `pickup` → `car` no veículo S10
-2. **Adicionar campos faltantes** em cada veículo demo:
-   - `lastUpdate: new Date().toISOString()`
-   - `groupId: 0`
-   - `disabled: false`
-   - `positionId: 90000 + id`
-3. **Usar `devicesActions.refresh`** em vez de `update` no `injectDemoData` para garantir que APENAS veículos demo apareçam (experiência demo limpa)
-
-### Arquivo: `src/main/MainPage.jsx` (sem alteração)
-
-O `MainPage` já consome `devices` e `positions` do Redux corretamente. Com os campos corrigidos, os filtros e a ordenação funcionarão.
-
-### Resultado Esperado
-
-- Ao clicar "Demo" no login → navega para `/app` → 5 veículos fictícios visíveis no Dashboard e no Mapa
-- Ao clicar toggle demo no Dashboard → veículos reais substituídos por 5 fictícios
-- Ao desativar demo → polling reinicia e veículos reais retornam
+### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
+- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
 
