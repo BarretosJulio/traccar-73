@@ -494,11 +494,11 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     />
     <Snackbar
       open={Boolean(removingGeofenceId)}
-      onClose={() => setRemovingGeofenceId(null)}
-      message={t('sharedRemoveConfirm')}
+      onClose={() => !isDeleting && setRemovingGeofenceId(null)}
+      message={isDeleting ? 'Removendo geocerca...' : t('sharedRemoveConfirm')}
       action={
-        <Button size="small" color="error" onClick={handleRemoveGeofence}>
-          {t('sharedRemove')}
+        <Button size="small" color="error" onClick={handleRemoveGeofence} disabled={isDeleting}>
+          {isDeleting ? <CircularProgress size={16} color="inherit" /> : t('sharedRemove')}
         </Button>
       }
     />
