@@ -5,11 +5,11 @@ import { devicesActions, sessionActions, eventsActions } from '../store';
 const DEMO_DEVICE_IDS = [99901, 99902, 99903, 99904, 99905];
 
 const DEMO_VEHICLES = [
-  { id: 99901, name: 'Fiorino MAB-01', uniqueId: 'DEMO001', category: 'van', status: 'online', phone: '', model: 'Fiat Fiorino', contact: 'João' },
-  { id: 99902, name: 'HB20 MAB-02', uniqueId: 'DEMO002', category: 'car', status: 'online', phone: '', model: 'Hyundai HB20', contact: 'Maria' },
-  { id: 99903, name: 'Truck MAB-03', uniqueId: 'DEMO003', category: 'truck', status: 'online', phone: '', model: 'VW Delivery', contact: 'Carlos' },
-  { id: 99904, name: 'Moto MAB-04', uniqueId: 'DEMO004', category: 'motorcycle', status: 'offline', phone: '', model: 'Honda CG 160', contact: 'Pedro' },
-  { id: 99905, name: 'S10 MAB-05', uniqueId: 'DEMO005', category: 'pickup', status: 'online', phone: '', model: 'Chevrolet S10', contact: 'Ana' },
+  { id: 99901, name: 'Fiorino MAB-01', uniqueId: 'DEMO001', category: 'van', status: 'online', phone: '', model: 'Fiat Fiorino', contact: 'João', groupId: 0, disabled: false, positionId: 90001, lastUpdate: new Date().toISOString() },
+  { id: 99902, name: 'HB20 MAB-02', uniqueId: 'DEMO002', category: 'car', status: 'online', phone: '', model: 'Hyundai HB20', contact: 'Maria', groupId: 0, disabled: false, positionId: 90002, lastUpdate: new Date().toISOString() },
+  { id: 99903, name: 'Truck MAB-03', uniqueId: 'DEMO003', category: 'truck', status: 'online', phone: '', model: 'VW Delivery', contact: 'Carlos', groupId: 0, disabled: false, positionId: 90003, lastUpdate: new Date().toISOString() },
+  { id: 99904, name: 'Moto MAB-04', uniqueId: 'DEMO004', category: 'motorcycle', status: 'offline', phone: '', model: 'Honda CG 160', contact: 'Pedro', groupId: 0, disabled: false, positionId: 90004, lastUpdate: new Date().toISOString() },
+  { id: 99905, name: 'S10 MAB-05', uniqueId: 'DEMO005', category: 'car', status: 'online', phone: '', model: 'Chevrolet S10', contact: 'Ana', groupId: 0, disabled: false, positionId: 90005, lastUpdate: new Date().toISOString() },
 ];
 
 // São Paulo region base coordinates
