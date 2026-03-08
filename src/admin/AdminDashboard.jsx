@@ -727,8 +727,8 @@ const AdminDashboard = () => {
               background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
             }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
-                📡 Uso em Tempo Real
-                {statsLoading && <span style={{ fontSize: 12, color: '#64748b' }}>(atualizando...)</span>}
+                📡 {t('adminRealTimeUsage')}
+                {statsLoading && <span style={{ fontSize: 12, color: '#64748b' }}>({t('adminUpdating')})</span>}
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
                 {[
