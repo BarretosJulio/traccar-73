@@ -747,7 +747,7 @@ const AdminDashboard = () => {
                 ))}
               </div>
               <p style={{ fontSize: 11, color: '#475569', marginTop: 16, textAlign: 'center' }}>
-                Atualizado automaticamente a cada 30 segundos
+                {t('adminAutoUpdate')}
               </p>
             </div>
           </div>
