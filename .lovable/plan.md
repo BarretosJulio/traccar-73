@@ -1,30 +1,33 @@
 
 
-# Fix: "removeChild" Error on Settings Panel Close
+# Modernizar Controles do Mapa + Botão WhatsApp
 
-## Problem
-Clicking the X button (or backdrop) on the floating settings panel triggers a `NotFoundError: Failed to execute 'removeChild' on 'Node'`. This is a known React 19 + MapLibre GL DOM conflict — React tries to unmount overlay nodes while MapLibre has already manipulated the underlying DOM.
+## O que será feito
 
-## Root Cause
-The `navigate(-1)` call triggers synchronous unmounting of the overlay while the map component underneath is also reconciling its DOM. React's virtual DOM gets out of sync with the actual DOM, causing the `removeChild` error.
+1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
+2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
 
-## Solution
-Two changes in `src/common/components/PageLayout.jsx`:
+## Mudanças Técnicas
 
-1. **Defer navigation** — Wrap `navigate(-1)` in `setTimeout(..., 0)` so React finishes its current render cycle before the overlay unmounts. This prevents the DOM conflict.
+### 1. CSS Global dos controles do mapa (`public/styles.css`)
+- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
+- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
+- Adicionar separadores sutis entre botões
+- Manter responsivo para mobile
 
-2. **Prevent double-fire** — Add a `closing` state ref to prevent the navigate from being called multiple times (backdrop click + button click race condition).
+### 2. Geocoder (`src/map/geocoder/geocoder.css`)
+- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
+- Border-radius mais arredondado, sombra premium
 
-```javascript
-const handleClose = useCallback(() => {
-  if (closingRef.current) return;
-  closingRef.current = true;
-  setTimeout(() => navigate(-1), 0);
-}, [navigate]);
-```
+### 3. Notificação (`src/map/notification/notification.css`)
+- Atualizar ícones SVG com cores teal para combinar com o tema
 
-Replace all three `onClick={() => navigate(-1)}` in the desktop branch (lines 139, 149, 160) with `onClick={handleClose}`.
+### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
+- Criar controle customizado maplibre similar ao `MapNotification`
+- Ícone WhatsApp em SVG verde
+- Ao clicar, abre `https://wa.me/{numero}` em nova aba
+- Número configurável via atributos do servidor ou hardcoded
 
-## Files Changed
-- `src/common/components/PageLayout.jsx` — Add `useCallback`, `useRef`, create `handleClose` handler, apply to overlay, back button, and close button.
+### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
+- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
 

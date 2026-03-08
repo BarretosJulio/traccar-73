@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import {
   AppBar,
   Box,
@@ -129,6 +129,13 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const t = useTranslation();
+  const closingRef = useRef(false);
+
+  const handleClose = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setTimeout(() => navigate(-1), 0);
+  }, [navigate]);
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const [searchParams] = useSearchParams();
@@ -136,7 +143,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
 
   if (desktop) {
     return (
-      <div className={classes.overlay} onClick={() => navigate(-1)}>
+      <div className={classes.overlay} onClick={handleClose}>
         <Paper
           className={classes.floatingCard}
           elevation={24}
@@ -146,7 +153,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             <Tooltip title={t('sharedBack')}>
               <IconButton
                 size="small"
-                onClick={() => navigate(-1)}
+                onClick={handleClose}
                 sx={{ mr: 1.5 }}
               >
                 <ArrowBackIcon fontSize="small" />
@@ -157,7 +164,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             <Tooltip title={t('sharedHide')}>
               <IconButton
                 size="small"
-                onClick={() => navigate(-1)}
+                onClick={handleClose}
               >
                 <CloseIcon fontSize="small" />
               </IconButton>
