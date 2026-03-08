@@ -92,6 +92,7 @@ const MapPage = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
+  const t = useTranslation();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const mapOnSelect = useAttributePreference('mapOnSelect', true);
