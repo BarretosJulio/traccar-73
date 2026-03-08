@@ -449,5 +449,6 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     />
     </>
   );
+};
 
 export default GeofencesList;
