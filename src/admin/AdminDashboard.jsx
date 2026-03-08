@@ -230,6 +230,7 @@ const AdminDashboard = () => {
   const tabs = [
     { id: 'pwa', label: `🎨 ${t('adminCustomize')}` },
     { id: 'link', label: `🔗 ${t('adminAppLink')}` },
+    { id: 'whatsapp', label: t('whatsappTab') },
     { id: 'plan', label: `📋 ${t('adminPlan')}` },
     { id: 'stats', label: `📊 ${t('adminStatistics')}` },
   ];
