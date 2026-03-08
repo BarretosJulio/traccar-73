@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Typography,
@@ -6,13 +6,10 @@ import {
   Tooltip,
   Box,
   Paper,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CloseIcon from '@mui/icons-material/Close';
 import FenceIcon from '@mui/icons-material/Fence';
 import { useNavigate } from 'react-router-dom';
 import MapView from '../map/core/MapView';
@@ -26,102 +23,58 @@ import MapScale from '../map/MapScale';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 
 const useStyles = makeStyles()((theme) => ({
-  /* Desktop floating overlay */
-  overlay: {
-    position: 'fixed',
-    inset: 0,
-    zIndex: 1200,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.45)',
-    backdropFilter: 'blur(6px)',
-    padding: theme.spacing(3),
+  root: {
+    height: '100%',
+    position: 'relative',
   },
-  floatingCard: {
-    width: 1100,
-    height: '85vh',
-    borderRadius: 20,
-    overflow: 'hidden',
+  mapContainer: {
+    position: 'absolute',
+    inset: 0,
+  },
+  floatingPanel: {
+    position: 'absolute',
+    left: theme.spacing(1.5),
+    top: theme.spacing(1.5),
+    bottom: theme.spacing(1.5),
+    width: 340,
+    zIndex: 3,
     display: 'flex',
     flexDirection: 'column',
-    boxShadow: '0 24px 80px rgba(0,0,0,0.25), 0 8px 32px rgba(0,0,0,0.15)',
+    borderRadius: 16,
+    overflow: 'hidden',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)',
     backgroundColor: theme.palette.background.paper,
+    [theme.breakpoints.down('sm')]: {
+      left: 0,
+      right: 0,
+      top: 'auto',
+      bottom: 0,
+      width: '100%',
+      height: theme.dimensions.drawerHeightPhone,
+      borderRadius: '16px 16px 0 0',
+    },
   },
-  floatingHeader: {
+  header: {
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(1),
     padding: theme.spacing(1.5, 2),
     borderBottom: `1px solid ${theme.palette.divider}`,
-    minHeight: 56,
   },
   headerIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 9,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: `${theme.palette.primary.main}15`,
     color: theme.palette.primary.main,
   },
-  floatingBody: {
-    display: 'flex',
-    flexGrow: 1,
-    overflow: 'hidden',
-    minHeight: 0,
-  },
-  floatingSidebar: {
-    width: 320,
-    minWidth: 320,
-    borderRight: `1px solid ${theme.palette.divider}`,
-    display: 'flex',
-    flexDirection: 'column',
-    flexShrink: 0,
-    backgroundColor: theme.palette.background.default,
-  },
-  floatingMap: {
-    flexGrow: 1,
-    minWidth: 0,
-    position: 'relative',
-  },
-  /* Mobile fullscreen */
-  mobileRoot: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  mobileContent: {
-    flexGrow: 1,
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column-reverse',
-  },
-  mobileDrawer: {
-    height: theme.dimensions.drawerHeightPhone,
-    display: 'flex',
-    flexDirection: 'column',
-    borderTop: `1px solid ${theme.palette.divider}`,
-    backgroundColor: theme.palette.background.paper,
-  },
-  mobileHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1),
-    padding: theme.spacing(1, 1.5),
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    minHeight: 48,
-  },
-  mobileMapContainer: {
-    flexGrow: 1,
-    position: 'relative',
-  },
   title: {
     flexGrow: 1,
-    fontWeight: 700,
-    fontSize: '1rem',
-    letterSpacing: '-0.01em',
+    fontWeight: 600,
+    fontSize: '0.95rem',
   },
   actionButton: {
     width: 32,
@@ -144,17 +97,8 @@ const GeofencesPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useTranslation();
-  const theme = useTheme();
-  const desktop = useMediaQuery(theme.breakpoints.up('md'));
-  const closingRef = useRef(false);
 
   const [selectedGeofenceId, setSelectedGeofenceId] = useState();
-
-  const handleClose = useCallback(() => {
-    if (closingRef.current) return;
-    closingRef.current = true;
-    setTimeout(() => navigate(-1), 0);
-  }, [navigate]);
 
   const handleFile = (event) => {
     const files = Array.from(event.target.files);
@@ -186,98 +130,46 @@ const GeofencesPage = () => {
     reader.readAsText(file);
   };
 
-  const uploadButton = (
-    <label htmlFor="upload-gpx">
-      <input
-        accept=".gpx"
-        id="upload-gpx"
-        type="file"
-        className={classes.fileInput}
-        onChange={handleFile}
-      />
-      <Tooltip title={t('sharedUpload')}>
-        <IconButton className={classes.actionButton} size="small" component="span">
-          <UploadFileIcon sx={{ fontSize: '1.1rem' }} />
-        </IconButton>
-      </Tooltip>
-    </label>
-  );
-
-  const mapContent = (
-    <>
-      <MapView>
-        <MapGeofenceEdit selectedGeofenceId={selectedGeofenceId} />
-      </MapView>
-      <MapScale />
-      <MapCurrentLocation />
-      <MapGeocoder />
-    </>
-  );
-
-  if (desktop) {
-    return (
-      <div className={classes.overlay} onClick={handleClose}>
-        <Paper
-          className={classes.floatingCard}
-          elevation={24}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className={classes.floatingHeader}>
-            <Tooltip title={t('sharedBack')}>
-              <IconButton className={classes.actionButton} size="small" onClick={handleClose}>
-                <ArrowBackIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Box className={classes.headerIcon}>
-              <FenceIcon sx={{ fontSize: '1.1rem' }} />
-            </Box>
-            <Typography className={classes.title}>
-              {t('sharedGeofences')}
-            </Typography>
-            {uploadButton}
-            <Tooltip title={t('sharedHide')}>
-              <IconButton className={classes.actionButton} size="small" onClick={handleClose}>
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </div>
-          <div className={classes.floatingBody}>
-            <div className={classes.floatingSidebar}>
-              <GeofencesList onGeofenceSelected={setSelectedGeofenceId} />
-            </div>
-            <div className={classes.floatingMap}>
-              {mapContent}
-            </div>
-          </div>
-        </Paper>
-      </div>
-    );
-  }
-
   return (
-    <div className={classes.mobileRoot}>
-      <div className={classes.mobileContent}>
-        <Box className={classes.mobileDrawer}>
-          <div className={classes.mobileHeader}>
-            <Tooltip title={t('sharedBack')}>
-              <IconButton className={classes.actionButton} size="small" onClick={() => navigate(-1)}>
-                <ArrowBackIcon sx={{ fontSize: '1.1rem' }} />
+    <div className={classes.root}>
+      <div className={classes.mapContainer}>
+        <MapView>
+          <MapGeofenceEdit selectedGeofenceId={selectedGeofenceId} />
+        </MapView>
+        <MapScale />
+        <MapCurrentLocation />
+        <MapGeocoder />
+      </div>
+      <Paper className={classes.floatingPanel} elevation={0}>
+        <div className={classes.header}>
+          <Tooltip title={t('sharedBack')}>
+            <IconButton className={classes.actionButton} size="small" onClick={() => navigate(-1)}>
+              <ArrowBackIcon sx={{ fontSize: '1.1rem' }} />
+            </IconButton>
+          </Tooltip>
+          <Box className={classes.headerIcon}>
+            <FenceIcon sx={{ fontSize: '1rem' }} />
+          </Box>
+          <Typography className={classes.title}>
+            {t('sharedGeofences')}
+          </Typography>
+          <label htmlFor="upload-gpx">
+            <input
+              accept=".gpx"
+              id="upload-gpx"
+              type="file"
+              className={classes.fileInput}
+              onChange={handleFile}
+            />
+            <Tooltip title={t('sharedUpload')}>
+              <IconButton className={classes.actionButton} size="small" component="span">
+                <UploadFileIcon sx={{ fontSize: '1.1rem' }} />
               </IconButton>
             </Tooltip>
-            <Box className={classes.headerIcon} sx={{ width: 30, height: 30 }}>
-              <FenceIcon sx={{ fontSize: '0.95rem' }} />
-            </Box>
-            <Typography className={classes.title}>
-              {t('sharedGeofences')}
-            </Typography>
-            {uploadButton}
-          </div>
-          <GeofencesList onGeofenceSelected={setSelectedGeofenceId} />
-        </Box>
-        <div className={classes.mobileMapContainer}>
-          {mapContent}
+          </label>
         </div>
-      </div>
+        <GeofencesList onGeofenceSelected={setSelectedGeofenceId} />
+      </Paper>
     </div>
   );
 };
