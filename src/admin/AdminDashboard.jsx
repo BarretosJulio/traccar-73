@@ -732,9 +732,9 @@ const AdminDashboard = () => {
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
                 {[
-                  { label: 'Instalações PWA', value: statsData.installations, color: '#a78bfa', icon: '📲' },
-                  { label: 'Sessões Ativas', value: statsData.activeSessions, color: '#10b981', icon: '🟢' },
-                  { label: 'Sessões Expiradas', value: statsData.expiredSessions, color: '#ef4444', icon: '🔴' },
+                  { label: t('adminPwaInstallations'), value: statsData.installations, color: '#a78bfa', icon: '📲' },
+                  { label: t('adminActiveSessions'), value: statsData.activeSessions, color: '#10b981', icon: '🟢' },
+                  { label: t('adminExpiredSessions'), value: statsData.expiredSessions, color: '#ef4444', icon: '🔴' },
                 ].map((stat) => (
                   <div key={stat.label} style={{
                     padding: 20, borderRadius: 12, textAlign: 'center',
