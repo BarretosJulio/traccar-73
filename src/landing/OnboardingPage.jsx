@@ -114,7 +114,7 @@ const OnboardingPage = () => {
               <div>
                 <label style={labelStyle}>{t('onboardingEmail')}</label>
                 <input
-                  type="email" placeholder="seu@email.com"
+                  type="email" placeholder="email@example.com"
                   value={form.owner_email}
                   onChange={(e) => updateField('owner_email', e.target.value)}
                   style={inputStyle}

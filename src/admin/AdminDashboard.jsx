@@ -257,7 +257,7 @@ const AdminDashboard = () => {
               color: tenant?.subscription_status === 'trial' ? '#ffc800' : '#00f5a0',
               fontWeight: 600,
             }}>
-              {tenant?.subscription_status === 'trial' ? `Trial • ${trialDays} dias` : t('adminPlanActive')}
+              {tenant?.subscription_status === 'trial' ? `Trial • ${trialDays} ${t('adminDays')}` : t('adminPlanActive')}
             </span>
           </div>
         </div>
@@ -348,7 +348,7 @@ const AdminDashboard = () => {
                     </div>
                     <div>
                       <label style={labelStyle}>{t('adminDefaultMessage')}</label>
-                      <input value={tenant?.whatsapp_message || ''} onChange={(e) => updateField('whatsapp_message', e.target.value)} placeholder="Olá, preciso de suporte" style={inputStyle} />
+                      <input value={tenant?.whatsapp_message || ''} onChange={(e) => updateField('whatsapp_message', e.target.value)} placeholder={t('adminWhatsappPlaceholder')} style={inputStyle} />
                     </div>
                   </div>
                 </div>
@@ -360,17 +360,17 @@ const AdminDashboard = () => {
                 <div style={cardStyle}>
                   <div style={{ marginBottom: 20 }}>
                     <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      🎨 {t('adminLoginPageSection') || 'Tela de Login'}
+                      🎨 {t('adminLoginPageSection')}
                     </h3>
                     <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>
-                      {t('adminLoginPageDesc') || 'Personalize as cores e imagem de fundo da tela de login'}
+                      {t('adminLoginPageDesc')}
                     </p>
                   </div>
 
                   {/* Color Pickers */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
                     <div style={{ padding: 16, borderRadius: 12, background: 'transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginSidebarColor') || 'Cor do Painel Lateral'}</label>
+                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginSidebarColor')}</label>
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div style={{
                           width: 44, height: 44, borderRadius: 10, overflow: 'hidden',
@@ -387,7 +387,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div style={{ padding: 16, borderRadius: 12, background: 'transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgColor') || 'Cor de Fundo'}</label>
+                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgColor')}</label>
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div style={{
                           width: 44, height: 44, borderRadius: 10, overflow: 'hidden',
@@ -406,7 +406,7 @@ const AdminDashboard = () => {
 
                   {/* Background Image Upload */}
                   <div style={{ marginBottom: 20 }}>
-                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgImage') || 'Imagem de Fundo'}</label>
+                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgImage')}</label>
                     {tenant?.login_bg_image ? (
                       <div style={{
                         position: 'relative', borderRadius: 12, overflow: 'hidden', height: 120,
@@ -419,7 +419,7 @@ const AdminDashboard = () => {
                             background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 13, fontWeight: 600,
                             backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)',
                           }}>
-                            🔄 {t('adminChangeImage') || 'Trocar'}
+                            🔄 {t('adminChangeImage')}
                             <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
                           </label>
                           <button onClick={() => updateField('login_bg_image', '')} style={{
@@ -437,7 +437,7 @@ const AdminDashboard = () => {
                         color: '#64748b', transition: 'all 0.2s',
                       }}>
                         <span style={{ fontSize: 28 }}>🖼️</span>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{uploadingBgImage ? t('adminUploading') : (t('adminUploadBgImage') || 'Enviar imagem de fundo')}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{uploadingBgImage ? t('adminUploading') : t('adminUploadBgImage')}</span>
                         <span style={{ fontSize: 11, color: '#475569' }}>{t('adminFileMaxSize')}</span>
                         <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
                       </label>
@@ -446,7 +446,7 @@ const AdminDashboard = () => {
 
                   {/* Realistic Preview */}
                   <div>
-                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginPreview') || 'Pré-visualização'}</label>
+                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginPreview')}</label>
                     <div style={{
                       display: 'flex', height: 200, borderRadius: 12, overflow: 'hidden',
                       border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
@@ -518,7 +518,7 @@ const AdminDashboard = () => {
             {message && (
               <p style={{
                 textAlign: 'center', fontSize: 14, fontWeight: 600, margin: 0,
-                color: message.includes('Erro') || message.includes('Error') ? '#ff6b6b' : '#00f5a0',
+                color: message.includes('Error') || message.includes('error') || message.includes('Erro') ? '#ff6b6b' : '#00f5a0',
               }}>{message}</p>
             )}
 

@@ -37,7 +37,7 @@ const ServerProvider = ({ children }) => {
           const tenants = await tenantRes.json();
           const traccarUrl = tenants?.[0]?.traccar_url;
           if (!traccarUrl || traccarUrl.includes('pending-setup') || traccarUrl.includes('example.com')) {
-            throw Error('Empresa ainda não configurou o servidor de rastreamento. Entre em contato com o administrador.');
+            throw Error('Tracking server not configured yet. Please contact your administrator.');
           }
         }
 
@@ -50,7 +50,7 @@ const ServerProvider = ({ children }) => {
         if (response.ok) {
           const contentType = response.headers.get('content-type') || '';
           if (!contentType.includes('application/json')) {
-            throw Error('Resposta inesperada do servidor Traccar. Verifique a configuração.');
+            throw Error('Unexpected response from Traccar server. Please check configuration.');
           }
           dispatch(sessionActions.updateServer(await response.json()));
         } else {

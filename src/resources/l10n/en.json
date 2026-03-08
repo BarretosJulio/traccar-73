@@ -759,6 +759,8 @@
     "adminActiveSessions": "Active Sessions",
     "adminExpiredSessions": "Expired Sessions",
     "adminAutoUpdate": "Updated automatically every 30 seconds",
+    "adminDays": "days",
+    "adminWhatsappPlaceholder": "Hello, I need support",
     "adminLoginPageDesc": "Customize the colors and background image of your login screen",
     "adminChangeImage": "Change",
     "landingEnter": "Sign In",

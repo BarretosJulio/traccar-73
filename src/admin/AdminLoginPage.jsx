@@ -66,7 +66,7 @@ const AdminLoginPage = () => {
             </label>
             <input
               type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com" required style={inputStyle}
+              placeholder="email@example.com" required style={inputStyle}
             />
           </div>
           <div>
