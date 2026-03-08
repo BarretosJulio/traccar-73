@@ -1,28 +1,33 @@
 
 
-# Diagnóstico: Controles Duplicados na Tela de Cerca Virtual
+# Modernizar Controles do Mapa + Botão WhatsApp
 
-## Causa Raiz
+## O que será feito
 
-Em `App.jsx` linha 46, a rota `/app/geofences` é incluída em `isSettingsRoute`:
+1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
+2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
 
-```javascript
-const isSettingsRoute = pathname.startsWith('/app/settings') || pathname.startsWith('/app/geofences');
-```
+## Mudanças Técnicas
 
-Isso faz o `App.jsx` renderizar um `MainMap` como fundo (linhas 100-103) quando o usuário está na página de cercas. Porém, `GeofencesPage` já renderiza seu próprio `MapView` com `MapGeofenceEdit`, `MapCurrentLocation`, etc.
+### 1. CSS Global dos controles do mapa (`public/styles.css`)
+- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
+- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
+- Adicionar separadores sutis entre botões
+- Manter responsivo para mobile
 
-Como o `map` é um **singleton** compartilhado, ambos adicionam controles à mesma instância, causando duplicação de: NavigationControl (+/-), SwitcherControl (camadas), GeolocateControl (GPS), e o WhatsApp control.
+### 2. Geocoder (`src/map/geocoder/geocoder.css`)
+- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
+- Border-radius mais arredondado, sombra premium
 
-## Correção
+### 3. Notificação (`src/map/notification/notification.css`)
+- Atualizar ícones SVG com cores teal para combinar com o tema
 
-### Arquivo: `src/App.jsx` (linha 46)
+### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
+- Criar controle customizado maplibre similar ao `MapNotification`
+- Ícone WhatsApp em SVG verde
+- Ao clicar, abre `https://wa.me/{numero}` em nova aba
+- Número configurável via atributos do servidor ou hardcoded
 
-Excluir `/app/geofences` do `isSettingsRoute`, pois a `GeofencesPage` já possui seu próprio `MapView` completo com controles dedicados:
-
-```javascript
-const isSettingsRoute = pathname.startsWith('/app/settings');
-```
-
-Apenas uma linha alterada. Resultado: a página de cercas mostra apenas seus controles próprios (navegação, camadas, GPS, desenho) sem duplicatas.
+### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
+- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
 
