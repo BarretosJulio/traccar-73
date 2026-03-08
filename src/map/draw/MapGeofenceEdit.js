@@ -63,12 +63,36 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
     dispatch(geofencesActions.refresh(await response.json()));
   }, [dispatch]);
 
+  const handleCircleCreated = useCallback(async (area) => {
+    const newItem = { name: t('sharedGeofence'), area };
+    try {
+      const response = await fetchOrThrow('/api/geofences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newItem),
+      });
+      const item = await response.json();
+      navigate(`/app/settings/geofence/${item.id}`);
+    } catch (error) {
+      dispatch(errorsActions.push(error.message));
+    }
+  }, [t, dispatch, navigate]);
+
+  const circleControl = useMemo(
+    () => new CircleControl({ onCircleCreated: handleCircleCreated }),
+    [handleCircleCreated],
+  );
+
   useEffect(() => {
     refreshGeofences();
 
     map.addControl(draw, 'top-right');
-    return () => map.removeControl(draw);
-  }, [refreshGeofences]);
+    map.addControl(circleControl, 'top-right');
+    return () => {
+      map.removeControl(draw);
+      map.removeControl(circleControl);
+    };
+  }, [refreshGeofences, circleControl]);
 
   useEffect(() => {
     const listener = async (event) => {
