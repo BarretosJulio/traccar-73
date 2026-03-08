@@ -18,6 +18,7 @@ import { apiUrl } from './common/util/apiUrl';
 import MainMap from './main/MainMap';
 import usePwaInstallTracker from './common/util/usePwaInstallTracker';
 import { useTenant } from './common/components/TenantProvider';
+import { DEFAULT_TENANT_SLUG } from './common/util/constants';
 
 const useStyles = makeStyles()(() => ({
   page: {
@@ -69,7 +70,7 @@ const App = () => {
     if (!user && !demoMode) {
       const response = await fetch(apiUrl('/api/session'), {
         headers: {
-          'x-tenant-slug': localStorage.getItem('tenantSlug') || 'mabtracker',
+          'x-tenant-slug': localStorage.getItem('tenantSlug') || DEFAULT_TENANT_SLUG,
           'x-traccar-email': localStorage.getItem('traccarEmail') || '',
         },
       });

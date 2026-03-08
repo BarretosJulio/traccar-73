@@ -23,7 +23,7 @@ const AdminLoginPage = () => {
     } catch (err) {
       setError(err.message === 'Invalid login credentials'
         ? t('loginInvalidCredentials')
-        : err.message || 'Erro ao fazer login');
+        : err.message || t('loginErrorGeneric'));
     } finally {
       setLoading(false);
     }

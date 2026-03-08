@@ -7,6 +7,7 @@ import { useEffectAsync } from './reactHelper';
 import { sessionActions } from './store';
 import Loader from './common/components/Loader';
 import { apiUrl } from './common/util/apiUrl';
+import { DEFAULT_TENANT_SLUG } from './common/util/constants';
 
 // Routes that don't need the Traccar server to be loaded
 const PUBLIC_ROUTES = ['/', '/landing', '/onboarding', '/admin/login', '/admin'];
@@ -23,7 +24,7 @@ const ServerProvider = ({ children }) => {
   useEffectAsync(async () => {
     if (!error && !isPublicRoute) {
       try {
-        const tenantSlug = localStorage.getItem('tenantSlug') || 'mabtracker';
+        const tenantSlug = localStorage.getItem('tenantSlug') || DEFAULT_TENANT_SLUG;
 
         // Validate tenant has a real traccar_url before calling proxy
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://foifugnuaehjtjftpkrk.supabase.co';

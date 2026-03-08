@@ -319,7 +319,7 @@ const AdminDashboard = () => {
                             padding: '6px 14px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
                             background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
                             fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
-                          }}>Remover</button>
+                          }}>{t('adminRemove')}</button>
                         </div>
                       )}
                       <label style={{
@@ -499,14 +499,14 @@ const AdminDashboard = () => {
                       <label style={labelStyle}>{t('adminTraccarUrl')}</label>
                       <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
-                        URL do seu servidor Traccar (ex: https://demo.traccar.org)
+                        {t('adminTraccarUrlHint')}
                       </p>
                     </div>
                     <div>
                       <label style={labelStyle}>{t('adminCustomDomain')}</label>
                       <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
-                        Opcional: configure um domínio próprio para seu app
+                        {t('adminCustomDomainHint')}
                       </p>
                     </div>
                   </div>
@@ -657,10 +657,10 @@ const AdminDashboard = () => {
                 {tenant?.subscription_status === 'trial' ? `⏳ ${t('adminTrialPeriod')}` : `✅ ${t('adminPlanActive')}`}
               </div>
               <h2 style={{ fontSize: 28, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
-                Plano Completo
+                {t('adminFullPlanTitle')}
               </h2>
               <p style={{ color: '#94a3b8', fontSize: 15, margin: '0 0 24px' }}>
-                R$ 24,90/mês • Todas as funcionalidades
+                {t('adminFullPlanPrice')}
               </p>
               {tenant?.subscription_status === 'trial' && (
                 <div style={{
@@ -669,7 +669,7 @@ const AdminDashboard = () => {
                 }}>
                   <p style={{ color: '#ffc800', fontSize: 14, fontWeight: 600, margin: 0 }}>
                     {(t('adminTrialEndsIn') || 'Trial ends in {0} days').replace('{0}', trialDays)}
-                    ({tenant?.trial_ends_at ? new Date(tenant.trial_ends_at).toLocaleDateString('pt-BR') : ''})
+                    ({tenant?.trial_ends_at ? new Date(tenant.trial_ends_at).toLocaleDateString() : ''})
                   </p>
                 </div>
               )}
@@ -686,7 +686,7 @@ const AdminDashboard = () => {
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>{t('adminAccountDetails')}</h3>
               {[
                 ['Email', tenant?.owner_email],
-                [t('adminCreatedAt'), tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString('pt-BR') : '-'],
+                [t('adminCreatedAt'), tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString() : '-'],
                 ['Status', tenant?.subscription_status],
                 [t('adminPlan'), tenant?.plan_type],
               ].map(([label, value]) => (
@@ -727,14 +727,14 @@ const AdminDashboard = () => {
               background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
             }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
-                📡 Uso em Tempo Real
-                {statsLoading && <span style={{ fontSize: 12, color: '#64748b' }}>(atualizando...)</span>}
+                📡 {t('adminRealTimeUsage')}
+                {statsLoading && <span style={{ fontSize: 12, color: '#64748b' }}>({t('adminUpdating')})</span>}
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
                 {[
-                  { label: 'Instalações PWA', value: statsData.installations, color: '#a78bfa', icon: '📲' },
-                  { label: 'Sessões Ativas', value: statsData.activeSessions, color: '#10b981', icon: '🟢' },
-                  { label: 'Sessões Expiradas', value: statsData.expiredSessions, color: '#ef4444', icon: '🔴' },
+                  { label: t('adminPwaInstallations'), value: statsData.installations, color: '#a78bfa', icon: '📲' },
+                  { label: t('adminActiveSessions'), value: statsData.activeSessions, color: '#10b981', icon: '🟢' },
+                  { label: t('adminExpiredSessions'), value: statsData.expiredSessions, color: '#ef4444', icon: '🔴' },
                 ].map((stat) => (
                   <div key={stat.label} style={{
                     padding: 20, borderRadius: 12, textAlign: 'center',
@@ -747,7 +747,7 @@ const AdminDashboard = () => {
                 ))}
               </div>
               <p style={{ fontSize: 11, color: '#475569', marginTop: 16, textAlign: 'center' }}>
-                Atualizado automaticamente a cada 30 segundos
+                {t('adminAutoUpdate')}
               </p>
             </div>
           </div>

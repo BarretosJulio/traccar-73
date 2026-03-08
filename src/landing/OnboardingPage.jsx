@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../common/components/LocalizationProvider';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
+  const t = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(null);
@@ -50,10 +52,10 @@ const OnboardingPage = () => {
       if (data.success) {
         setSuccess(data.data);
       } else {
-        setError(data.message || 'Erro ao criar conta');
+        setError(data.message || t('onboardingErrorCreate'));
       }
     } catch (err) {
-      setError('Erro de conexão. Tente novamente.');
+      setError(t('onboardingErrorConnection'));
     } finally {
       setLoading(false);
     }
@@ -85,11 +87,11 @@ const OnboardingPage = () => {
             fontWeight: 900, fontSize: 22, color: '#0a0a0f',
           }}>H</div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>
-            {success ? '🎉 Conta Criada!' : 'Criar sua conta'}
+            {success ? t('onboardingSuccessTitle') : t('onboardingTitle')}
           </h1>
           {!success && (
             <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
-              Cadastre sua empresa e comece a usar em minutos
+              {t('onboardingSubtitle')}
             </p>
           )}
         </div>
@@ -101,16 +103,16 @@ const OnboardingPage = () => {
           {!success ? (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <label style={labelStyle}>Nome da Empresa *</label>
+                <label style={labelStyle}>{t('onboardingCompanyName')}</label>
                 <input
-                  type="text" placeholder="Ex: MabTracker Rastreamento"
+                  type="text" placeholder={t('onboardingCompanyPlaceholder')}
                   value={form.company_name}
                   onChange={(e) => updateField('company_name', e.target.value)}
                   style={inputStyle}
                 />
               </div>
               <div>
-                <label style={labelStyle}>Seu Email *</label>
+                <label style={labelStyle}>{t('onboardingEmail')}</label>
                 <input
                   type="email" placeholder="seu@email.com"
                   value={form.owner_email}
@@ -120,7 +122,7 @@ const OnboardingPage = () => {
               </div>
               <div>
                 <label style={labelStyle}>
-                  Senha * <span style={{ color: '#475569', fontWeight: 400 }}>(mín. 6 caracteres)</span>
+                  {t('onboardingPassword')} <span style={{ color: '#475569', fontWeight: 400 }}>{t('onboardingPasswordHint')}</span>
                 </label>
                 <input
                   type="password" placeholder="••••••"
@@ -138,20 +140,18 @@ const OnboardingPage = () => {
                 background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
                 opacity: !isValid || loading ? 0.5 : 1,
               }}>
-                {loading ? 'Criando conta...' : 'Criar Conta — 7 Dias Grátis'}
+                {loading ? t('onboardingCreating') : t('onboardingCreateButton')}
               </button>
             </form>
           ) : (
             <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7, margin: 0 }}>
-                Sua empresa <strong style={{ color: '#00f5a0' }}>{success.company_name}</strong> foi criada!
-                <br />Trial gratuito até{' '}
-                <strong style={{ color: '#fff' }}>
-                  {new Date(success.trial_ends_at).toLocaleDateString('pt-BR')}
-                </strong>.
+                {t('onboardingSuccessCompany').replace('{0}', '')}
+                <strong style={{ color: '#00f5a0' }}>{success.company_name}</strong>
+                <br />{t('onboardingSuccessTrial').replace('{0}', new Date(success.trial_ends_at).toLocaleDateString())}
               </p>
               <p style={{ color: '#64748b', fontSize: 13, margin: 0, lineHeight: 1.6 }}>
-                Acesse o painel para configurar seu app: URL do Traccar, logo, cores e WhatsApp.
+                {t('onboardingSuccessDesc')}
               </p>
               <button
                 onClick={() => navigate('/admin/login')}
@@ -161,7 +161,7 @@ const OnboardingPage = () => {
                   background: 'linear-gradient(135deg, #00f5a0, #00d9f5)', color: '#0a0a0f',
                 }}
               >
-                Entrar no Painel
+                {t('onboardingEnterPanel')}
               </button>
             </div>
           )}
@@ -170,14 +170,14 @@ const OnboardingPage = () => {
         {!success && (
           <div style={{ textAlign: 'center', marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <p style={{ color: '#475569', fontSize: 13, margin: 0 }}>
-              Já tem uma conta?{' '}
+              {t('onboardingHasAccount')}{' '}
               <span onClick={() => navigate('/admin/login')} style={{ color: '#00f5a0', cursor: 'pointer', fontWeight: 600 }}>
-                Entrar
+                {t('onboardingSignIn')}
               </span>
             </p>
             <p style={{ color: '#475569', fontSize: 13, margin: 0 }}>
               <span onClick={() => navigate('/')} style={{ color: '#64748b', cursor: 'pointer' }}>
-                ← Voltar ao início
+                {t('onboardingGoBack')}
               </span>
             </p>
           </div>

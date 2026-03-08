@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { EDGE_FUNCTION_BASE } from '../util/apiUrl';
+import { DEFAULT_TENANT_SLUG } from '../util/constants';
 
 const TenantContext = createContext(null);
 
@@ -13,7 +14,7 @@ const detectTenantSlug = () => {
   const stored = localStorage.getItem('tenantSlug');
   if (stored) return stored;
 
-  return 'mabtracker';
+  return DEFAULT_TENANT_SLUG;
 };
 
 export const TenantProvider = ({ children }) => {

@@ -111,7 +111,7 @@ const BottomMenu = () => {
     if (location.pathname === `/app/settings/user/${user.id}`) {
       return 'account';
     }
-    if (location.pathname.startsWith('/app/settings')) {
+    if (location.pathname.startsWith('/app/settings') || location.pathname.startsWith('/app/geofences')) {
       return 'settings';
     }
     if (location.pathname.startsWith('/app/reports')) {

@@ -67,7 +67,7 @@ const useStyles = makeStyles()((theme) => ({
     flexGrow: 1,
     minWidth: 0,
     overflowY: 'auto',
-    padding: theme.spacing(1),
+    padding: theme.spacing(3),
   },
   mobileRoot: {
     height: '100%',

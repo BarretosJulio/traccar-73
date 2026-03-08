@@ -40,6 +40,7 @@ import { useCatch } from '../reactHelper';
 import QrCodeDialog from '../common/components/QrCodeDialog';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { apiUrl } from '../common/util/apiUrl';
+import { DEFAULT_TENANT_SLUG, DEMO_USER } from '../common/util/constants';
 
 const lightInputSx = {
   '& .MuiOutlinedInput-root': {
@@ -136,17 +137,7 @@ const LoginPage = () => {
   const announcement = useSelector((state) => state.session.server.announcement);
 
   const handleDemoLogin = () => {
-    const demoUser = {
-      id: 99999,
-      name: 'Cliente Demo',
-      email: 'demo@mabtracker.com.br',
-      administrator: false,
-      readonly: false,
-      deviceReadonly: false,
-      userLimit: 0,
-      attributes: {},
-    };
-    dispatch(sessionActions.updateUser(demoUser));
+    dispatch(sessionActions.updateUser(DEMO_USER));
     window.sessionStorage.setItem('demoMode', 'true');
     navigate('/app', { replace: true });
   };
@@ -156,7 +147,7 @@ const LoginPage = () => {
     setFailed(false);
     try {
       const query = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
-      const tenantSlug = localStorage.getItem('tenantSlug') || 'mabtracker';
+      const tenantSlug = localStorage.getItem('tenantSlug') || DEFAULT_TENANT_SLUG;
       const response = await fetch(apiUrl('/api/session'), {
         method: 'POST',
         headers: {
