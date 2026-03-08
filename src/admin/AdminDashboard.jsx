@@ -419,7 +419,7 @@ const AdminDashboard = () => {
                             background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 13, fontWeight: 600,
                             backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)',
                           }}>
-                            🔄 {t('adminChangeImage') || 'Trocar'}
+                            🔄 {t('adminChangeImage')}
                             <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploadingBgImage} onChange={handleBgImageUpload} />
                           </label>
                           <button onClick={() => updateField('login_bg_image', '')} style={{
