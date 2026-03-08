@@ -73,7 +73,7 @@ const DemoController = ({ active }) => {
 
   const injectDemoData = useCallback(() => {
     // Inject devices
-    dispatch(devicesActions.update(DEMO_VEHICLES));
+    dispatch(devicesActions.refresh(DEMO_VEHICLES));
 
     // Inject positions
     const positions = DEMO_VEHICLES.map((v, i) => createPosition(v.id, i));
