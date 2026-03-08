@@ -83,4 +83,16 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 70%;
+  filter: brightness(0) invert(0.9);
+  transition: filter 0.2s ease;
+}
+
+.maplibregl-style-switcher:hover,
+.maplibregl-style-switcher:focus-visible {
+  filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(130deg);
+}
+
+.maplibregl-style-switcher:focus-visible {
+  outline: 2px solid rgba(45, 212, 191, 0.7);
+  outline-offset: -2px;
 }

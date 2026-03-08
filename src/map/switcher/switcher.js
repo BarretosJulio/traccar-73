@@ -126,4 +126,9 @@ export class SwitcherControl {
       this.mapStyleContainer.classList.remove('visible');
     }
   }
+
+  onToggleMenu(event) {
+    event.stopPropagation();
+    this.mapStyleContainer.classList.toggle('visible');
+  }
 }
