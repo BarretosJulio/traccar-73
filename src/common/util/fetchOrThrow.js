@@ -20,6 +20,15 @@ export default async (input, init) => {
 
   const response = await fetch(url, { ...init, headers });
   if (!response.ok) {
+    if (response.status === 401) {
+      // Session expired — redirect to login with friendly message
+      const loginPath = '/login';
+      if (window.location.pathname !== loginPath) {
+        window.sessionStorage.setItem('sessionExpired', 'true');
+        window.location.href = loginPath;
+      }
+      throw new Error('Session expired');
+    }
     const contentType = response.headers.get('content-type') || '';
     if (contentType.includes('text/html')) {
       throw new Error('Unexpected server response. Please check your connection.');
