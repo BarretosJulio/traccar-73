@@ -1,48 +1,33 @@
 
 
-# Criar Arquivos de Controle do Projeto
+# Modernizar Controles do Mapa + Botão WhatsApp
 
-Nenhum dos 5 arquivos de controle existe atualmente no projeto. Todos precisam ser criados.
+## O que será feito
 
-## Arquivos a Criar
+1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
+2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
 
-### 1. `AI_MEMORY.md`
-Contexto do projeto: HyperTraccar — plataforma SaaS multi-tenant de rastreamento veicular baseada no Traccar, com frontend React + MUI, backend via Supabase Edge Functions (proxy para Traccar), integração WhatsApp (UAZAPI), sistema de tenants com white-label.
+## Mudanças Técnicas
 
-### 2. `ARCHITECTURE.md`
-Documentação da arquitetura:
-- **Frontend**: React 19 + Vite + MUI 7 + MapLibre GL + Redux Toolkit + tss-react
-- **Rotas**: Landing (`/`), Admin (`/admin`), Login (`/login`), App (`/app/*`)
-- **Estado**: Redux store com slices: devices, session, events, geofences, groups, drivers, maintenances, calendars, motion, errors
-- **Mapa**: MapLibre com camadas modulares (positions, routes, geofences, accuracy, overlays)
-- **Backend**: Supabase Edge Functions — `traccar-proxy`, `whatsapp-proxy`, `whatsapp-webhook`, `create-tenant`
-- **Multi-tenant**: TenantProvider resolve tenant por slug/domínio, cada tenant tem traccar_url próprio
+### 1. CSS Global dos controles do mapa (`public/styles.css`)
+- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
+- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
+- Adicionar separadores sutis entre botões
+- Manter responsivo para mobile
 
-### 3. `DATABASE_SCHEMA.md`
-Tabelas Supabase identificadas nos types:
-- `tenants` — config do tenant (slug, traccar_url, plano, cores, logo, WhatsApp)
-- `traccar_sessions` — sessões proxy Traccar por tenant/email
-- `pwa_installations` — tracking de instalações PWA
-- `whatsapp_instances` — instâncias WhatsApp por tenant (UAZAPI)
-- `whatsapp_alert_configs` — configuração de alertas WhatsApp
-- `whatsapp_device_alert_prefs` — preferências de alerta por dispositivo
-- `whatsapp_message_log` — log de mensagens enviadas
+### 2. Geocoder (`src/map/geocoder/geocoder.css`)
+- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
+- Border-radius mais arredondado, sombra premium
 
-### 4. `CHANGELOG.md`
-Registro das alterações recentes:
-- Fix: categoria demo `pickup` → `car`, campos obrigatórios adicionados
-- Fix: controles duplicados na tela de geofences (rota excluída de isSettingsRoute)
-- UI: controles de desenho de cerca reposicionados e estilizados com tema teal/glassmorphism
+### 3. Notificação (`src/map/notification/notification.css`)
+- Atualizar ícones SVG com cores teal para combinar com o tema
 
-### 5. `SECURITY_POLICY.md`
-Políticas de segurança:
-- Autenticação via Traccar API (proxy através de Edge Functions)
-- Multi-tenant isolado por `tenant_id` em todas as tabelas
-- RLS habilitado no Supabase
-- Sessões Traccar armazenadas em `traccar_sessions`
-- Dados sensíveis (WhatsApp tokens) armazenados no Supabase com RLS
+### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
+- Criar controle customizado maplibre similar ao `MapNotification`
+- Ícone WhatsApp em SVG verde
+- Ao clicar, abre `https://wa.me/{numero}` em nova aba
+- Número configurável via atributos do servidor ou hardcoded
 
-## Detalhes Técnicos
-
-Todos os arquivos serão criados na raiz do projeto. O conteúdo será baseado na análise real do código-fonte — sem suposições. Cada arquivo seguirá formato Markdown com seções claras e será mantido atualizado em futuras alterações conforme o Knowledge define.
+### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
+- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
 
