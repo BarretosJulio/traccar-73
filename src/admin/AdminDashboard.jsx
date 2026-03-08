@@ -370,7 +370,7 @@ const AdminDashboard = () => {
                   {/* Color Pickers */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
                     <div style={{ padding: 16, borderRadius: 12, background: 'transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginSidebarColor') || 'Cor do Painel Lateral'}</label>
+                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginSidebarColor')}</label>
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div style={{
                           width: 44, height: 44, borderRadius: 10, overflow: 'hidden',
