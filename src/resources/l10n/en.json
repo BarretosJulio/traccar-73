@@ -743,5 +743,9 @@
     "adminLoginBgImage": "Background Image",
     "adminUploadBgImage": "Upload background image",
     "adminBgImageSuccess": "Background image uploaded!",
-    "adminLoginPreview": "Preview"
+    "adminLoginPreview": "Preview",
+    "loginCredentialsSubtitle": "Enter your credentials to access",
+    "loginDemoButton": "Sign in as Demo Client",
+    "loginSmartTracking": "Smart Tracking",
+    "mapBackToDashboard": "Back to Dashboard"
 }

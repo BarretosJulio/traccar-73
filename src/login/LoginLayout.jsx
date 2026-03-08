@@ -3,6 +3,7 @@ import { makeStyles } from 'tss-react/mui';
 import { useTheme } from '@mui/material/styles';
 import LogoImage from './LogoImage';
 import { useTenant } from '../common/components/TenantProvider';
+import { useTranslation } from '../common/components/LocalizationProvider';
 
 const useStyles = makeStyles()((theme) => ({
   root: {

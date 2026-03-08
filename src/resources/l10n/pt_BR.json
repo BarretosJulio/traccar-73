@@ -743,5 +743,9 @@
     "adminLoginBgImage": "Imagem de Fundo",
     "adminUploadBgImage": "Enviar imagem de fundo",
     "adminBgImageSuccess": "Imagem de fundo enviada!",
-    "adminLoginPreview": "Pré-visualização"
+    "adminLoginPreview": "Pré-visualização",
+    "loginCredentialsSubtitle": "Entre com suas credenciais para acessar",
+    "loginDemoButton": "Entrar como Cliente Demo",
+    "loginSmartTracking": "Rastreamento Inteligente",
+    "mapBackToDashboard": "Voltar ao Dashboard"
 }
