@@ -60,7 +60,7 @@ const LandingPage = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontWeight: 900, fontSize: 16, color: '#0a0a0f',
           }}>H</div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#fff', whiteSpace: 'nowrap' }}>HyperTraccar</span>
+          <span style={{ fontWeight: 800, fontSize: 16, color: '#fff', whiteSpace: 'nowrap' }}>{PRODUCT_NAME}</span>
         </div>
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
           <button onClick={() => navigate('/admin/login')} style={{
