@@ -154,6 +154,8 @@ const GeofencesList = ({ onGeofenceSelected }) => {
 
   const [expandedId, setExpandedId] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
+  const [deviceCounts, setDeviceCounts] = useState({});
+  const [dialogGeofence, setDialogGeofence] = useState(null);
 
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
