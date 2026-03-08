@@ -87,6 +87,7 @@ export class SwitcherControl {
     this.controlContainer = document.createElement('div');
     this.controlContainer.classList.add('maplibregl-ctrl');
     this.controlContainer.classList.add('maplibregl-ctrl-group');
+    this.controlContainer.classList.add('switcher-control');
     this.mapStyleContainer = document.createElement('div');
     this.styleButton = document.createElement('button');
     this.styleButton.type = 'button';
@@ -94,8 +95,11 @@ export class SwitcherControl {
     this.styleButton.classList.add('maplibregl-ctrl-icon');
     this.styleButton.classList.add('maplibregl-style-switcher');
     this.styleButton.addEventListener('click', () => {
-      this.styleButton.style.display = 'none';
-      this.mapStyleContainer.style.display = 'block';
+      if (this.mapStyleContainer.classList.contains('visible')) {
+        this.mapStyleContainer.classList.remove('visible');
+      } else {
+        this.mapStyleContainer.classList.add('visible');
+      }
     });
     document.addEventListener('click', this.onDocumentClick);
     this.controlContainer.appendChild(this.styleButton);
