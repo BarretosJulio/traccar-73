@@ -100,11 +100,45 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
         calendarId: calendarId || undefined,
         attributes: data.attributes || {},
       };
-      await fetchOrThrow('/api/geofences', {
+      const geofenceResponse = await fetchOrThrow('/api/geofences', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newItem),
       });
+      const geofence = await geofenceResponse.json();
+
+      // Link geofence to devices/groups via permissions API
+      if (data.linkMode === 'all') {
+        // Link to current user — Traccar applies to all user's devices
+        const session = await fetchOrThrow('/api/session');
+        const user = await session.json();
+        await fetchOrThrow('/api/permissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, geofenceId: geofence.id }),
+        });
+      } else if (data.linkMode === 'devices' && data.selectedDeviceIds?.length) {
+        await Promise.all(
+          data.selectedDeviceIds.map((deviceId) =>
+            fetchOrThrow('/api/permissions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ deviceId, geofenceId: geofence.id }),
+            }),
+          ),
+        );
+      } else if (data.linkMode === 'groups' && data.selectedGroupIds?.length) {
+        await Promise.all(
+          data.selectedGroupIds.map((groupId) =>
+            fetchOrThrow('/api/permissions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ groupId, geofenceId: geofence.id }),
+            }),
+          ),
+        );
+      }
+
       refreshGeofences();
     } catch (error) {
       dispatch(errorsActions.push(error.message));
