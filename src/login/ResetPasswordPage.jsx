@@ -8,34 +8,7 @@ import { snackBarDurationShortMs } from '../common/util/duration';
 import { useCatch } from '../reactHelper';
 import BackIcon from '../common/components/BackIcon';
 import fetchOrThrow from '../common/util/fetchOrThrow';
-
-const lightInputSx = {
-  '& .MuiOutlinedInput-root': {
-    color: '#1e293b',
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    '& fieldset': {
-      borderColor: 'transparent',
-    },
-    '&:hover fieldset': {
-      borderColor: 'rgba(0,0,0,0.1)',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: 'rgba(0,0,0,0.2)',
-      borderWidth: '1.5px',
-    },
-    '& input::placeholder': {
-      color: '#94a3b8',
-      opacity: 1,
-    },
-  },
-  '& .MuiInputLabel-root': {
-    display: 'none',
-  },
-  '& .MuiFormHelperText-root': {
-    color: '#ff8a80',
-  },
-};
+import { lightInputSx } from './loginStyles';
 
 const useStyles = makeStyles()((theme) => ({
   container: {

@@ -3,6 +3,8 @@
 
 export const DEFAULT_TENANT_SLUG = import.meta.env.VITE_DEFAULT_TENANT_SLUG || 'mabtracker';
 
+export const PRODUCT_NAME = 'HyperTraccar';
+
 export const DEMO_USER = {
   id: 99999,
   name: 'Cliente Demo',

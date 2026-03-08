@@ -405,7 +405,7 @@ const LandingPage = () => {
         padding: '40px 24px', borderTop: '1px solid rgba(255,255,255,0.05)',
         textAlign: 'center', color: '#475569', fontSize: 14,
       }}>
-        © {new Date().getFullYear()} HyperTraccar. {t('landingFooter')}
+        © {new Date().getFullYear()} {PRODUCT_NAME}. {t('landingFooter')}
       </footer>
     </div>
   );

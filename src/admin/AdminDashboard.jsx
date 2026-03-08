@@ -519,7 +519,7 @@ const AdminDashboard = () => {
             {message && (
               <p style={{
                 textAlign: 'center', fontSize: 14, fontWeight: 600, margin: 0,
-                color: message.includes('Error') || message.includes('error') || message.includes('Erro') ? '#ff6b6b' : '#00f5a0',
+                color: isError ? '#ff6b6b' : '#00f5a0',
               }}>{message}</p>
             )}
 
