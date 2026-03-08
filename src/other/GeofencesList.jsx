@@ -426,7 +426,13 @@ const GeofencesList = ({ onGeofenceSelected }) => {
         );
       })}
     </List>
+    <GeofenceDevicesDialog
+      open={Boolean(dialogGeofence)}
+      onClose={handleCloseDevicesDialog}
+      geofenceId={dialogGeofence?.id}
+      geofenceName={dialogGeofence?.name}
+    />
+    </>
   );
-};
 
 export default GeofencesList;
