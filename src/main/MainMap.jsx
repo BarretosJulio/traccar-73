@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ import MapNotification from '../map/notification/MapNotification';
 import MapWhatsApp from '../map/MapWhatsApp';
 import useFeatures from '../common/util/useFeatures';
 import { useTenant } from '../common/components/TenantProvider';
+import WhatsAppDeviceAlerts from './components/WhatsAppDeviceAlerts';
 
 const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
   const theme = useTheme();
@@ -27,11 +28,15 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
 
   const eventsAvailable = useSelector((state) => !!state.events.items.length);
+  const selectedDeviceId = useSelector((state) => state.devices.selectedId);
 
   const features = useFeatures();
 
   const tenantCtx = useTenant();
   const whatsappNumber = tenantCtx?.tenant?.whatsapp_number;
+  const tenantId = tenantCtx?.tenant?.id;
+
+  const [whatsappOpen, setWhatsappOpen] = useState(false);
 
   const onMarkerClick = useCallback(
     (_, deviceId) => {
@@ -39,6 +44,10 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
     },
     [dispatch],
   );
+
+  const handleWhatsAppClick = useCallback(() => {
+    setWhatsappOpen((prev) => !prev);
+  }, []);
 
   return (
     <>
@@ -62,7 +71,14 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
       {!features.disableEvents && (
         <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
       )}
-      {whatsappNumber && <MapWhatsApp phoneNumber={whatsappNumber} />}
+      {whatsappNumber && <MapWhatsApp onClick={handleWhatsAppClick} />}
+      {whatsappOpen && (
+        <WhatsAppDeviceAlerts
+          deviceId={selectedDeviceId}
+          tenantId={tenantId}
+          onClose={() => setWhatsappOpen(false)}
+        />
+      )}
       {desktop && (
         <MapPadding
           start={
