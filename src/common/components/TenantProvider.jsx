@@ -14,7 +14,7 @@ const detectTenantSlug = () => {
   const stored = localStorage.getItem('tenantSlug');
   if (stored) return stored;
 
-  return 'mabtracker';
+  return DEFAULT_TENANT_SLUG;
 };
 
 export const TenantProvider = ({ children }) => {

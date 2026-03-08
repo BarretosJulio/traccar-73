@@ -147,7 +147,7 @@ const LoginPage = () => {
     setFailed(false);
     try {
       const query = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
-      const tenantSlug = localStorage.getItem('tenantSlug') || 'mabtracker';
+      const tenantSlug = localStorage.getItem('tenantSlug') || DEFAULT_TENANT_SLUG;
       const response = await fetch(apiUrl('/api/session'), {
         method: 'POST',
         headers: {
