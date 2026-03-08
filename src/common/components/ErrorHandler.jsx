@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { usePrevious } from '../../reactHelper';
 import { errorsActions } from '../../store';
 import { useTranslation } from './LocalizationProvider';
+import { translateError } from '../util/fetchOrThrow';
 
 const ErrorHandler = () => {
   const dispatch = useDispatch();
@@ -22,11 +23,9 @@ const ErrorHandler = () => {
   const error = useSelector((state) => state.errors.errors.find(() => true));
   const cachedError = usePrevious(error);
 
-  const message = error || cachedError;
-  const multiline = message?.includes('\n');
-  const displayMessage = multiline
-    ? message.split('\n')[0].replace(/^(?:(?:[\w$]+\.)*[\w$]+(?:Exception|Error)?:\s*)+/i, '')
-    : message;
+  const rawMessage = error || cachedError;
+  const message = translateError(rawMessage);
+  const multiline = rawMessage?.includes('\n');
 
   const [expanded, setExpanded] = useState(false);
 
@@ -39,7 +38,7 @@ const ErrorHandler = () => {
           severity="error"
           variant="filled"
         >
-          {displayMessage}
+          {message}
           {multiline && (
             <>
               {' | '}
@@ -53,8 +52,8 @@ const ErrorHandler = () => {
       <Dialog open={expanded} onClose={() => setExpanded(false)} maxWidth={false}>
         <DialogContent>
           <DialogContentText component="div">
-            <Typography component="pre" variant="caption">
-              {message}
+            <Typography component="pre" variant="caption" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+              {rawMessage}
             </Typography>
           </DialogContentText>
         </DialogContent>
