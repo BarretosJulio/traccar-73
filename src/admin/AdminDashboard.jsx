@@ -715,6 +715,11 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* WhatsApp Tab */}
+        {activeTab === 'whatsapp' && (
+          <WhatsAppTab t={t} />
+        )}
+
         {/* Stats Tab */}
         {activeTab === 'stats' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
