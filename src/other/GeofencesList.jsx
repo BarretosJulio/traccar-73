@@ -297,7 +297,18 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   <div className={classes.detailRow}>
                     <CalendarTodayIcon className={classes.detailIcon} />
                     <Typography className={classes.detailLabel}>Dias ativos:</Typography>
-                    <Typography className={classes.detailValue}>{item.attributes.activeDays}</Typography>
+                    <Typography className={classes.detailValue}>
+                      {item.attributes.activeDays.split(',').map((d) => ({ MO: 'Seg', TU: 'Ter', WE: 'Qua', TH: 'Qui', FR: 'Sex', SA: 'Sáb', SU: 'Dom' })[d] || d).join(', ')}
+                    </Typography>
+                  </div>
+                )}
+                {(item.attributes?.startDate || item.attributes?.endDate) && (
+                  <div className={classes.detailRow}>
+                    <CalendarTodayIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Período:</Typography>
+                    <Typography className={classes.detailValue}>
+                      {item.attributes.startDate || '—'} até {item.attributes.endDate || '—'}
+                    </Typography>
                   </div>
                 )}
                 {item.attributes?.speedLimit && (
