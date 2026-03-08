@@ -1,6 +1,7 @@
 /* Switcher container – needs relative for popup anchoring */
 .maplibregl-ctrl-group.switcher-control {
   position: relative;
+  overflow: visible !important;
 }
 
 /* Popup card – floating, glassmorphism */

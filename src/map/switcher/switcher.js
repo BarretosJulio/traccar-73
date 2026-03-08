@@ -6,6 +6,7 @@ export class SwitcherControl {
     this.onSwitch = onSwitch;
     this.onAfterSwitch = onAfterSwitch;
     this.onDocumentClick = this.onDocumentClick.bind(this);
+    this.onToggleMenu = this.onToggleMenu.bind(this);
     this.styles = [];
     this.currentStyle = null;
   }
