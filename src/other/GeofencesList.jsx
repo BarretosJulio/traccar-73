@@ -284,6 +284,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     setRemovingGeofenceId(null);
   };
 
+  if (geofenceList.length === 0) {
     return (
       <div className={classes.emptyState}>
         <Box className={classes.emptyIcon}>
