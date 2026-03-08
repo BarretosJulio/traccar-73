@@ -153,12 +153,14 @@ const useStyles = makeStyles()((theme) => ({
 const GeofencesList = ({ onGeofenceSelected }) => {
   const { classes, cx } = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const t = useTranslation();
 
   const [expandedId, setExpandedId] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
   const [deviceCounts, setDeviceCounts] = useState({});
   const [dialogGeofence, setDialogGeofence] = useState(null);
+  const [removingGeofenceId, setRemovingGeofenceId] = useState(null);
 
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
