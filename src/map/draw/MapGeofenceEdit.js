@@ -72,9 +72,13 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
   useEffect(() => {
     const listener = async (event) => {
       const feature = event.features[0];
-      const newItem = { name: t('sharedGeofence'), area: geometryToArea(feature.geometry) };
-      draw.delete(feature.id);
       try {
+        const area = geometryToArea(feature.geometry);
+        if (!area) {
+          throw new Error('Invalid geometry — could not convert to WKT');
+        }
+        const newItem = { name: t('sharedGeofence'), area };
+        draw.delete(feature.id);
         const response = await fetchOrThrow('/api/geofences', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -89,7 +93,7 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
 
     map.on('draw.create', listener);
     return () => map.off('draw.create', listener);
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, t, draw]);
 
   useEffect(() => {
     const listener = async (event) => {
