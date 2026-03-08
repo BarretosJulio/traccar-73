@@ -278,7 +278,7 @@ const LoginPage = () => {
               autoComplete="email"
               autoFocus={!email}
               onChange={(e) => setEmail(e.target.value)}
-              helperText={failed && 'Usuário ou senha inválidos'}
+              helperText={failed && t('loginInvalidCredentials')}
               size="small"
               sx={lightInputSx}
             />
