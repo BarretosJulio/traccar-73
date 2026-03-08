@@ -59,7 +59,13 @@ const EventsDrawer = ({ open, onClose }) => {
     });
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}>
+    <Drawer
+      anchor="right"
+      open={open}
+      onClose={onClose}
+      PaperProps={{ className: classes.paper }}
+      slotProps={{ backdrop: { sx: { backgroundColor: 'transparent' } } }}
+    >
       <Toolbar className={classes.toolbar} disableGutters>
         <Typography variant="h6" className={classes.title}>
           {t('reportEvents')}
