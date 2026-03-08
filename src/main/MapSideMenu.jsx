@@ -12,6 +12,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import PeopleIcon from '@mui/icons-material/People';
 import StorageIcon from '@mui/icons-material/Storage';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useAdministrator } from '../common/util/permissions';
 
@@ -70,6 +71,7 @@ const MapSideMenu = () => {
     ...(admin ? [
       { label: t('settingsUsers'), icon: <PeopleIcon className={classes.icon} />, path: '/app/settings/users' },
       { label: t('settingsServer'), icon: <StorageIcon className={classes.icon} />, path: '/app/settings/server' },
+      { label: t('whatsappSettings'), icon: <WhatsAppIcon className={classes.icon} />, path: '/admin?tab=whatsapp' },
     ] : []),
   ];
 

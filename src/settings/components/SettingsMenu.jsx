@@ -13,6 +13,7 @@ import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import { useLocation } from 'react-router-dom';
@@ -138,12 +139,19 @@ const SettingsMenu = () => {
               selected={location.pathname === '/app/settings/announcement'}
             />
             {admin && (
-              <MenuItem
-                title={t('settingsServer')}
-                link="/app/settings/server"
-                icon={<AdminPanelSettingsOutlinedIcon />}
-                selected={location.pathname === '/app/settings/server'}
-              />
+              <>
+                <MenuItem
+                  title={t('settingsServer')}
+                  link="/app/settings/server"
+                  icon={<AdminPanelSettingsOutlinedIcon />}
+                  selected={location.pathname === '/app/settings/server'}
+                />
+                <MenuItem
+                  title={t('whatsappSettings')}
+                  link="/admin?tab=whatsapp"
+                  icon={<WhatsAppIcon />}
+                />
+              </>
             )}
             <MenuItem
               title={t('settingsUsers')}
