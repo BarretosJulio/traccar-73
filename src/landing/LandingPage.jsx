@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../common/components/LocalizationProvider';
+import { PRODUCT_NAME } from '../common/util/constants';
 
 const LandingPage = () => {
   const navigate = useNavigate();

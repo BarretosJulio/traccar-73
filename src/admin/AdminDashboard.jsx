@@ -162,9 +162,11 @@ const AdminDashboard = () => {
         .from('logos')
         .getPublicUrl(path);
       updateField('login_bg_image', publicUrl);
+      setIsError(false);
       setMessage(t('adminBgImageSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
+      setIsError(true);
       setMessage(`${t('adminErrorLogo')}: ` + err.message);
     } finally {
       setUploadingBgImage(false);
