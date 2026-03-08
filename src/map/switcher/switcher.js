@@ -6,6 +6,7 @@ export class SwitcherControl {
     this.onSwitch = onSwitch;
     this.onAfterSwitch = onAfterSwitch;
     this.onDocumentClick = this.onDocumentClick.bind(this);
+    this.onToggleMenu = this.onToggleMenu.bind(this);
     this.styles = [];
     this.currentStyle = null;
   }
@@ -93,13 +94,7 @@ export class SwitcherControl {
     this.mapStyleContainer.classList.add('maplibregl-style-list');
     this.styleButton.classList.add('maplibregl-ctrl-icon');
     this.styleButton.classList.add('maplibregl-style-switcher');
-    this.styleButton.addEventListener('click', () => {
-      if (this.mapStyleContainer.classList.contains('visible')) {
-        this.mapStyleContainer.classList.remove('visible');
-      } else {
-        this.mapStyleContainer.classList.add('visible');
-      }
-    });
+    this.styleButton.addEventListener('click', this.onToggleMenu);
     document.addEventListener('click', this.onDocumentClick);
     this.controlContainer.appendChild(this.styleButton);
     this.controlContainer.appendChild(this.mapStyleContainer);
@@ -115,7 +110,7 @@ export class SwitcherControl {
     ) {
       return;
     }
-    this.styleButton.removeEventListener('click', this.onDocumentClick);
+    this.styleButton.removeEventListener('click', this.onToggleMenu);
     this.controlContainer.parentNode.removeChild(this.controlContainer);
     document.removeEventListener('click', this.onDocumentClick);
     this.map = undefined;
@@ -130,5 +125,10 @@ export class SwitcherControl {
     ) {
       this.mapStyleContainer.classList.remove('visible');
     }
+  }
+
+  onToggleMenu(event) {
+    event.stopPropagation();
+    this.mapStyleContainer.classList.toggle('visible');
   }
 }

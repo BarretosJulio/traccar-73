@@ -88,6 +88,15 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
+.maplibregl-ctrl-group button.maplibregl-ctrl-icon {
+  filter: brightness(0) invert(0.88);
+  transition: filter 0.25s ease;
+}
+
+.maplibregl-ctrl-group button:hover.maplibregl-ctrl-icon {
+  filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(130deg);
+}
+
 .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
   filter: brightness(0) invert(0.85);
   transition: filter 0.25s ease;
