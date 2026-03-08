@@ -33,7 +33,8 @@ const useStyles = makeStyles()((theme) => ({
     padding: theme.spacing(3),
   },
   floatingCard: {
-    width: 960,
+    width: '90vw',
+    maxWidth: 1200,
     height: '80vh',
     borderRadius: 20,
     overflow: 'hidden',
