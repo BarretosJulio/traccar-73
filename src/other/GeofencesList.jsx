@@ -492,6 +492,16 @@ const GeofencesList = ({ onGeofenceSelected }) => {
       geofenceId={dialogGeofence?.id}
       geofenceName={dialogGeofence?.name}
     />
+    <Snackbar
+      open={Boolean(removingGeofenceId)}
+      onClose={() => setRemovingGeofenceId(null)}
+      message={t('sharedRemoveConfirm')}
+      action={
+        <Button size="small" color="error" onClick={handleRemoveGeofence}>
+          {t('sharedRemove')}
+        </Button>
+      }
+    />
     </>
   );
 };
