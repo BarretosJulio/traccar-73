@@ -1,9 +1,10 @@
 import { Fragment, useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import {
   List, ListItemButton, ListItemText, Typography, Box,
-  Collapse, Chip, IconButton, Tooltip,
+  Collapse, Chip, IconButton, Tooltip, Snackbar, Button,
 } from '@mui/material';
 import FenceIcon from '@mui/icons-material/Fence';
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
@@ -19,8 +20,10 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import PaletteIcon from '@mui/icons-material/Palette';
 
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import { geofencesActions, errorsActions } from '../store';
-import CollectionActions from '../settings/components/CollectionActions';
 import { useCatchCallback } from '../reactHelper';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { useTranslation } from '../common/components/LocalizationProvider';
@@ -150,12 +153,14 @@ const useStyles = makeStyles()((theme) => ({
 const GeofencesList = ({ onGeofenceSelected }) => {
   const { classes, cx } = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const t = useTranslation();
 
   const [expandedId, setExpandedId] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
   const [deviceCounts, setDeviceCounts] = useState({});
   const [dialogGeofence, setDialogGeofence] = useState(null);
+  const [removingGeofenceId, setRemovingGeofenceId] = useState(null);
 
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
@@ -251,7 +256,34 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     setDialogGeofence(null);
   };
 
-  if (geofenceList.length === 0) {
+  const handleRemoveGeofence = async () => {
+    const geofenceId = removingGeofenceId;
+    if (!geofenceId) return;
+    try {
+      // 1. Fetch linked devices
+      const devResponse = await fetchOrThrow(`/api/devices?geofenceId=${geofenceId}`);
+      const linkedDevices = await devResponse.json();
+
+      // 2. Remove all permissions first
+      await Promise.all(
+        linkedDevices.map((device) =>
+          fetchOrThrow('/api/permissions', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deviceId: device.id, geofenceId }),
+          }).catch(() => {}), // ignore if already removed
+        ),
+      );
+
+      // 3. Delete the geofence
+      await fetchOrThrow(`/api/geofences/${geofenceId}`, { method: 'DELETE' });
+      refreshGeofences();
+    } catch (error) {
+      dispatch(errorsActions.push(error.message));
+    }
+    setRemovingGeofenceId(null);
+  };
+
     return (
       <div className={classes.emptyState}>
         <Box className={classes.emptyIcon}>
@@ -323,12 +355,25 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   ? <ExpandLessIcon sx={{ fontSize: '1rem' }} />
                   : <ExpandMoreIcon sx={{ fontSize: '1rem' }} />}
               </IconButton>
-              <CollectionActions
-                itemId={item.id}
-                editPath="/app/settings/geofence"
-                endpoint="geofences"
-                setTimestamp={refreshGeofences}
-              />
+              <Tooltip title={t('sharedEdit')}>
+                <IconButton
+                  className={classes.actionButton}
+                  size="small"
+                  onClick={(e) => { e.stopPropagation(); navigate(`/app/settings/geofence/${item.id}`); }}
+                >
+                  <EditIcon sx={{ fontSize: '1rem' }} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('sharedRemove')}>
+                <IconButton
+                  className={classes.actionButton}
+                  size="small"
+                  color="error"
+                  onClick={(e) => { e.stopPropagation(); setRemovingGeofenceId(item.id); }}
+                >
+                  <DeleteIcon sx={{ fontSize: '1rem' }} />
+                </IconButton>
+              </Tooltip>
             </ListItemButton>
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
               <Box className={classes.detailsPanel}>
@@ -446,6 +491,16 @@ const GeofencesList = ({ onGeofenceSelected }) => {
       onClose={handleCloseDevicesDialog}
       geofenceId={dialogGeofence?.id}
       geofenceName={dialogGeofence?.name}
+    />
+    <Snackbar
+      open={Boolean(removingGeofenceId)}
+      onClose={() => setRemovingGeofenceId(null)}
+      message={t('sharedRemoveConfirm')}
+      action={
+        <Button size="small" color="error" onClick={handleRemoveGeofence}>
+          {t('sharedRemove')}
+        </Button>
+      }
     />
     </>
   );
