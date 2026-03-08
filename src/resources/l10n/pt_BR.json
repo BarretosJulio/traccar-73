@@ -883,5 +883,14 @@
     "whatsappAlertsSaved": "✅ Configurações de alerta salvas!",
     "whatsappMessageLog": "Log de Mensagens",
     "whatsappNoMessages": "Nenhuma mensagem enviada ainda",
-    "whatsappSettings": "Configurações WhatsApp"
+    "whatsappSettings": "Configurações WhatsApp",
+    "commandCenter": "Central de Comandos",
+    "commandHistory": "Histórico de Comandos",
+    "commandStatus": "Status",
+    "commandResponse": "Resposta recebida",
+    "commandPending": "Na Fila",
+    "commandDelivered": "Recebido",
+    "commandFailed": "Falhou",
+    "commandSent": "Comando enviado com sucesso",
+    "sharedRefresh": "Atualizar"
 }

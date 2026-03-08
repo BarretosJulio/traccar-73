@@ -883,5 +883,14 @@
     "whatsappAlertsSaved": "✅ Alert settings saved!",
     "whatsappMessageLog": "Message Log",
     "whatsappNoMessages": "No messages sent yet",
-    "whatsappSettings": "WhatsApp Settings"
+    "whatsappSettings": "WhatsApp Settings",
+    "commandCenter": "Command Center",
+    "commandHistory": "Command History",
+    "commandStatus": "Status",
+    "commandResponse": "Response received",
+    "commandPending": "Pending",
+    "commandDelivered": "Delivered",
+    "commandFailed": "Failed",
+    "commandSent": "Command sent successfully",
+    "sharedRefresh": "Refresh"
 }

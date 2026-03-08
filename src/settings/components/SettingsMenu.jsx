@@ -9,6 +9,7 @@ import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import TodayOutlinedIcon from '@mui/icons-material/TodayOutlined';
 import TerminalOutlinedIcon from '@mui/icons-material/TerminalOutlined';
+import SettingsRemoteOutlinedIcon from '@mui/icons-material/SettingsRemoteOutlined';
 import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
@@ -114,12 +115,18 @@ const SettingsMenu = () => {
                 selected={location.pathname.startsWith('/app/settings/maintenance')}
               />
             )}
+            <MenuItem
+              title={t('commandCenter')}
+              link="/app/settings/command-center"
+              icon={<SettingsRemoteOutlinedIcon />}
+              selected={location.pathname === '/app/settings/command-center'}
+            />
             {!features.disableSavedCommands && (
               <MenuItem
                 title={t('sharedSavedCommands')}
                 link="/app/settings/commands"
                 icon={<TerminalOutlinedIcon />}
-                selected={location.pathname.startsWith('/app/settings/command')}
+                selected={location.pathname.startsWith('/app/settings/command') && location.pathname !== '/app/settings/command-center'}
               />
             )}
           </>
