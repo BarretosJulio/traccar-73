@@ -76,11 +76,28 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
   const handleDialogSave = useCallback(async (data) => {
     if (!pendingArea) return;
     try {
+      let calendarId;
+
+      // If calendar data was generated, create calendar first via Traccar API
+      if (data.calendarData) {
+        const calendarResponse = await fetchOrThrow('/api/calendars', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: `${data.name} - Agenda`,
+            data: data.calendarData,
+            attributes: {},
+          }),
+        });
+        const calendar = await calendarResponse.json();
+        calendarId = calendar.id;
+      }
+
       const newItem = {
         name: data.name,
         area: pendingArea,
         description: data.description,
-        calendarId: data.calendarId,
+        calendarId: calendarId || undefined,
         attributes: data.attributes || {},
       };
       await fetchOrThrow('/api/geofences', {
