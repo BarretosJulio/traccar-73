@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { supabase } from '../integrations/supabase/client';
 import { useTranslation } from '../common/components/LocalizationProvider';
+import WhatsAppTab from './whatsapp/WhatsAppTab';
 
 const AdminDashboard = () => {
   const t = useTranslation();
