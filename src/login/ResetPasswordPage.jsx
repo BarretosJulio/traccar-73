@@ -9,6 +9,34 @@ import { useCatch } from '../reactHelper';
 import BackIcon from '../common/components/BackIcon';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 
+const lightInputSx = {
+  '& .MuiOutlinedInput-root': {
+    color: '#1e293b',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    '& fieldset': {
+      borderColor: 'transparent',
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(0,0,0,0.1)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'rgba(0,0,0,0.2)',
+      borderWidth: '1.5px',
+    },
+    '& input::placeholder': {
+      color: '#94a3b8',
+      opacity: 1,
+    },
+  },
+  '& .MuiInputLabel-root': {
+    display: 'none',
+  },
+  '& .MuiFormHelperText-root': {
+    color: '#ff8a80',
+  },
+};
+
 const useStyles = makeStyles()((theme) => ({
   container: {
     display: 'flex',
@@ -61,10 +89,10 @@ const ResetPasswordPage = () => {
     <LoginLayout>
       <div className={classes.container}>
         <div className={classes.header}>
-          <IconButton color="primary" onClick={() => navigate('/login')}>
+          <IconButton onClick={() => navigate('/login')} sx={{ color: '#fff' }}>
             <BackIcon />
           </IconButton>
-          <Typography className={classes.title} color="primary">
+          <Typography className={classes.title} sx={{ color: '#fff' }}>
             {t('loginReset')}
           </Typography>
         </div>
@@ -72,30 +100,49 @@ const ResetPasswordPage = () => {
           <TextField
             required
             type="email"
-            label={t('userEmail')}
+            placeholder={t('userEmail')}
             name="email"
             value={email}
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
+            size="small"
+            sx={lightInputSx}
           />
         ) : (
           <TextField
             required
-            label={t('userPassword')}
+            placeholder={t('userPassword')}
             name="password"
             value={password}
             type="password"
             autoComplete="current-password"
             onChange={(event) => setPassword(event.target.value)}
+            size="small"
+            sx={lightInputSx}
           />
         )}
         <Button
           variant="contained"
-          color="secondary"
           type="submit"
           onClick={handleSubmit}
           disabled={!/(.+)@(.+)\.(.{2,})/.test(email) && !password}
           fullWidth
+          sx={{
+            bgcolor: '#fff',
+            color: '#1e293b',
+            py: 1.2,
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            borderRadius: '12px',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
+            '&:hover': {
+              bgcolor: '#f1f5f9',
+            },
+            '&.Mui-disabled': {
+              color: '#94a3b8',
+              bgcolor: 'rgba(255,255,255,0.5)',
+            },
+          }}
         >
           {t('loginReset')}
         </Button>
