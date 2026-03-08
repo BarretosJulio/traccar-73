@@ -499,7 +499,7 @@ const AdminDashboard = () => {
                       <label style={labelStyle}>{t('adminTraccarUrl')}</label>
                       <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
-                        URL do seu servidor Traccar (ex: https://demo.traccar.org)
+                        {t('adminTraccarUrlHint')}
                       </p>
                     </div>
                     <div>
