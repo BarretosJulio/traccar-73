@@ -1,33 +1,37 @@
 
 
-# Modernizar Controles do Mapa + Botão WhatsApp
+# Fix Map Style Switcher Popup + Contrast Audit
 
-## O que será feito
+## Problem
+1. The map style switcher opens as a narrow inline list inside the maplibre control group — hard to read, poor UX on the dark glassmorphism background
+2. Text buttons in `.maplibregl-style-list` have no explicit `color` set, so they inherit browser defaults (black text on dark semi-transparent background = unreadable)
 
-1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
-2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
+## Solution
 
-## Mudanças Técnicas
+### 1. Restyle `.maplibregl-style-list` as a floating popup (`src/map/switcher/switcher.css`)
 
-### 1. CSS Global dos controles do mapa (`public/styles.css`)
-- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
-- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
-- Adicionar separadores sutis entre botões
-- Manter responsivo para mobile
+Transform the style list into a proper popup card:
+- Position it as `position: absolute` anchored to the switcher button (right-aligned, below the control)
+- Apply the same glassmorphism style as other map controls (dark background, blur, border)
+- Set explicit `color: rgba(255, 255, 255, 0.85)` on all buttons
+- Active item gets teal accent (`color: #2dd4bf`, left border highlight)
+- Hover state with `background: rgba(45, 212, 191, 0.12)`
+- Add `border-radius: 14px`, proper padding, and `min-width: 180px`
+- Smooth entry animation (opacity + translateY)
 
-### 2. Geocoder (`src/map/geocoder/geocoder.css`)
-- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
-- Border-radius mais arredondado, sombra premium
+### 2. Fix contrast on all map control text elements (`public/styles.css`)
 
-### 3. Notificação (`src/map/notification/notification.css`)
-- Atualizar ícones SVG com cores teal para combinar com o tema
+- `.maplibregl-style-list button` — white text on dark glass background
+- `.maplibregl-ctrl-geocoder--input` — already handled (white text)
+- Verify scale control text — already `rgba(255, 255, 255, 0.7)` ✓
+- Attribution — already handled ✓
 
-### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
-- Criar controle customizado maplibre similar ao `MapNotification`
-- Ícone WhatsApp em SVG verde
-- Ao clicar, abre `https://wa.me/{numero}` em nova aba
-- Número configurável via atributos do servidor ou hardcoded
+### 3. Minor adjustment to `switcher.js`
 
-### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
-- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
+Update `onAdd` to set a positioning class on the container so the popup anchors correctly relative to the button, and ensure the popup gets proper `display: flex; flex-direction: column` when shown.
+
+### Files to modify
+- `src/map/switcher/switcher.css` — Complete restyle of the dropdown into a popup card
+- `public/styles.css` — Add/fix contrast rules for style-list buttons within glassmorphism context
+- `src/map/switcher/switcher.js` — Minor: add relative positioning to container, improve show/hide with class toggle instead of inline style
 
