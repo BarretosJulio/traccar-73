@@ -102,7 +102,7 @@ const LoginLayout = ({ children }) => {
               letterSpacing: '0.05em',
             }}
           >
-            Rastreamento Inteligente
+            {t('loginSmartTracking')}
           </Typography>
         </div>
         <div className={classes.formZone}>

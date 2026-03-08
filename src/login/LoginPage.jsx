@@ -380,7 +380,7 @@ const LoginPage = () => {
             },
           }}
         >
-          Entrar como Cliente Demo
+          {t('loginDemoButton')}
         </Button>
         {!openIdForced && (
           <div className={classes.extraContainer}>
