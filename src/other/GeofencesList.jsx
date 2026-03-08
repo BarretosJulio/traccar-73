@@ -1,10 +1,20 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
-import { List, ListItemButton, ListItemText, Typography, Box } from '@mui/material';
+import {
+  List, ListItemButton, ListItemText, Typography, Box,
+  Collapse, Chip, IconButton, Tooltip,
+} from '@mui/material';
 import FenceIcon from '@mui/icons-material/Fence';
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import DescriptionIcon from '@mui/icons-material/Description';
+import SpeedIcon from '@mui/icons-material/Speed';
 
-import { geofencesActions } from '../store';
+import { geofencesActions, errorsActions } from '../store';
 import CollectionActions from '../settings/components/CollectionActions';
 import { useCatchCallback } from '../reactHelper';
 import fetchOrThrow from '../common/util/fetchOrThrow';
@@ -43,10 +53,71 @@ const useStyles = makeStyles()((theme) => ({
     marginRight: theme.spacing(1.5),
     flexShrink: 0,
   },
+  itemIconDisabled: {
+    backgroundColor: `${theme.palette.action.disabled}15`,
+    color: theme.palette.action.disabled,
+  },
   itemName: {
     fontWeight: 500,
     fontSize: '0.875rem',
     color: theme.palette.text.primary,
+  },
+  itemNameDisabled: {
+    color: theme.palette.text.disabled,
+    textDecoration: 'line-through',
+  },
+  actionButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 7,
+    transition: 'all 0.15s ease',
+  },
+  pauseButton: {
+    color: theme.palette.warning.main,
+    '&:hover': {
+      backgroundColor: `${theme.palette.warning.main}15`,
+    },
+  },
+  playButton: {
+    color: theme.palette.success.main,
+    '&:hover': {
+      backgroundColor: `${theme.palette.success.main}15`,
+    },
+  },
+  expandButton: {
+    color: theme.palette.text.secondary,
+    '&:hover': {
+      backgroundColor: `${theme.palette.action.hover}`,
+    },
+  },
+  detailsPanel: {
+    padding: theme.spacing(1, 1.5, 1.5, 6),
+  },
+  detailRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.75),
+    marginBottom: theme.spacing(0.5),
+  },
+  detailIcon: {
+    fontSize: '0.9rem',
+    color: theme.palette.text.secondary,
+  },
+  detailLabel: {
+    fontSize: '0.75rem',
+    color: theme.palette.text.secondary,
+    fontWeight: 500,
+    minWidth: 70,
+  },
+  detailValue: {
+    fontSize: '0.75rem',
+    color: theme.palette.text.primary,
+  },
+  chipRow: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: theme.spacing(0.5),
+    marginTop: theme.spacing(0.5),
   },
   emptyState: {
     display: 'flex',
@@ -71,9 +142,12 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 const GeofencesList = ({ onGeofenceSelected }) => {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
+
+  const [expandedId, setExpandedId] = useState(null);
+  const [togglingId, setTogglingId] = useState(null);
 
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
@@ -82,6 +156,40 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     const response = await fetchOrThrow('/api/geofences');
     dispatch(geofencesActions.refresh(await response.json()));
   }, [dispatch]);
+
+  const handleTogglePause = async (event, item) => {
+    event.stopPropagation();
+    setTogglingId(item.id);
+    try {
+      const isDisabled = item.attributes?.disabled;
+      const updatedItem = {
+        ...item,
+        attributes: {
+          ...item.attributes,
+          disabled: !isDisabled,
+        },
+      };
+      await fetchOrThrow(`/api/geofences/${item.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedItem),
+      });
+      dispatch(geofencesActions.update([updatedItem]));
+    } catch (error) {
+      dispatch(errorsActions.push(error.message));
+    }
+    setTogglingId(null);
+  };
+
+  const handleToggleExpand = (event, itemId) => {
+    event.stopPropagation();
+    setExpandedId((prev) => (prev === itemId ? null : itemId));
+  };
+
+  const handleCardClick = (item) => {
+    onGeofenceSelected(item.id);
+    setExpandedId((prev) => (prev === item.id ? null : item.id));
+  };
 
   if (geofenceList.length === 0) {
     return (
@@ -101,30 +209,120 @@ const GeofencesList = ({ onGeofenceSelected }) => {
 
   return (
     <List className={classes.list} disablePadding>
-      {geofenceList.map((item) => (
-        <ListItemButton
-          key={item.id}
-          className={classes.listItem}
-          onClick={() => onGeofenceSelected(item.id)}
-        >
-          <Box className={classes.itemIcon}>
-            <FenceIcon sx={{ fontSize: '1rem' }} />
-          </Box>
-          <ListItemText
-            primary={item.name}
-            primaryTypographyProps={{
-              className: classes.itemName,
-              noWrap: true,
-            }}
-          />
-          <CollectionActions
-            itemId={item.id}
-            editPath="/app/settings/geofence"
-            endpoint="geofences"
-            setTimestamp={refreshGeofences}
-          />
-        </ListItemButton>
-      ))}
+      {geofenceList.map((item) => {
+        const isDisabled = item.attributes?.disabled;
+        const isExpanded = expandedId === item.id;
+        const isToggling = togglingId === item.id;
+
+        return (
+          <Fragment key={item.id}>
+            <ListItemButton
+              className={classes.listItem}
+              onClick={() => handleCardClick(item)}
+            >
+              <Box className={cx(classes.itemIcon, isDisabled && classes.itemIconDisabled)}>
+                <FenceIcon sx={{ fontSize: '1rem' }} />
+              </Box>
+              <ListItemText
+                primary={item.name}
+                primaryTypographyProps={{
+                  className: cx(classes.itemName, isDisabled && classes.itemNameDisabled),
+                  noWrap: true,
+                }}
+              />
+              <Tooltip title={isDisabled ? 'Ativar cerca' : 'Pausar cerca'}>
+                <IconButton
+                  className={cx(classes.actionButton, isDisabled ? classes.playButton : classes.pauseButton)}
+                  size="small"
+                  onClick={(e) => handleTogglePause(e, item)}
+                  disabled={isToggling}
+                >
+                  {isDisabled
+                    ? <PlayCircleOutlineIcon sx={{ fontSize: '1.1rem' }} />
+                    : <PauseCircleOutlineIcon sx={{ fontSize: '1.1rem' }} />}
+                </IconButton>
+              </Tooltip>
+              <IconButton
+                className={cx(classes.actionButton, classes.expandButton)}
+                size="small"
+                onClick={(e) => handleToggleExpand(e, item.id)}
+              >
+                {isExpanded
+                  ? <ExpandLessIcon sx={{ fontSize: '1rem' }} />
+                  : <ExpandMoreIcon sx={{ fontSize: '1rem' }} />}
+              </IconButton>
+              <CollectionActions
+                itemId={item.id}
+                editPath="/app/settings/geofence"
+                endpoint="geofences"
+                setTimestamp={refreshGeofences}
+              />
+            </ListItemButton>
+            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+              <Box className={classes.detailsPanel}>
+                {item.description && (
+                  <div className={classes.detailRow}>
+                    <DescriptionIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Descrição:</Typography>
+                    <Typography className={classes.detailValue}>{item.description}</Typography>
+                  </div>
+                )}
+                {item.calendarId && (
+                  <div className={classes.detailRow}>
+                    <ScheduleIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Agenda:</Typography>
+                    <Typography className={classes.detailValue}>Calendário #{item.calendarId}</Typography>
+                  </div>
+                )}
+                {item.attributes?.speedLimit && (
+                  <div className={classes.detailRow}>
+                    <SpeedIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Vel. Limite:</Typography>
+                    <Typography className={classes.detailValue}>
+                      {(item.attributes.speedLimit * 1.852).toFixed(0)} km/h
+                    </Typography>
+                  </div>
+                )}
+                <div className={classes.chipRow}>
+                  <Chip
+                    size="small"
+                    label={isDisabled ? 'Pausada' : 'Ativa'}
+                    color={isDisabled ? 'default' : 'success'}
+                    variant="outlined"
+                    sx={{ fontSize: '0.7rem', height: 22 }}
+                  />
+                  {item.attributes?.hide && (
+                    <Chip
+                      size="small"
+                      label="Oculta no mapa"
+                      variant="outlined"
+                      sx={{ fontSize: '0.7rem', height: 22 }}
+                    />
+                  )}
+                  {item.attributes?.color && (
+                    <Chip
+                      size="small"
+                      label={`Cor: ${item.attributes.color}`}
+                      variant="outlined"
+                      sx={{
+                        fontSize: '0.7rem',
+                        height: 22,
+                        borderColor: item.attributes.color,
+                        color: item.attributes.color,
+                      }}
+                    />
+                  )}
+                </div>
+                {!item.description && !item.calendarId && !item.attributes?.speedLimit && (
+                  <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.6 }}>
+                    Nenhuma configuração adicional
+                  </Typography>
+                )}
+              </Box>
+            </Collapse>
+          </Fragment>
+        );
+      })}
     </List>
   );
 };
