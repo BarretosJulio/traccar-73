@@ -11,6 +11,7 @@ const AdminDashboard = () => {
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('pwa');
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [copied, setCopied] = useState(false);
   const [statsData, setStatsData] = useState({ installations: 0, activeSessions: 0, expiredSessions: 0 });
