@@ -65,10 +65,10 @@ const SettingsMenu = () => {
               selected={location.pathname.startsWith('/app/settings/device')}
             />
             <MenuItem
-              title={t('sharedGeofences')}
+            title={t('sharedGeofences')}
               link="/app/geofences"
               icon={<ShareLocationOutlinedIcon />}
-              selected={location.pathname.startsWith('/app/settings/geofence')}
+              selected={location.pathname.startsWith('/app/geofence')}
             />
             {!features.disableGroups && (
               <MenuItem

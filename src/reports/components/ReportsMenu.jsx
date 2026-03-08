@@ -25,11 +25,12 @@ const ReportsMenu = () => {
   const readonly = useRestriction('readonly');
 
   const buildLink = (path) => {
+    const fullPath = `/app${path}`;
     const sourceParams = new URLSearchParams(location.search);
     const deviceIds = sourceParams.getAll('deviceId');
     const groupIds = sourceParams.getAll('groupId');
     if (!deviceIds.length && !groupIds.length) {
-      return path;
+      return fullPath;
     }
     const params = new URLSearchParams();
     if (path === '/reports/chart' || path === '/reports/route' || path === '/replay') {
@@ -42,7 +43,7 @@ const ReportsMenu = () => {
       groupIds.forEach((groupId) => params.append('groupId', groupId));
     }
     const search = params.toString();
-    return search ? `${path}?${search}` : path;
+    return search ? `${fullPath}?${search}` : fullPath;
   };
 
   return (
@@ -52,82 +53,82 @@ const ReportsMenu = () => {
           title={t('reportCombined')}
           link={buildLink('/reports/combined')}
           icon={<StarIcon />}
-          selected={location.pathname === '/reports/combined'}
+          selected={location.pathname === '/app/reports/combined'}
         />
         <MenuItem
           title={t('reportEvents')}
           link={buildLink('/reports/events')}
           icon={<NotificationsActiveIcon />}
-          selected={location.pathname === '/reports/events'}
+          selected={location.pathname === '/app/reports/events'}
         />
         <MenuItem
           title={t('sharedGeofences')}
           link={buildLink('/reports/geofences')}
           icon={<PlaceIcon />}
-          selected={location.pathname === '/reports/geofences'}
+          selected={location.pathname === '/app/reports/geofences'}
         />
         <MenuItem
           title={t('reportTrips')}
           link={buildLink('/reports/trips')}
           icon={<PlayCircleFilledIcon />}
-          selected={location.pathname === '/reports/trips'}
+          selected={location.pathname === '/app/reports/trips'}
         />
         <MenuItem
           title={t('reportStops')}
           link={buildLink('/reports/stops')}
           icon={<PauseCircleFilledIcon />}
-          selected={location.pathname === '/reports/stops'}
+          selected={location.pathname === '/app/reports/stops'}
         />
         <MenuItem
           title={t('reportSummary')}
           link={buildLink('/reports/summary')}
           icon={<FormatListBulletedIcon />}
-          selected={location.pathname === '/reports/summary'}
+          selected={location.pathname === '/app/reports/summary'}
         />
         <MenuItem
           title={t('reportChart')}
           link={buildLink('/reports/chart')}
           icon={<TrendingUpIcon />}
-          selected={location.pathname === '/reports/chart'}
+          selected={location.pathname === '/app/reports/chart'}
         />
-        <MenuItem title={t('reportReplay')} link={buildLink('/replay')} icon={<RouteIcon />} />
+        <MenuItem title={t('reportReplay')} link={buildLink('/replay')} icon={<RouteIcon />} selected={location.pathname === '/app/replay'} />
         <MenuItem
           title={t('reportPositions')}
           link={buildLink('/reports/route')}
           icon={<TimelineIcon />}
-          selected={location.pathname === '/reports/route'}
+          selected={location.pathname === '/app/reports/route'}
         />
       </List>
       <Divider />
       <List>
         <MenuItem
           title={t('sharedLogs')}
-          link="/reports/logs"
+          link="/app/reports/logs"
           icon={<NotesIcon />}
-          selected={location.pathname === '/reports/logs'}
+          selected={location.pathname === '/app/reports/logs'}
         />
         {!readonly && (
           <MenuItem
             title={t('reportScheduled')}
-            link="/reports/scheduled"
+            link="/app/reports/scheduled"
             icon={<EventRepeatIcon />}
-            selected={location.pathname === '/reports/scheduled'}
+            selected={location.pathname === '/app/reports/scheduled'}
           />
         )}
         {admin && (
           <MenuItem
             title={t('statisticsTitle')}
-            link="/reports/statistics"
+            link="/app/reports/statistics"
             icon={<BarChartIcon />}
-            selected={location.pathname === '/reports/statistics'}
+            selected={location.pathname === '/app/reports/statistics'}
           />
         )}
         {admin && (
           <MenuItem
             title={t('reportAudit')}
-            link="/reports/audit"
+            link="/app/reports/audit"
             icon={<VerifiedUserIcon />}
-            selected={location.pathname === '/reports/audit'}
+            selected={location.pathname === '/app/reports/audit'}
           />
         )}
       </List>

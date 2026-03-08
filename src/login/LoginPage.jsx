@@ -264,7 +264,7 @@ const LoginPage = () => {
             {t('loginLogin')}
           </Typography>
           <Typography sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', mb: 1 }}>
-            Entre com suas credenciais para acessar
+            {t('loginCredentialsSubtitle')}
           </Typography>
         </div>
         {!openIdForced && (
@@ -278,7 +278,7 @@ const LoginPage = () => {
               autoComplete="email"
               autoFocus={!email}
               onChange={(e) => setEmail(e.target.value)}
-              helperText={failed && 'Usuário ou senha inválidos'}
+              helperText={failed && t('loginInvalidCredentials')}
               size="small"
               sx={lightInputSx}
             />
@@ -380,7 +380,7 @@ const LoginPage = () => {
             },
           }}
         >
-          Entrar como Cliente Demo
+          {t('loginDemoButton')}
         </Button>
         {!openIdForced && (
           <div className={classes.extraContainer}>

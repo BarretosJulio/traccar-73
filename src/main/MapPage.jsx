@@ -13,6 +13,7 @@ import usePersistedState from '../common/util/usePersistedState';
 import EventsDrawer from './EventsDrawer';
 import useFilter from './useFilter';
 import MainToolbar from './MainToolbar';
+import { useTranslation } from '../common/components/LocalizationProvider';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
 import MapSideMenu from './MapSideMenu';
@@ -91,6 +92,7 @@ const MapPage = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
+  const t = useTranslation();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const mapOnSelect = useAttributePreference('mapOnSelect', true);
@@ -134,7 +136,7 @@ const MapPage = () => {
 
   return (
     <div className={classes.root}>
-      <Tooltip title="Voltar ao Dashboard">
+      <Tooltip title={t('mapBackToDashboard')}>
         <IconButton className={classes.backButton} onClick={() => navigate('/app')} size="small">
           <ArrowBackIcon fontSize="small" />
         </IconButton>

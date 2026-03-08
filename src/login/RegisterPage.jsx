@@ -11,6 +11,34 @@ import { sessionActions } from '../store';
 import BackIcon from '../common/components/BackIcon';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 
+const lightInputSx = {
+  '& .MuiOutlinedInput-root': {
+    color: '#1e293b',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    '& fieldset': {
+      borderColor: 'transparent',
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(0,0,0,0.1)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'rgba(0,0,0,0.2)',
+      borderWidth: '1.5px',
+    },
+    '& input::placeholder': {
+      color: '#94a3b8',
+      opacity: 1,
+    },
+  },
+  '& .MuiInputLabel-root': {
+    display: 'none',
+  },
+  '& .MuiFormHelperText-root': {
+    color: '#ff8a80',
+  },
+};
+
 const useStyles = makeStyles()((theme) => ({
   container: {
     display: 'flex',
@@ -66,59 +94,82 @@ const RegisterPage = () => {
       <div className={classes.container}>
         <div className={classes.header}>
           {!server.newServer && (
-            <IconButton color="primary" onClick={() => navigate('/login')}>
+            <IconButton color="primary" onClick={() => navigate('/login')} sx={{ color: '#fff' }}>
               <BackIcon />
             </IconButton>
           )}
-          <Typography className={classes.title} color="primary">
+          <Typography className={classes.title} sx={{ color: '#fff' }}>
             {t('loginRegister')}
           </Typography>
         </div>
         <TextField
           required
-          label={t('sharedName')}
+          placeholder={t('sharedName')}
           name="name"
           value={name}
           autoComplete="name"
           autoFocus
           onChange={(event) => setName(event.target.value)}
+          size="small"
+          sx={lightInputSx}
         />
         <TextField
           required
           type="email"
-          label={t('userEmail')}
+          placeholder={t('userEmail')}
           name="email"
           value={email}
           autoComplete="email"
           onChange={(event) => setEmail(event.target.value)}
+          size="small"
+          sx={lightInputSx}
         />
         <TextField
           required
-          label={t('userPassword')}
+          placeholder={t('userPassword')}
           name="password"
           value={password}
           type="password"
           autoComplete="current-password"
           onChange={(event) => setPassword(event.target.value)}
+          size="small"
+          sx={lightInputSx}
         />
         {totpForce && (
           <TextField
             required
-            label={t('loginTotpKey')}
+            placeholder={t('loginTotpKey')}
             name="totpKey"
             value={totpKey || ''}
             InputProps={{
               readOnly: true,
             }}
+            size="small"
+            sx={lightInputSx}
           />
         )}
         <Button
           variant="contained"
-          color="secondary"
           onClick={handleSubmit}
           type="submit"
           disabled={!name || !password || !(server.newServer || /(.+)@(.+)\.(.{2,})/.test(email))}
           fullWidth
+          sx={{
+            bgcolor: '#fff',
+            color: '#1e293b',
+            py: 1.2,
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            borderRadius: '12px',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
+            '&:hover': {
+              bgcolor: '#f1f5f9',
+            },
+            '&.Mui-disabled': {
+              color: '#94a3b8',
+              bgcolor: 'rgba(255,255,255,0.5)',
+            },
+          }}
         >
           {t('loginRegister')}
         </Button>

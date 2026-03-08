@@ -3,6 +3,7 @@ import { makeStyles } from 'tss-react/mui';
 import { useTheme } from '@mui/material/styles';
 import LogoImage from './LogoImage';
 import { useTenant } from '../common/components/TenantProvider';
+import { useTranslation } from '../common/components/LocalizationProvider';
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -65,6 +66,7 @@ const useStyles = makeStyles()((theme) => ({
 const LoginLayout = ({ children }) => {
   const { classes } = useStyles();
   const theme = useTheme();
+  const t = useTranslation();
   const tenantCtx = useTenant();
   const tenant = tenantCtx?.tenant;
 
@@ -102,7 +104,7 @@ const LoginLayout = ({ children }) => {
               letterSpacing: '0.05em',
             }}
           >
-            Rastreamento Inteligente
+            {t('loginSmartTracking')}
           </Typography>
         </div>
         <div className={classes.formZone}>

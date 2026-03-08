@@ -8,6 +8,7 @@ import {
   Typography,
   Badge,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import DescriptionIcon from '@mui/icons-material/Description';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -21,7 +22,7 @@ import { useRestriction } from '../util/permissions';
 import { nativePostMessage } from './NativeInterface';
 import { apiUrl } from '../util/apiUrl';
 
-const NavItem = ({ icon, label, active, badge, onClick }) => (
+const NavItem = ({ icon, label, active, badge, onClick, theme }) => (
   <Box
     onClick={onClick}
     sx={{
@@ -45,14 +46,14 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
         height: active ? 30 : 28,
         borderRadius: '14px',
         background: active
-          ? 'linear-gradient(135deg, rgba(45,212,191,0.25) 0%, rgba(20,184,166,0.15) 100%)'
+          ? `linear-gradient(135deg, ${theme.palette.primary.main}40 0%, ${theme.palette.primary.main}26 100%)`
           : 'transparent',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         '& .MuiSvgIcon-root': {
           fontSize: active ? '1.3rem' : '1.2rem',
-          color: active ? '#2dd4bf' : 'rgba(255,255,255,0.6)',
+          color: active ? theme.palette.primary.main : theme.palette.text.secondary,
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          filter: active ? 'drop-shadow(0 0 8px rgba(45,212,191,0.5))' : 'none',
+          filter: active ? `drop-shadow(0 0 8px ${theme.palette.primary.main}80)` : 'none',
         },
       }}
     >
@@ -66,7 +67,7 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
       sx={{
         fontSize: '0.6rem',
         fontWeight: active ? 700 : 500,
-        color: active ? '#2dd4bf' : 'rgba(255,255,255,0.5)',
+        color: active ? theme.palette.primary.main : theme.palette.text.disabled,
         letterSpacing: '0.03em',
         textTransform: 'uppercase',
         transition: 'all 0.3s ease',
@@ -80,8 +81,8 @@ const NavItem = ({ icon, label, active, badge, onClick }) => (
         width: 4,
         height: 4,
         borderRadius: '50%',
-        background: active ? '#2dd4bf' : 'transparent',
-        boxShadow: active ? '0 0 8px rgba(45,212,191,0.6)' : 'none',
+        background: active ? theme.palette.primary.main : 'transparent',
+        boxShadow: active ? `0 0 8px ${theme.palette.primary.main}99` : 'none',
         transition: 'all 0.3s ease',
         position: 'absolute',
         bottom: 2,
@@ -95,6 +96,7 @@ const BottomMenu = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const t = useTranslation();
+  const theme = useTheme();
 
   const readonly = useRestriction('readonly');
   const disableReports = useRestriction('disableReports');
@@ -193,9 +195,11 @@ const BottomMenu = () => {
   return (
     <Box
       sx={{
-        background: 'linear-gradient(180deg, rgba(15,23,32,0.95) 0%, rgba(10,16,24,0.98) 100%)',
+        background: theme.palette.mode === 'dark'
+          ? `linear-gradient(180deg, ${theme.palette.background.paper}F2 0%, ${theme.palette.background.default}FA 100%)`
+          : `linear-gradient(180deg, ${theme.palette.background.paper}F2 0%, ${theme.palette.background.default}FA 100%)`,
         backdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(45,212,191,0.08)',
+        borderTop: `1px solid ${theme.palette.divider}`,
         pb: 'env(safe-area-inset-bottom)',
         position: 'relative',
         '&::before': {
@@ -205,7 +209,7 @@ const BottomMenu = () => {
           left: '10%',
           right: '10%',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(45,212,191,0.15), transparent)',
+          background: `linear-gradient(90deg, transparent, ${theme.palette.primary.main}26, transparent)`,
         },
       }}
     >
@@ -225,6 +229,7 @@ const BottomMenu = () => {
           active={active === 'map'}
           badge={socket === false}
           onClick={() => handleNav('map')}
+          theme={theme}
         />
         {!disableReports && (
           <NavItem
@@ -232,6 +237,7 @@ const BottomMenu = () => {
             label={t('reportTitle')}
             active={active === 'reports'}
             onClick={() => handleNav('reports')}
+            theme={theme}
           />
         )}
         <NavItem
@@ -239,6 +245,7 @@ const BottomMenu = () => {
           label={t('settingsTitle')}
           active={active === 'settings'}
           onClick={() => handleNav('settings')}
+          theme={theme}
         />
         {readonly ? (
           <NavItem
@@ -246,6 +253,7 @@ const BottomMenu = () => {
             label={t('loginLogout')}
             active={false}
             onClick={() => handleNav('logout')}
+            theme={theme}
           />
         ) : (
           <NavItem
@@ -253,6 +261,7 @@ const BottomMenu = () => {
             label={t('settingsUser')}
             active={active === 'account'}
             onClick={(e) => handleNav('account', e)}
+            theme={theme}
           />
         )}
       </Box>
