@@ -160,6 +160,21 @@ const GeofencesList = ({ onGeofenceSelected }) => {
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
 
+  // Fetch device counts for all geofences on mount
+  useEffect(() => {
+    geofenceList.forEach(async (item) => {
+      if (deviceCounts[item.id] === undefined) {
+        try {
+          const response = await fetchOrThrow(`/api/devices?geofenceId=${item.id}`);
+          const devices = await response.json();
+          setDeviceCounts((prev) => ({ ...prev, [item.id]: devices.length }));
+        } catch {
+          setDeviceCounts((prev) => ({ ...prev, [item.id]: 0 }));
+        }
+      }
+    });
+  }, [geofenceList.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const refreshGeofences = useCatchCallback(async () => {
     const response = await fetchOrThrow('/api/geofences');
     dispatch(geofencesActions.refresh(await response.json()));
