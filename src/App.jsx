@@ -18,6 +18,7 @@ import { apiUrl } from './common/util/apiUrl';
 import MainMap from './main/MainMap';
 import usePwaInstallTracker from './common/util/usePwaInstallTracker';
 import { useTenant } from './common/components/TenantProvider';
+import { DEFAULT_TENANT_SLUG } from './common/util/constants';
 
 const useStyles = makeStyles()(() => ({
   page: {
