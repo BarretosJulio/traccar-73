@@ -43,7 +43,7 @@ const App = () => {
   usePwaInstallTracker(tenant?.id);
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
-  const isSettingsRoute = pathname.startsWith('/app/settings') || pathname.startsWith('/app/geofences');
+  const isSettingsRoute = pathname.startsWith('/app/settings');
   const [demoMode, setDemoMode] = useState(() => {
     const saved = window.sessionStorage.getItem('demoMode');
     if (saved === 'true') {
