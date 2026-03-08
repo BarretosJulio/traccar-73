@@ -194,6 +194,47 @@ export type Database = {
           },
         ]
       }
+      whatsapp_device_alert_prefs: {
+        Row: {
+          alert_type: string
+          created_at: string
+          device_id: number
+          enabled: boolean
+          id: string
+          tenant_id: string
+          updated_at: string
+          user_email: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          device_id: number
+          enabled?: boolean
+          id?: string
+          tenant_id: string
+          updated_at?: string
+          user_email: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          device_id?: number
+          enabled?: boolean
+          id?: string
+          tenant_id?: string
+          updated_at?: string
+          user_email?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_device_alert_prefs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       whatsapp_instances: {
         Row: {
           created_at: string
