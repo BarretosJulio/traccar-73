@@ -1,33 +1,38 @@
 
 
-# Modernizar Controles do Mapa + Botão WhatsApp
+# Fix Map Control Icons: Consistent Visibility and Hover Behavior
 
-## O que será feito
+## Problem
+The map control buttons have inconsistent icon behavior:
+- **Switcher (layers)**: Icon visible at rest but disappears on hover
+- **Notification (bell)**: Icon disappears on hover
+- **WhatsApp**: Works correctly (reference standard) — uses pre-colored SVGs with `filter: none`
 
-1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
-2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
+**Root cause**: The global rules in `public/styles.css` (lines 90-106) apply CSS `filter` chains to `.maplibregl-ctrl-icon` buttons and child spans. The `brightness(0)` + `invert` approach conflicts with buttons that use `background-image` SVGs, causing them to vanish on hover.
 
-## Mudanças Técnicas
+## Solution
+Adopt the same pattern used by the WhatsApp button: use **pre-colored SVGs** (white for normal, teal for hover) and set `filter: none !important` to bypass global filter interference.
 
-### 1. CSS Global dos controles do mapa (`public/styles.css`)
-- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
-- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
-- Adicionar separadores sutis entre botões
-- Manter responsivo para mobile
+### Files to modify
 
-### 2. Geocoder (`src/map/geocoder/geocoder.css`)
-- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
-- Border-radius mais arredondado, sombra premium
+**1. `src/map/notification/notification.css`**
+- Add `filter: none !important` to `.maplibre-ctrl-notification`
+- Change the "off" bell SVG to use `fill='%23e2e8f0'` (light gray/white) so it's visible
+- Change the "on" bell SVG to keep `fill='%232dd4bf'` (teal)
+- Add hover states for both: on hover, "off" becomes teal, "on" becomes brighter teal
+- Add `background-size`, ensure `!important` on `background-image`
 
-### 3. Notificação (`src/map/notification/notification.css`)
-- Atualizar ícones SVG com cores teal para combinar com o tema
+**2. `src/map/switcher/switcher.css`**
+- Change `.maplibregl-style-switcher` to use `filter: none !important`
+- Replace the black SVG with a pre-colored white/light version (`fill='%23e2e8f0'`)
+- On hover, swap to teal-colored SVG (`fill='%232dd4bf'`)
 
-### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
-- Criar controle customizado maplibre similar ao `MapNotification`
-- Ícone WhatsApp em SVG verde
-- Ao clicar, abre `https://wa.me/{numero}` em nova aba
-- Número configurável via atributos do servidor ou hardcoded
+**3. `public/styles.css`**
+- Keep global filter rules for native MapLibre controls (zoom +/-, compass) which work fine
+- No changes needed here since the specific selectors in notification.css and switcher.css will override with `!important`
 
-### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
-- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
+### Behavior after fix
+- **Normal state**: All icons show in light gray/white — clearly visible on dark glassmorphism background
+- **Hover state**: All icons change to teal (#2dd4bf) — consistent with WhatsApp and the reference image (image-119)
+- **Icons never disappear**
 
