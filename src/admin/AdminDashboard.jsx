@@ -657,7 +657,7 @@ const AdminDashboard = () => {
                 {tenant?.subscription_status === 'trial' ? `⏳ ${t('adminTrialPeriod')}` : `✅ ${t('adminPlanActive')}`}
               </div>
               <h2 style={{ fontSize: 28, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>
-                Plano Completo
+                {t('adminFullPlanTitle')}
               </h2>
               <p style={{ color: '#94a3b8', fontSize: 15, margin: '0 0 24px' }}>
                 R$ 24,90/mês • Todas as funcionalidades
