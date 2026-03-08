@@ -25,11 +25,12 @@ const ReportsMenu = () => {
   const readonly = useRestriction('readonly');
 
   const buildLink = (path) => {
+    const fullPath = `/app${path}`;
     const sourceParams = new URLSearchParams(location.search);
     const deviceIds = sourceParams.getAll('deviceId');
     const groupIds = sourceParams.getAll('groupId');
     if (!deviceIds.length && !groupIds.length) {
-      return path;
+      return fullPath;
     }
     const params = new URLSearchParams();
     if (path === '/reports/chart' || path === '/reports/route' || path === '/replay') {
@@ -42,7 +43,7 @@ const ReportsMenu = () => {
       groupIds.forEach((groupId) => params.append('groupId', groupId));
     }
     const search = params.toString();
-    return search ? `${path}?${search}` : path;
+    return search ? `${fullPath}?${search}` : fullPath;
   };
 
   return (
