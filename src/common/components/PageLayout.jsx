@@ -129,6 +129,13 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const t = useTranslation();
+  const closingRef = useRef(false);
+
+  const handleClose = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setTimeout(() => navigate(-1), 0);
+  }, [navigate]);
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const [searchParams] = useSearchParams();
@@ -136,7 +143,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
 
   if (desktop) {
     return (
-      <div className={classes.overlay} onClick={() => navigate(-1)}>
+      <div className={classes.overlay} onClick={handleClose}>
         <Paper
           className={classes.floatingCard}
           elevation={24}
