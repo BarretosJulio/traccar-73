@@ -20,8 +20,10 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import PaletteIcon from '@mui/icons-material/Palette';
 
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import { geofencesActions, errorsActions } from '../store';
-import CollectionActions from '../settings/components/CollectionActions';
 import { useCatchCallback } from '../reactHelper';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { useTranslation } from '../common/components/LocalizationProvider';
