@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import { supabase } from '../integrations/supabase/client';
 import { useTranslation } from '../common/components/LocalizationProvider';
 
@@ -11,6 +12,7 @@ const AdminDashboard = () => {
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('pwa');
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [copied, setCopied] = useState(false);
   const [statsData, setStatsData] = useState({ installations: 0, activeSessions: 0, expiredSessions: 0 });
@@ -68,6 +70,7 @@ const AdminDashboard = () => {
     if (!tenant) return;
     setSaving(true);
     setMessage('');
+    setIsError(false);
     try {
       const { error } = await supabase
         .from('tenants')
@@ -86,9 +89,11 @@ const AdminDashboard = () => {
         })
         .eq('id', tenant.id);
       if (error) throw error;
+      setIsError(false);
       setMessage(t('adminSavedSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
+      setIsError(true);
       setMessage(`${t('adminErrorSave')}: ` + err.message);
     } finally {
       setSaving(false);
@@ -108,6 +113,7 @@ const AdminDashboard = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
+      setIsError(true);
       setMessage(t('adminErrorFileSize'));
       return;
     }
@@ -123,9 +129,11 @@ const AdminDashboard = () => {
         .from('logos')
         .getPublicUrl(path);
       updateField('logo_url', publicUrl);
+      setIsError(false);
       setMessage(t('adminLogoSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
+      setIsError(true);
       setMessage(`${t('adminErrorLogo')}: ` + err.message);
     } finally {
       setUploadingLogo(false);
@@ -138,6 +146,7 @@ const AdminDashboard = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
+      setIsError(true);
       setMessage(t('adminErrorFileSize'));
       return;
     }
@@ -153,9 +162,11 @@ const AdminDashboard = () => {
         .from('logos')
         .getPublicUrl(path);
       updateField('login_bg_image', publicUrl);
+      setIsError(false);
       setMessage(t('adminBgImageSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
+      setIsError(true);
       setMessage(`${t('adminErrorLogo')}: ` + err.message);
     } finally {
       setUploadingBgImage(false);
@@ -497,14 +508,14 @@ const AdminDashboard = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     <div>
                       <label style={labelStyle}>{t('adminTraccarUrl')}</label>
-                      <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://seuservidor.com" style={inputStyle} />
+                      <input value={tenant?.traccar_url || ''} onChange={(e) => updateField('traccar_url', e.target.value)} placeholder="https://traccar.example.com" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
                         {t('adminTraccarUrlHint')}
                       </p>
                     </div>
                     <div>
                       <label style={labelStyle}>{t('adminCustomDomain')}</label>
-                      <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
+                      <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.yourcompany.com" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
                         {t('adminCustomDomainHint')}
                       </p>
@@ -518,7 +529,7 @@ const AdminDashboard = () => {
             {message && (
               <p style={{
                 textAlign: 'center', fontSize: 14, fontWeight: 600, margin: 0,
-                color: message.includes('Error') || message.includes('error') || message.includes('Erro') ? '#ff6b6b' : '#00f5a0',
+                color: isError ? '#ff6b6b' : '#00f5a0',
               }}>{message}</p>
             )}
 
@@ -669,7 +680,7 @@ const AdminDashboard = () => {
                 }}>
                   <p style={{ color: '#ffc800', fontSize: 14, fontWeight: 600, margin: 0 }}>
                     {(t('adminTrialEndsIn') || 'Trial ends in {0} days').replace('{0}', trialDays)}
-                    ({tenant?.trial_ends_at ? new Date(tenant.trial_ends_at).toLocaleDateString() : ''})
+                    ({tenant?.trial_ends_at ? dayjs(tenant.trial_ends_at).format('L') : ''})
                   </p>
                 </div>
               )}
@@ -686,7 +697,7 @@ const AdminDashboard = () => {
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>{t('adminAccountDetails')}</h3>
               {[
                 ['Email', tenant?.owner_email],
-                [t('adminCreatedAt'), tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString() : '-'],
+                [t('adminCreatedAt'), tenant?.created_at ? dayjs(tenant.created_at).format('L') : '-'],
                 ['Status', tenant?.subscription_status],
                 [t('adminPlan'), tenant?.plan_type],
               ].map(([label, value]) => (

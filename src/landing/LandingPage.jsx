@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../common/components/LocalizationProvider';
+import { PRODUCT_NAME } from '../common/util/constants';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const LandingPage = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontWeight: 900, fontSize: 16, color: '#0a0a0f',
           }}>H</div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#fff', whiteSpace: 'nowrap' }}>HyperTraccar</span>
+          <span style={{ fontWeight: 800, fontSize: 16, color: '#fff', whiteSpace: 'nowrap' }}>{PRODUCT_NAME}</span>
         </div>
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
           <button onClick={() => navigate('/admin/login')} style={{
@@ -405,7 +406,7 @@ const LandingPage = () => {
         padding: '40px 24px', borderTop: '1px solid rgba(255,255,255,0.05)',
         textAlign: 'center', color: '#475569', fontSize: 14,
       }}>
-        © {new Date().getFullYear()} HyperTraccar. {t('landingFooter')}
+        © {new Date().getFullYear()} {PRODUCT_NAME}. {t('landingFooter')}
       </footer>
     </div>
   );
