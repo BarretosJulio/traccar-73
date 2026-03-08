@@ -189,14 +189,51 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     setTogglingId(null);
   };
 
+  const fetchDeviceCount = useCallback(async (geofenceId) => {
+    if (deviceCounts[geofenceId] !== undefined) return;
+    try {
+      const response = await fetchOrThrow(`/api/devices?geofenceId=${geofenceId}`);
+      const devices = await response.json();
+      setDeviceCounts((prev) => ({ ...prev, [geofenceId]: devices.length }));
+    } catch {
+      setDeviceCounts((prev) => ({ ...prev, [geofenceId]: 0 }));
+    }
+  }, [deviceCounts]);
+
   const handleToggleExpand = (event, itemId) => {
     event.stopPropagation();
-    setExpandedId((prev) => (prev === itemId ? null : itemId));
+    setExpandedId((prev) => {
+      const next = prev === itemId ? null : itemId;
+      if (next) fetchDeviceCount(next);
+      return next;
+    });
   };
 
   const handleCardClick = (item) => {
     onGeofenceSelected(item.id);
-    setExpandedId((prev) => (prev === item.id ? null : item.id));
+    setExpandedId((prev) => {
+      const next = prev === item.id ? null : item.id;
+      if (next) fetchDeviceCount(next);
+      return next;
+    });
+  };
+
+  const handleOpenDevicesDialog = (event, item) => {
+    event.stopPropagation();
+    setDialogGeofence(item);
+  };
+
+  const handleCloseDevicesDialog = () => {
+    if (dialogGeofence) {
+      // Refresh count after dialog closes
+      setDeviceCounts((prev) => {
+        const copy = { ...prev };
+        delete copy[dialogGeofence.id];
+        return copy;
+      });
+      fetchDeviceCount(dialogGeofence.id);
+    }
+    setDialogGeofence(null);
   };
 
   if (geofenceList.length === 0) {
