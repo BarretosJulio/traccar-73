@@ -71,6 +71,7 @@ const MapSideMenu = () => {
     ...(admin ? [
       { label: t('settingsUsers'), icon: <PeopleIcon className={classes.icon} />, path: '/app/settings/users' },
       { label: t('settingsServer'), icon: <StorageIcon className={classes.icon} />, path: '/app/settings/server' },
+      { label: t('whatsappSettings'), icon: <WhatsAppIcon className={classes.icon} />, path: '/admin?tab=whatsapp' },
     ] : []),
   ];
 

@@ -139,12 +139,19 @@ const SettingsMenu = () => {
               selected={location.pathname === '/app/settings/announcement'}
             />
             {admin && (
-              <MenuItem
-                title={t('settingsServer')}
-                link="/app/settings/server"
-                icon={<AdminPanelSettingsOutlinedIcon />}
-                selected={location.pathname === '/app/settings/server'}
-              />
+              <>
+                <MenuItem
+                  title={t('settingsServer')}
+                  link="/app/settings/server"
+                  icon={<AdminPanelSettingsOutlinedIcon />}
+                  selected={location.pathname === '/app/settings/server'}
+                />
+                <MenuItem
+                  title={t('whatsappSettings')}
+                  link="/admin?tab=whatsapp"
+                  icon={<WhatsAppIcon />}
+                />
+              </>
             )}
             <MenuItem
               title={t('settingsUsers')}

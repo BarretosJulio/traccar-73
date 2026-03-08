@@ -882,5 +882,6 @@
     "whatsappAlertsDesc": "Select which Traccar alerts to send via WhatsApp. Use {device}, {event}, {time}, {data} in templates.",
     "whatsappAlertsSaved": "✅ Alert settings saved!",
     "whatsappMessageLog": "Message Log",
-    "whatsappNoMessages": "No messages sent yet"
+    "whatsappNoMessages": "No messages sent yet",
+    "whatsappSettings": "WhatsApp Settings"
 }

@@ -11,7 +11,9 @@ const AdminDashboard = () => {
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('pwa');
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') || 'pwa';
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
