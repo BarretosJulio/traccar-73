@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { supabase } from '../integrations/supabase/client';
 import { useTranslation } from '../common/components/LocalizationProvider';
+import WhatsAppTab from './whatsapp/WhatsAppTab';
 
 const AdminDashboard = () => {
   const t = useTranslation();
@@ -229,6 +230,7 @@ const AdminDashboard = () => {
   const tabs = [
     { id: 'pwa', label: `🎨 ${t('adminCustomize')}` },
     { id: 'link', label: `🔗 ${t('adminAppLink')}` },
+    { id: 'whatsapp', label: t('whatsappTab') },
     { id: 'plan', label: `📋 ${t('adminPlan')}` },
     { id: 'stats', label: `📊 ${t('adminStatistics')}` },
   ];
@@ -711,6 +713,11 @@ const AdminDashboard = () => {
               ))}
             </div>
           </div>
+        )}
+
+        {/* WhatsApp Tab */}
+        {activeTab === 'whatsapp' && (
+          <WhatsAppTab t={t} />
         )}
 
         {/* Stats Tab */}

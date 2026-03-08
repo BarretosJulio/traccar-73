@@ -871,5 +871,16 @@
     "onboardingSignIn": "Entrar",
     "onboardingGoBack": "← Voltar ao início",
     "onboardingErrorCreate": "Erro ao criar conta",
-    "onboardingErrorConnection": "Erro de conexão. Tente novamente."
+    "onboardingErrorConnection": "Erro de conexão. Tente novamente.",
+    "whatsappTab": "📱 WhatsApp",
+    "whatsappConnection": "Conexão WhatsApp",
+    "whatsappConnect": "Conectar WhatsApp",
+    "whatsappDisconnect": "Desconectar",
+    "whatsappRefreshQr": "Atualizar QR",
+    "whatsappScanQr": "Abra o WhatsApp Business > Dispositivos vinculados > Vincular dispositivo",
+    "whatsappAlerts": "Configuração de Alertas",
+    "whatsappAlertsDesc": "Selecione quais alertas do Traccar serão enviados via WhatsApp. Use {device}, {event}, {time}, {data} nos templates.",
+    "whatsappAlertsSaved": "✅ Configurações de alerta salvas!",
+    "whatsappMessageLog": "Log de Mensagens",
+    "whatsappNoMessages": "Nenhuma mensagem enviada ainda"
 }
