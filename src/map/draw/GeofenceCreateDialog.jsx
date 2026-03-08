@@ -102,8 +102,28 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
   const [dayMode, setDayMode] = useState('all');
   const [selectedDays, setSelectedDays] = useState([...ALL_DAYS]);
   const [hide, setHide] = useState(false);
+  const [linkMode, setLinkMode] = useState('all'); // 'all' | 'devices' | 'groups'
+  const [selectedDevices, setSelectedDevices] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [devices, setDevices] = useState([]);
+  const [groups, setGroups] = useState([]);
 
   const hasSchedule = startTime || endTime || startDate || endDate || dayMode !== 'all';
+
+  useEffectAsync(async () => {
+    if (open) {
+      try {
+        const [devRes, grpRes] = await Promise.all([
+          fetchOrThrow('/api/devices'),
+          fetchOrThrow('/api/groups'),
+        ]);
+        setDevices(await devRes.json());
+        setGroups(await grpRes.json());
+      } catch {
+        // silently fail
+      }
+    }
+  }, [open]);
 
   const handleDayModeChange = (e) => {
     const mode = e.target.value;
@@ -141,6 +161,9 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
       description: description.trim() || undefined,
       attributes: { hide },
       calendarData,
+      linkMode,
+      selectedDeviceIds: selectedDevices.map((d) => d.id),
+      selectedGroupIds: selectedGroups.map((g) => g.id),
     };
     onSave(data);
     resetForm();
@@ -161,6 +184,9 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
     setDayMode('all');
     setSelectedDays([...ALL_DAYS]);
     setHide(false);
+    setLinkMode('all');
+    setSelectedDevices([]);
+    setSelectedGroups([]);
   };
 
   return (
