@@ -50,7 +50,7 @@ export default [
       'line-join': 'round',
     },
     paint: {
-      'line-color': '#3bb2d0',
+      'line-color': '#2dd4bf',
       'line-width': 2,
     },
   },
