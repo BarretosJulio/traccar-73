@@ -13,8 +13,10 @@ import PeopleIcon from '@mui/icons-material/People';
 import StorageIcon from '@mui/icons-material/Storage';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import { useState } from 'react';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { useAdministrator } from '../common/util/permissions';
+import WhatsAppAlertsDialog from '../settings/WhatsAppAlertsDialog';
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -57,6 +59,7 @@ const MapSideMenu = () => {
   const navigate = useNavigate();
   const t = useTranslation();
   const admin = useAdministrator();
+  const [whatsappOpen, setWhatsappOpen] = useState(false);
 
   const items = [
     { label: 'Dashboard', icon: <DashboardIcon className={classes.icon} />, path: '/app' },
@@ -71,23 +74,26 @@ const MapSideMenu = () => {
     ...(admin ? [
       { label: t('settingsUsers'), icon: <PeopleIcon className={classes.icon} />, path: '/app/settings/users' },
       { label: t('settingsServer'), icon: <StorageIcon className={classes.icon} />, path: '/app/settings/server' },
-      { label: t('whatsappSettings'), icon: <WhatsAppIcon className={classes.icon} />, path: '/admin?tab=whatsapp' },
+      { label: t('whatsappSettings'), icon: <WhatsAppIcon className={classes.icon} />, onClick: () => setWhatsappOpen(true) },
     ] : []),
   ];
 
   return (
-    <div className={classes.root}>
-      {items.map((item) => (
-        <Tooltip key={item.path} title={item.label} placement="left" arrow>
-          <Box
-            className={classes.item}
-            onClick={() => navigate(item.path)}
-          >
-            {item.icon}
-          </Box>
-        </Tooltip>
-      ))}
-    </div>
+    <>
+      <div className={classes.root}>
+        {items.map((item) => (
+          <Tooltip key={item.path || item.label} title={item.label} placement="left" arrow>
+            <Box
+              className={classes.item}
+              onClick={item.onClick || (() => navigate(item.path))}
+            >
+              {item.icon}
+            </Box>
+          </Tooltip>
+        ))}
+      </div>
+      <WhatsAppAlertsDialog open={whatsappOpen} onClose={() => setWhatsappOpen(false)} />
+    </>
   );
 };
 
