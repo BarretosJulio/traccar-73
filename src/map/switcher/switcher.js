@@ -68,8 +68,7 @@ export class SwitcherControl {
 
     this.onSwitch(target.dataset.id);
 
-    this.mapStyleContainer.style.display = 'none';
-    this.styleButton.style.display = 'block';
+    this.mapStyleContainer.classList.remove('visible');
 
     const elements = this.mapStyleContainer.getElementsByClassName('active');
     while (elements[0]) {
