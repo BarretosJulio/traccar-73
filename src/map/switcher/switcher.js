@@ -110,7 +110,7 @@ export class SwitcherControl {
     ) {
       return;
     }
-    this.styleButton.removeEventListener('click', this.onDocumentClick);
+    this.styleButton.removeEventListener('click', this.onToggleMenu);
     this.controlContainer.parentNode.removeChild(this.controlContainer);
     document.removeEventListener('click', this.onDocumentClick);
     this.map = undefined;
