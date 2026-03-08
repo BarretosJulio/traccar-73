@@ -264,7 +264,7 @@ const LoginPage = () => {
             {t('loginLogin')}
           </Typography>
           <Typography sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', mb: 1 }}>
-            Entre com suas credenciais para acessar
+            {t('loginCredentialsSubtitle')}
           </Typography>
         </div>
         {!openIdForced && (
