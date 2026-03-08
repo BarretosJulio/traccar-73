@@ -106,6 +106,14 @@ const LoginPage = () => {
   const [announcementShown, setAnnouncementShown] = useState(false);
   const announcement = useSelector((state) => state.session.server.announcement);
 
+  const [sessionExpired, setSessionExpired] = useState(false);
+  useEffect(() => {
+    if (window.sessionStorage.getItem('sessionExpired')) {
+      setSessionExpired(true);
+      window.sessionStorage.removeItem('sessionExpired');
+    }
+  }, []);
+
   const handleDemoLogin = () => {
     dispatch(sessionActions.updateUser(DEMO_USER));
     window.sessionStorage.setItem('demoMode', 'true');
@@ -379,6 +387,12 @@ const LoginPage = () => {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
+      />
+      <Snackbar
+        open={sessionExpired}
+        message={t('loginSessionExpired')}
+        autoHideDuration={6000}
+        onClose={() => setSessionExpired(false)}
       />
     </LoginLayout>
   );
