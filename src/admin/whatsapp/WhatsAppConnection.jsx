@@ -7,6 +7,7 @@ const WhatsAppConnection = ({ t }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [instanceExists, setInstanceExists] = useState(false);
   const pollRef = useRef(null);
 
   const cardStyle = {
@@ -21,14 +22,18 @@ const WhatsAppConnection = ({ t }) => {
       setStatus(data.status || 'disconnected');
       setQrCode(data.qrCode || null);
       setPhoneNumber(data.phoneNumber || null);
+      setInstanceExists(true);
       setError('');
 
       if (data.status === 'connected') {
         stopPolling();
       }
     } catch (err) {
-      // Instance may not exist yet, that's ok
-      if (!err.message.includes('No instance found')) {
+      // Instance doesn't exist yet — expected state for new tenants
+      if (err.message?.includes('No instance found') || err.message?.includes('Create one first')) {
+        setInstanceExists(false);
+        setStatus('disconnected');
+      } else {
         setError(err.message);
       }
     }
@@ -56,6 +61,7 @@ const WhatsAppConnection = ({ t }) => {
     setError('');
     try {
       await whatsappService.createInstance();
+      setInstanceExists(true);
       await fetchStatus();
       startPolling();
     } catch (err) {
