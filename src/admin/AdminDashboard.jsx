@@ -129,9 +129,11 @@ const AdminDashboard = () => {
         .from('logos')
         .getPublicUrl(path);
       updateField('logo_url', publicUrl);
+      setIsError(false);
       setMessage(t('adminLogoSuccess'));
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
+      setIsError(true);
       setMessage(`${t('adminErrorLogo')}: ` + err.message);
     } finally {
       setUploadingLogo(false);
