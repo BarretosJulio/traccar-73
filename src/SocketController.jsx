@@ -73,10 +73,6 @@ const SocketController = ({ demoMode }) => {
       dispatch(sessionActions.updateSocket(true));
     } catch (error) {
       dispatch(sessionActions.updateSocket(false));
-      if (error.message?.includes('401')) {
-        navigate('/login');
-        return;
-      }
     }
   }, [dispatch, navigate]);
 
