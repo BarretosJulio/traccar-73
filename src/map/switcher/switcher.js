@@ -94,13 +94,7 @@ export class SwitcherControl {
     this.mapStyleContainer.classList.add('maplibregl-style-list');
     this.styleButton.classList.add('maplibregl-ctrl-icon');
     this.styleButton.classList.add('maplibregl-style-switcher');
-    this.styleButton.addEventListener('click', () => {
-      if (this.mapStyleContainer.classList.contains('visible')) {
-        this.mapStyleContainer.classList.remove('visible');
-      } else {
-        this.mapStyleContainer.classList.add('visible');
-      }
-    });
+    this.styleButton.addEventListener('click', this.onToggleMenu);
     document.addEventListener('click', this.onDocumentClick);
     this.controlContainer.appendChild(this.styleButton);
     this.controlContainer.appendChild(this.mapStyleContainer);
