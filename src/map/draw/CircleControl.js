@@ -55,10 +55,10 @@ class CircleControl {
     }
   }
 
-  onRemove() {
+  detach() {
     this._deactivate();
-    if (this._container?.parentNode) {
-      this._container.parentNode.removeChild(this._container);
+    if (this._button?.parentNode) {
+      this._button.parentNode.removeChild(this._button);
     }
     this._map = null;
   }
