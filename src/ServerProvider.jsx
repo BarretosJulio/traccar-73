@@ -50,7 +50,7 @@ const ServerProvider = ({ children }) => {
         if (response.ok) {
           const contentType = response.headers.get('content-type') || '';
           if (!contentType.includes('application/json')) {
-            throw Error('Resposta inesperada do servidor Traccar. Verifique a configuração.');
+            throw Error('Unexpected response from Traccar server. Please check configuration.');
           }
           dispatch(sessionActions.updateServer(await response.json()));
         } else {
