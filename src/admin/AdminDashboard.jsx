@@ -319,7 +319,7 @@ const AdminDashboard = () => {
                             padding: '6px 14px', borderRadius: 6, border: '1px solid rgba(255,100,100,0.3)',
                             background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
                             fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
-                          }}>Remover</button>
+                          }}>{t('adminRemove')}</button>
                         </div>
                       )}
                       <label style={{
