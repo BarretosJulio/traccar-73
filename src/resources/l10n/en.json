@@ -208,6 +208,7 @@
     "loginCreated": "New user has been registered",
     "loginResetSuccess": "Check your email",
     "loginUpdateSuccess": "New password is set",
+    "loginSessionExpired": "Your session has expired. Please log in again.",
     "loginLogout": "Logout",
     "loginLogo": "Logo",
     "loginTotpCode": "One-time Password Code",
