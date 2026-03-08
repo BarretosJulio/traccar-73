@@ -13,6 +13,7 @@ import usePersistedState from '../common/util/usePersistedState';
 import EventsDrawer from './EventsDrawer';
 import useFilter from './useFilter';
 import MainToolbar from './MainToolbar';
+import { useTranslation } from '../common/components/LocalizationProvider';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
 import MapSideMenu from './MapSideMenu';

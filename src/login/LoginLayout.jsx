@@ -66,6 +66,7 @@ const useStyles = makeStyles()((theme) => ({
 const LoginLayout = ({ children }) => {
   const { classes } = useStyles();
   const theme = useTheme();
+  const t = useTranslation();
   const tenantCtx = useTenant();
   const tenant = tenantCtx?.tenant;
 
