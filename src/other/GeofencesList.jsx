@@ -355,12 +355,25 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   ? <ExpandLessIcon sx={{ fontSize: '1rem' }} />
                   : <ExpandMoreIcon sx={{ fontSize: '1rem' }} />}
               </IconButton>
-              <CollectionActions
-                itemId={item.id}
-                editPath="/app/settings/geofence"
-                endpoint="geofences"
-                setTimestamp={refreshGeofences}
-              />
+              <Tooltip title={t('sharedEdit')}>
+                <IconButton
+                  className={classes.actionButton}
+                  size="small"
+                  onClick={(e) => { e.stopPropagation(); navigate(`/app/settings/geofence/${item.id}`); }}
+                >
+                  <EditIcon sx={{ fontSize: '1rem' }} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('sharedRemove')}>
+                <IconButton
+                  className={classes.actionButton}
+                  size="small"
+                  color="error"
+                  onClick={(e) => { e.stopPropagation(); setRemovingGeofenceId(item.id); }}
+                >
+                  <DeleteIcon sx={{ fontSize: '1rem' }} />
+                </IconButton>
+              </Tooltip>
             </ListItemButton>
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
               <Box className={classes.detailsPanel}>
