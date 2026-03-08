@@ -275,6 +275,17 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   noWrap: true,
                 }}
               />
+              <Tooltip title="Dispositivos vinculados">
+                <Chip
+                  size="small"
+                  icon={<DirectionsCarIcon sx={{ fontSize: '0.8rem !important' }} />}
+                  label={deviceCounts[item.id] ?? '—'}
+                  variant="outlined"
+                  color="primary"
+                  onClick={(e) => handleOpenDevicesDialog(e, item)}
+                  sx={{ fontSize: '0.7rem', height: 22, cursor: 'pointer', mr: 0.5 }}
+                />
+              </Tooltip>
               <Tooltip title={isDisabled ? 'Ativar cerca' : 'Pausar cerca'}>
                 <IconButton
                   className={cx(classes.actionButton, isDisabled ? classes.playButton : classes.pauseButton)}
