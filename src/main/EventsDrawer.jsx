@@ -21,6 +21,16 @@ const useStyles = makeStyles()((theme) => ({
   drawer: {
     width: theme.dimensions.eventsDrawerWidth,
   },
+  paper: {
+    width: theme.dimensions.eventsDrawerWidth,
+    margin: theme.spacing(2),
+    marginLeft: 0,
+    height: `calc(100% - ${theme.spacing(4)})`,
+    borderRadius: '20px',
+    background: theme.palette.background.paper,
+    boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+    overflow: 'hidden',
+  },
   toolbar: {
     paddingLeft: theme.spacing(2.5),
     paddingRight: theme.spacing(2),
