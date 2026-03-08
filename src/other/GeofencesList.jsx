@@ -253,6 +253,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
   }
 
   return (
+    <>
     <List className={classes.list} disablePadding>
       {geofenceList.map((item) => {
         const isDisabled = item.attributes?.disabled;
