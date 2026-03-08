@@ -115,12 +115,18 @@ const SettingsMenu = () => {
                 selected={location.pathname.startsWith('/app/settings/maintenance')}
               />
             )}
+            <MenuItem
+              title={t('commandCenter')}
+              link="/app/settings/command-center"
+              icon={<SettingsRemoteOutlinedIcon />}
+              selected={location.pathname === '/app/settings/command-center'}
+            />
             {!features.disableSavedCommands && (
               <MenuItem
                 title={t('sharedSavedCommands')}
                 link="/app/settings/commands"
                 icon={<TerminalOutlinedIcon />}
-                selected={location.pathname.startsWith('/app/settings/command')}
+                selected={location.pathname.startsWith('/app/settings/command') && location.pathname !== '/app/settings/command-center'}
               />
             )}
           </>

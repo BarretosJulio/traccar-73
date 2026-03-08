@@ -144,6 +144,7 @@ const Navigation = () => {
           <Route path="calendars" element={<CalendarsPage />} />
           <Route path="calendar/:id" element={<CalendarPage />} />
           <Route path="calendar" element={<CalendarPage />} />
+          <Route path="command-center" element={<CommandCenterPage />} />
           <Route path="commands" element={<CommandsPage />} />
           <Route path="command/:id" element={<CommandPage />} />
           <Route path="command" element={<CommandPage />} />
