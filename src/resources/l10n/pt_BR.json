@@ -892,5 +892,8 @@
     "commandDelivered": "Recebido",
     "commandFailed": "Falhou",
     "commandSent": "Comando enviado com sucesso",
-    "sharedRefresh": "Atualizar"
+    "sharedRefresh": "Atualizar",
+    "commandProtocol": "Protocolo",
+    "commandQuickActions": "Comandos Disponíveis",
+    "commandSelectCommand": "Parâmetros"
 }
