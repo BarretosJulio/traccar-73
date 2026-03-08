@@ -360,10 +360,10 @@ const AdminDashboard = () => {
                 <div style={cardStyle}>
                   <div style={{ marginBottom: 20 }}>
                     <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      🎨 {t('adminLoginPageSection') || 'Tela de Login'}
+                      🎨 {t('adminLoginPageSection')}
                     </h3>
                     <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>
-                      {t('adminLoginPageDesc') || 'Personalize as cores e imagem de fundo da tela de login'}
+                      {t('adminLoginPageDesc')}
                     </p>
                   </div>
 
