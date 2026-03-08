@@ -446,7 +446,7 @@ const AdminDashboard = () => {
 
                   {/* Realistic Preview */}
                   <div>
-                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginPreview') || 'Pré-visualização'}</label>
+                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginPreview')}</label>
                     <div style={{
                       display: 'flex', height: 200, borderRadius: 12, overflow: 'hidden',
                       border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
