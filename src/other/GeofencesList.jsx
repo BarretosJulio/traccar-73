@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 import {
@@ -15,7 +15,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import SpeedIcon from '@mui/icons-material/Speed';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import BlockIcon from '@mui/icons-material/Block';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import PaletteIcon from '@mui/icons-material/Palette';
 
@@ -24,6 +24,7 @@ import CollectionActions from '../settings/components/CollectionActions';
 import { useCatchCallback } from '../reactHelper';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { useTranslation } from '../common/components/LocalizationProvider';
+import GeofenceDevicesDialog from './GeofenceDevicesDialog';
 
 const useStyles = makeStyles()((theme) => ({
   list: {
@@ -153,9 +154,26 @@ const GeofencesList = ({ onGeofenceSelected }) => {
 
   const [expandedId, setExpandedId] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
+  const [deviceCounts, setDeviceCounts] = useState({});
+  const [dialogGeofence, setDialogGeofence] = useState(null);
 
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
+
+  // Fetch device counts for all geofences on mount
+  useEffect(() => {
+    geofenceList.forEach(async (item) => {
+      if (deviceCounts[item.id] === undefined) {
+        try {
+          const response = await fetchOrThrow(`/api/devices?geofenceId=${item.id}`);
+          const devices = await response.json();
+          setDeviceCounts((prev) => ({ ...prev, [item.id]: devices.length }));
+        } catch {
+          setDeviceCounts((prev) => ({ ...prev, [item.id]: 0 }));
+        }
+      }
+    });
+  }, [geofenceList.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const refreshGeofences = useCatchCallback(async () => {
     const response = await fetchOrThrow('/api/geofences');
@@ -186,14 +204,51 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     setTogglingId(null);
   };
 
+  const fetchDeviceCount = useCallback(async (geofenceId) => {
+    if (deviceCounts[geofenceId] !== undefined) return;
+    try {
+      const response = await fetchOrThrow(`/api/devices?geofenceId=${geofenceId}`);
+      const devices = await response.json();
+      setDeviceCounts((prev) => ({ ...prev, [geofenceId]: devices.length }));
+    } catch {
+      setDeviceCounts((prev) => ({ ...prev, [geofenceId]: 0 }));
+    }
+  }, [deviceCounts]);
+
   const handleToggleExpand = (event, itemId) => {
     event.stopPropagation();
-    setExpandedId((prev) => (prev === itemId ? null : itemId));
+    setExpandedId((prev) => {
+      const next = prev === itemId ? null : itemId;
+      if (next) fetchDeviceCount(next);
+      return next;
+    });
   };
 
   const handleCardClick = (item) => {
     onGeofenceSelected(item.id);
-    setExpandedId((prev) => (prev === item.id ? null : item.id));
+    setExpandedId((prev) => {
+      const next = prev === item.id ? null : item.id;
+      if (next) fetchDeviceCount(next);
+      return next;
+    });
+  };
+
+  const handleOpenDevicesDialog = (event, item) => {
+    event.stopPropagation();
+    setDialogGeofence(item);
+  };
+
+  const handleCloseDevicesDialog = () => {
+    if (dialogGeofence) {
+      // Refresh count after dialog closes
+      setDeviceCounts((prev) => {
+        const copy = { ...prev };
+        delete copy[dialogGeofence.id];
+        return copy;
+      });
+      fetchDeviceCount(dialogGeofence.id);
+    }
+    setDialogGeofence(null);
   };
 
   if (geofenceList.length === 0) {
@@ -213,6 +268,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
   }
 
   return (
+    <>
     <List className={classes.list} disablePadding>
       {geofenceList.map((item) => {
         const isDisabled = item.attributes?.disabled;
@@ -235,6 +291,17 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   noWrap: true,
                 }}
               />
+              <Tooltip title="Dispositivos vinculados">
+                <Chip
+                  size="small"
+                  icon={<DirectionsCarIcon sx={{ fontSize: '0.8rem !important' }} />}
+                  label={deviceCounts[item.id] ?? '—'}
+                  variant="outlined"
+                  color="primary"
+                  onClick={(e) => handleOpenDevicesDialog(e, item)}
+                  sx={{ fontSize: '0.7rem', height: 22, cursor: 'pointer', mr: 0.5 }}
+                />
+              </Tooltip>
               <Tooltip title={isDisabled ? 'Ativar cerca' : 'Pausar cerca'}>
                 <IconButton
                   className={cx(classes.actionButton, isDisabled ? classes.playButton : classes.pauseButton)}
@@ -374,7 +441,13 @@ const GeofencesList = ({ onGeofenceSelected }) => {
         );
       })}
     </List>
+    <GeofenceDevicesDialog
+      open={Boolean(dialogGeofence)}
+      onClose={handleCloseDevicesDialog}
+      geofenceId={dialogGeofence?.id}
+      geofenceName={dialogGeofence?.name}
+    />
+    </>
   );
-};
 
 export default GeofencesList;
