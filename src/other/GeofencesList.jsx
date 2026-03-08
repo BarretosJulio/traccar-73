@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 import {
@@ -15,7 +15,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import SpeedIcon from '@mui/icons-material/Speed';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import BlockIcon from '@mui/icons-material/Block';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import PaletteIcon from '@mui/icons-material/Palette';
 
@@ -24,6 +24,7 @@ import CollectionActions from '../settings/components/CollectionActions';
 import { useCatchCallback } from '../reactHelper';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { useTranslation } from '../common/components/LocalizationProvider';
+import GeofenceDevicesDialog from './GeofenceDevicesDialog';
 
 const useStyles = makeStyles()((theme) => ({
   list: {
