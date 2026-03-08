@@ -47,6 +47,7 @@ import EventPage from './other/EventPage';
 import PreferencesPage from './settings/PreferencesPage';
 import AccumulatorsPage from './settings/AccumulatorsPage';
 import CommandDevicePage from './settings/CommandDevicePage';
+import CommandCenterPage from './settings/CommandCenterPage';
 import CommandGroupPage from './settings/CommandGroupPage';
 import App from './App';
 import ChangeServerPage from './login/ChangeServerPage';
