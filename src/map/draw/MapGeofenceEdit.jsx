@@ -103,10 +103,16 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
     refreshGeofences();
 
     map.addControl(draw, 'top-right');
-    map.addControl(circleControl, 'top-right');
+
+    // After draw is added, find its container and inject circle button
+    const drawContainer = document.querySelector('.maplibregl-ctrl-group .mapbox-gl-draw_ctrl-draw-btn')?.parentElement;
+    if (drawContainer) {
+      circleControl.attach(map, drawContainer);
+    }
+
     return () => {
+      circleControl.detach();
       map.removeControl(draw);
-      map.removeControl(circleControl);
     };
   }, [refreshGeofences, circleControl]);
 

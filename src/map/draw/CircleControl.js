@@ -24,16 +24,18 @@ class CircleControl {
     this._previewOutlineId = 'circle-preview-outline';
   }
 
-  onAdd(mapInstance) {
+  /**
+   * Attach the circle button to an existing draw control group,
+   * inserting it above the trash button.
+   */
+  attach(mapInstance, drawControlContainer) {
     this._map = mapInstance;
-
-    this._container = document.createElement('div');
-    this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
 
     this._button = document.createElement('button');
     this._button.type = 'button';
     this._button.title = 'Draw circle';
     this._button.setAttribute('aria-label', 'Draw circle');
+    this._button.className = 'mapbox-gl-draw_ctrl-draw-btn';
     this._button.innerHTML = `
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="9"/>
@@ -43,15 +45,20 @@ class CircleControl {
     this._button.style.cssText = 'display:flex;align-items:center;justify-content:center;cursor:pointer;';
 
     this._button.addEventListener('click', () => this._toggleActive());
-    this._container.appendChild(this._button);
 
-    return this._container;
+    // Find the trash button and insert circle before it
+    const trashButton = drawControlContainer.querySelector('.mapbox-gl-draw_trash');
+    if (trashButton) {
+      drawControlContainer.insertBefore(this._button, trashButton);
+    } else {
+      drawControlContainer.appendChild(this._button);
+    }
   }
 
-  onRemove() {
+  detach() {
     this._deactivate();
-    if (this._container?.parentNode) {
-      this._container.parentNode.removeChild(this._container);
+    if (this._button?.parentNode) {
+      this._button.parentNode.removeChild(this._button);
     }
     this._map = null;
   }
