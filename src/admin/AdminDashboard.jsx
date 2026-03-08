@@ -387,7 +387,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div style={{ padding: 16, borderRadius: 12, background: 'transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgColor') || 'Cor de Fundo'}</label>
+                      <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgColor')}</label>
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div style={{
                           width: 44, height: 44, borderRadius: 10, overflow: 'hidden',
