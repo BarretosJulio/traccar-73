@@ -505,7 +505,7 @@ const AdminDashboard = () => {
                     </div>
                     <div>
                       <label style={labelStyle}>{t('adminCustomDomain')}</label>
-                      <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.suaempresa.com.br" style={inputStyle} />
+                      <input value={tenant?.custom_domain || ''} onChange={(e) => updateField('custom_domain', e.target.value)} placeholder="app.yourcompany.com" style={inputStyle} />
                       <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
                         {t('adminCustomDomainHint')}
                       </p>
