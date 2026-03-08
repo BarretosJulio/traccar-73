@@ -686,7 +686,7 @@ const AdminDashboard = () => {
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 16px' }}>{t('adminAccountDetails')}</h3>
               {[
                 ['Email', tenant?.owner_email],
-                [t('adminCreatedAt'), tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString('pt-BR') : '-'],
+                [t('adminCreatedAt'), tenant?.created_at ? new Date(tenant.created_at).toLocaleDateString() : '-'],
                 ['Status', tenant?.subscription_status],
                 [t('adminPlan'), tenant?.plan_type],
               ].map(([label, value]) => (
