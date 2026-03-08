@@ -37,7 +37,7 @@ const ServerProvider = ({ children }) => {
           const tenants = await tenantRes.json();
           const traccarUrl = tenants?.[0]?.traccar_url;
           if (!traccarUrl || traccarUrl.includes('pending-setup') || traccarUrl.includes('example.com')) {
-            throw Error('Empresa ainda não configurou o servidor de rastreamento. Entre em contato com o administrador.');
+            throw Error('Tracking server not configured yet. Please contact your administrator.');
           }
         }
 
