@@ -146,7 +146,7 @@ export default [
     ],
     paint: {
       'circle-radius': 3,
-      'circle-color': '#3bb2d0',
+      'circle-color': '#2dd4bf',
     },
   },
   {
