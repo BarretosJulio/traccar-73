@@ -13,6 +13,11 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SpeedIcon from '@mui/icons-material/Speed';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import BlockIcon from '@mui/icons-material/Block';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import PaletteIcon from '@mui/icons-material/Palette';
 
 import { geofencesActions, errorsActions } from '../store';
 import CollectionActions from '../settings/components/CollectionActions';
@@ -274,6 +279,27 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                     <Typography className={classes.detailValue}>Calendário #{item.calendarId}</Typography>
                   </div>
                 )}
+                {item.attributes?.startTime && (
+                  <div className={classes.detailRow}>
+                    <AccessTimeIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Hora início:</Typography>
+                    <Typography className={classes.detailValue}>{item.attributes.startTime}</Typography>
+                  </div>
+                )}
+                {item.attributes?.endTime && (
+                  <div className={classes.detailRow}>
+                    <AccessTimeIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Hora fim:</Typography>
+                    <Typography className={classes.detailValue}>{item.attributes.endTime}</Typography>
+                  </div>
+                )}
+                {item.attributes?.activeDays && (
+                  <div className={classes.detailRow}>
+                    <CalendarTodayIcon className={classes.detailIcon} />
+                    <Typography className={classes.detailLabel}>Dias ativos:</Typography>
+                    <Typography className={classes.detailValue}>{item.attributes.activeDays}</Typography>
+                  </div>
+                )}
                 {item.attributes?.speedLimit && (
                   <div className={classes.detailRow}>
                     <SpeedIcon className={classes.detailIcon} />
@@ -294,6 +320,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   {item.attributes?.hide && (
                     <Chip
                       size="small"
+                      icon={<VisibilityOffIcon sx={{ fontSize: '0.75rem !important' }} />}
                       label="Oculta no mapa"
                       variant="outlined"
                       sx={{ fontSize: '0.7rem', height: 22 }}
@@ -302,7 +329,8 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                   {item.attributes?.color && (
                     <Chip
                       size="small"
-                      label={`Cor: ${item.attributes.color}`}
+                      icon={<PaletteIcon sx={{ fontSize: '0.75rem !important' }} />}
+                      label={item.attributes.color}
                       variant="outlined"
                       sx={{
                         fontSize: '0.7rem',
@@ -313,7 +341,18 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                     />
                   )}
                 </div>
-                {!item.description && !item.calendarId && !item.attributes?.speedLimit && (
+                {/* Show all other attributes as key-value pairs */}
+                {Object.entries(item.attributes || {}).filter(
+                  ([key]) => !['disabled', 'hide', 'color', 'speedLimit', 'startTime', 'endTime', 'activeDays'].includes(key),
+                ).map(([key, value]) => (
+                  <div className={classes.detailRow} key={key}>
+                    <Typography className={classes.detailLabel}>{key}:</Typography>
+                    <Typography className={classes.detailValue}>{String(value)}</Typography>
+                  </div>
+                ))}
+                {!item.description && !item.calendarId && Object.keys(item.attributes || {}).filter(
+                  (k) => k !== 'disabled',
+                ).length === 0 && (
                   <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.6 }}>
                     Nenhuma configuração adicional
                   </Typography>
