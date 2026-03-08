@@ -42,7 +42,7 @@ export class SwitcherControl {
       styleElement.dataset.id = style.id;
       styleElement.dataset.style = JSON.stringify(style.style);
       styleElement.addEventListener('click', (event) => {
-        const { target } = event;
+        const target = event.currentTarget;
         if (!target.classList.contains('active')) {
           this.onSelectStyle(target);
         }
@@ -61,13 +61,24 @@ export class SwitcherControl {
   }
 
   onSelectStyle(target) {
+    const styleId = target?.dataset?.id;
+    if (!styleId) {
+      return;
+    }
+
+    const style = this.styles.find((it) => it.id === styleId);
+    if (!style) {
+      return;
+    }
+
     this.onBeforeSwitch();
 
-    const style = this.styles.find((it) => it.id === target.dataset.id);
     this.map.setStyle(style.style, { diff: false });
-    this.map.setTransformRequest(style.transformRequest);
+    if (typeof this.map.setTransformRequest === 'function') {
+      this.map.setTransformRequest(style.transformRequest);
+    }
 
-    this.onSwitch(target.dataset.id);
+    this.onSwitch(styleId);
 
     this.mapStyleContainer.classList.remove('visible');
 
@@ -77,7 +88,7 @@ export class SwitcherControl {
     }
     target.classList.add('active');
 
-    this.currentStyle = target.dataset.id;
+    this.currentStyle = styleId;
 
     this.onAfterSwitch();
   }

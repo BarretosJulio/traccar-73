@@ -72,7 +72,7 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
-.maplibregl-ctrl-group button {
+.maplibregl-ctrl-group > button {
   width: 36px !important;
   height: 36px !important;
   border: none !important;
@@ -80,29 +80,29 @@ body {
   transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.maplibregl-ctrl-group button:hover {
+.maplibregl-ctrl-group > button:hover {
   background: rgba(45, 212, 191, 0.12) !important;
 }
 
-.maplibregl-ctrl-group button + button {
+.maplibregl-ctrl-group > button + button {
   border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.maplibregl-ctrl-group button.maplibregl-ctrl-icon {
-  filter: brightness(0) invert(0.88);
+.maplibregl-ctrl-group > button.maplibregl-ctrl-icon {
+  filter: brightness(0) invert(0.92);
   transition: filter 0.25s ease;
 }
 
-.maplibregl-ctrl-group button:hover.maplibregl-ctrl-icon {
+.maplibregl-ctrl-group > button:hover.maplibregl-ctrl-icon {
   filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(130deg);
 }
 
-.maplibregl-ctrl-group button .maplibregl-ctrl-icon {
-  filter: brightness(0) invert(0.85);
+.maplibregl-ctrl-group > button .maplibregl-ctrl-icon {
+  filter: brightness(0) invert(0.92);
   transition: filter 0.25s ease;
 }
 
-.maplibregl-ctrl-group button:hover .maplibregl-ctrl-icon {
+.maplibregl-ctrl-group > button:hover .maplibregl-ctrl-icon {
   filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(130deg);
 }
 
