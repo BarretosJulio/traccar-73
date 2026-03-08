@@ -669,7 +669,7 @@ const AdminDashboard = () => {
                 }}>
                   <p style={{ color: '#ffc800', fontSize: 14, fontWeight: 600, margin: 0 }}>
                     {(t('adminTrialEndsIn') || 'Trial ends in {0} days').replace('{0}', trialDays)}
-                    ({tenant?.trial_ends_at ? new Date(tenant.trial_ends_at).toLocaleDateString('pt-BR') : ''})
+                    ({tenant?.trial_ends_at ? new Date(tenant.trial_ends_at).toLocaleDateString() : ''})
                   </p>
                 </div>
               )}
