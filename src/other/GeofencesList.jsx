@@ -5,6 +5,7 @@ import { makeStyles } from 'tss-react/mui';
 import {
   List, ListItemButton, ListItemText, Typography, Box,
   Collapse, Chip, IconButton, Tooltip, Snackbar, Button,
+  CircularProgress,
 } from '@mui/material';
 import FenceIcon from '@mui/icons-material/Fence';
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
@@ -161,6 +162,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
   const [deviceCounts, setDeviceCounts] = useState({});
   const [dialogGeofence, setDialogGeofence] = useState(null);
   const [removingGeofenceId, setRemovingGeofenceId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
@@ -259,28 +261,25 @@ const GeofencesList = ({ onGeofenceSelected }) => {
   const handleRemoveGeofence = async () => {
     const geofenceId = removingGeofenceId;
     if (!geofenceId) return;
+    setIsDeleting(true);
     try {
-      // 1. Fetch linked devices
       const devResponse = await fetchOrThrow(`/api/devices?geofenceId=${geofenceId}`);
       const linkedDevices = await devResponse.json();
-
-      // 2. Remove all permissions first
       await Promise.all(
         linkedDevices.map((device) =>
           fetchOrThrow('/api/permissions', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ deviceId: device.id, geofenceId }),
-          }).catch(() => {}), // ignore if already removed
+          }).catch(() => {}),
         ),
       );
-
-      // 3. Delete the geofence
       await fetchOrThrow(`/api/geofences/${geofenceId}`, { method: 'DELETE' });
       refreshGeofences();
     } catch (error) {
       dispatch(errorsActions.push(error.message));
     }
+    setIsDeleting(false);
     setRemovingGeofenceId(null);
   };
 
@@ -495,11 +494,11 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     />
     <Snackbar
       open={Boolean(removingGeofenceId)}
-      onClose={() => setRemovingGeofenceId(null)}
-      message={t('sharedRemoveConfirm')}
+      onClose={() => !isDeleting && setRemovingGeofenceId(null)}
+      message={isDeleting ? 'Removendo geocerca...' : t('sharedRemoveConfirm')}
       action={
-        <Button size="small" color="error" onClick={handleRemoveGeofence}>
-          {t('sharedRemove')}
+        <Button size="small" color="error" onClick={handleRemoveGeofence} disabled={isDeleting}>
+          {isDeleting ? <CircularProgress size={16} color="inherit" /> : t('sharedRemove')}
         </Button>
       }
     />
