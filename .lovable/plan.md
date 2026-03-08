@@ -1,33 +1,65 @@
 
 
-# Modernizar Controles do Mapa + Botão WhatsApp
+# Auditoria Final — Resultado
 
-## O que será feito
+Após revisar minuciosamente **todos os arquivos corrigidos nas rodadas anteriores**, o estado atual do projeto está significativamente melhor. A maioria dos problemas críticos (navegação, i18n principal, centralização de constantes) foi resolvida. Restam **5 problemas residuais**.
 
-1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
-2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
+---
 
-## Mudanças Técnicas
+## CORRIGIDOS (confirmados OK)
 
-### 1. CSS Global dos controles do mapa (`public/styles.css`)
-- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
-- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
-- Adicionar separadores sutis entre botões
-- Manter responsivo para mobile
+- ReportsMenu: todos os links com `/app`, `selected` correto -- OK
+- SettingsMenu: Geofences `selected` com `/app/geofence` -- OK
+- BottomMenu: usa `theme.palette`, detecta `/app/geofences` -- OK
+- SideNav: bordas arredondadas, `selected` estilizado -- OK
+- LoginPage, MapPage, LoginLayout: strings traduzidas via `t()` -- OK
+- RegisterPage, ResetPasswordPage: `lightInputSx` aplicado -- OK
+- LandingPage: todas as strings via `t()` -- OK
+- OnboardingPage: todas as strings via `t()` -- OK
+- AdminDashboard: strings via `t()`, sem fallbacks `|| 'pt-BR'` -- OK
+- AdminLoginPage: traduzido, placeholder `email@example.com` -- OK
+- PageLayout: padding `theme.spacing(3)` -- OK
+- NavBar.jsx removido -- OK
+- Tenant slug centralizado em `constants.js` -- OK
+- Demo user centralizado em `constants.js` -- OK
 
-### 2. Geocoder (`src/map/geocoder/geocoder.css`)
-- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
-- Border-radius mais arredondado, sombra premium
+---
 
-### 3. Notificação (`src/map/notification/notification.css`)
-- Atualizar ícones SVG com cores teal para combinar com o tema
+## PENDENTES (5 problemas restantes)
 
-### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
-- Criar controle customizado maplibre similar ao `MapNotification`
-- Ícone WhatsApp em SVG verde
-- Ao clicar, abre `https://wa.me/{numero}` em nova aba
-- Número configurável via atributos do servidor ou hardcoded
+### 1. `lightInputSx` duplicado em 3 arquivos (DRY violation)
+O objeto `lightInputSx` está copiado identicamente em `LoginPage.jsx`, `RegisterPage.jsx` e `ResetPasswordPage.jsx` (30 linhas x 3 = 90 linhas duplicadas). Deve ser extraído para um módulo compartilhado.
 
-### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
-- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
+**Solução**: Criar `src/login/loginStyles.js` com o `lightInputSx` exportado e importar nos 3 arquivos.
+
+### 2. AdminDashboard: placeholders em português
+- Linha 500: `placeholder="https://seuservidor.com"` -- hardcoded pt-BR
+- Linha 507: `placeholder="app.suaempresa.com.br"` -- hardcoded pt-BR
+
+**Solução**: Trocar por placeholders neutros como `"https://traccar.example.com"` e `"app.yourcompany.com"`.
+
+### 3. AdminDashboard: detecção de erro por string match
+- Linha 521: `message.includes('Error') || message.includes('error') || message.includes('Erro')` -- frágil e dependente de idioma.
+
+**Solução**: Usar um estado booleano `isError` separado em vez de fazer match por conteúdo da string.
+
+### 4. AdminDashboard: `toLocaleDateString()` sem locale
+- Linhas 672 e 689: `new Date(...).toLocaleDateString()` sem argumento de locale. Funciona com o default do browser, mas seria mais consistente usar o locale do sistema de i18n.
+
+**Solução**: Importar `dayjs` (já disponível no projeto) e formatar as datas de forma consistente com o restante do sistema.
+
+### 5. LandingPage: "HyperTraccar" hardcoded
+- Linhas 63 e 408: O nome do produto `"HyperTraccar"` está hardcoded. Se é um nome de marca fixo, isso é aceitável. Mas para consistência com o resto do sistema i18n, poderia ser uma constante ou chave de tradução.
+
+**Solução**: Adicionar constante `PRODUCT_NAME` em `constants.js` ou chave i18n `productName`.
+
+---
+
+## Plano de Implementação
+
+1. **Extrair `lightInputSx`** para `src/login/loginStyles.js` e atualizar imports nos 3 arquivos
+2. **Corrigir placeholders pt-BR** no AdminDashboard (2 inputs)
+3. **Refatorar detecção de erro** no AdminDashboard: usar estado `isError` booleano
+4. **Formatar datas com dayjs** no AdminDashboard (2 locais)
+5. **Centralizar nome do produto** "HyperTraccar" em constante
 
