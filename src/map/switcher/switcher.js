@@ -128,8 +128,7 @@ export class SwitcherControl {
       this.mapStyleContainer &&
       this.styleButton
     ) {
-      this.mapStyleContainer.style.display = 'none';
-      this.styleButton.style.display = 'block';
+      this.mapStyleContainer.classList.remove('visible');
     }
   }
 }
