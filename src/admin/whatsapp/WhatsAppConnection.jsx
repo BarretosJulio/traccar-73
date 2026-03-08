@@ -61,6 +61,7 @@ const WhatsAppConnection = ({ t }) => {
     setError('');
     try {
       await whatsappService.createInstance();
+      setInstanceExists(true);
       await fetchStatus();
       startPolling();
     } catch (err) {
