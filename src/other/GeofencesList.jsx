@@ -354,7 +354,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                 </div>
                 {/* Show all other attributes as key-value pairs */}
                 {Object.entries(item.attributes || {}).filter(
-                  ([key]) => !['disabled', 'hide', 'color', 'speedLimit', 'startTime', 'endTime', 'activeDays'].includes(key),
+                  ([key]) => !['disabled', 'hide', 'color', 'speedLimit', 'startTime', 'endTime', 'activeDays', 'startDate', 'endDate'].includes(key),
                 ).map(([key, value]) => (
                   <div className={classes.detailRow} key={key}>
                     <Typography className={classes.detailLabel}>{key}:</Typography>
