@@ -40,6 +40,7 @@ import { useCatch } from '../reactHelper';
 import QrCodeDialog from '../common/components/QrCodeDialog';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { apiUrl } from '../common/util/apiUrl';
+import { DEFAULT_TENANT_SLUG, DEMO_USER } from '../common/util/constants';
 
 const lightInputSx = {
   '& .MuiOutlinedInput-root': {
