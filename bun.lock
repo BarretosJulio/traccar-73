@@ -34,7 +34,6 @@
         "react-router-dom": "^7.13.1",
         "react-window": "^2.2.7",
         "recharts": "^3.7.0",
-        "stylis": "4.2.0",
         "stylis-plugin-rtl": "^2.1.1",
         "tss-react": "^4.9.20",
         "wellknown": "^0.5.0",
@@ -1506,7 +1505,7 @@
 
     "stylis": ["stylis@4.2.0", "", {}, "sha512-Orov6g6BB1sDfYgzWfTHDOxamtX1bE/zo104Dh9e6fqJ3PooipYyfJ0pUmrZO2wAvO8YbEyeFrkV91XTsGMSrw=="],
 
-    "stylis-plugin-rtl": ["stylis-plugin-rtl@2.1.1", "", { "dependencies": { "cssjanus": "^2.0.1" }, "peerDependencies": { "stylis": "4.x" } }, "sha512-q6xIkri6fBufIO/sV55md2CbgS5c6gg9EhSVATtHHCdOnbN/jcI0u3lYhNVeuI65c4lQPo67g8xmq5jrREvzlg=="],
+    "stylis-plugin-rtl": ["stylis-plugin-rtl@2.1.1", "", { "dependencies": { "cssjanus": "^2.0.1" } }, "sha512-q6xIkri6fBufIO/sV55md2CbgS5c6gg9EhSVATtHHCdOnbN/jcI0u3lYhNVeuI65c4lQPo67g8xmq5jrREvzlg=="],
 
     "subtag": ["subtag@0.5.0", "", {}, "sha512-CaIBcTSb/nyk4xiiSOtZYz1B+F12ZxW8NEp54CdT+84vmh/h4sUnHGC6+KQXUfED8u22PQjCYWfZny8d2ELXwg=="],
 
