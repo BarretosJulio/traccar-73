@@ -365,7 +365,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
                     <CalendarTodayIcon className={classes.detailIcon} />
                     <Typography className={classes.detailLabel}>Dias ativos:</Typography>
                     <Typography className={classes.detailValue}>
-                      {item.attributes.activeDays.split(',').map((d) => ({ MO: 'SEG', TU: 'TER', WE: 'QUA', TH: 'QUI', FR: 'SEX', SA: 'SÁB', SU: 'DOM' })[d] || d).join(' / ')}
+                      {String(item.attributes.activeDays).split(',').map((d) => ({ MO: 'SEG', TU: 'TER', WE: 'QUA', TH: 'QUI', FR: 'SEX', SA: 'SÁB', SU: 'DOM' })[d.trim()] || d).join(' / ')}
                     </Typography>
                   </div>
                 )}
