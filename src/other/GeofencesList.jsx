@@ -256,7 +256,34 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     setDialogGeofence(null);
   };
 
-  if (geofenceList.length === 0) {
+  const handleRemoveGeofence = async () => {
+    const geofenceId = removingGeofenceId;
+    if (!geofenceId) return;
+    try {
+      // 1. Fetch linked devices
+      const devResponse = await fetchOrThrow(`/api/devices?geofenceId=${geofenceId}`);
+      const linkedDevices = await devResponse.json();
+
+      // 2. Remove all permissions first
+      await Promise.all(
+        linkedDevices.map((device) =>
+          fetchOrThrow('/api/permissions', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deviceId: device.id, geofenceId }),
+          }).catch(() => {}), // ignore if already removed
+        ),
+      );
+
+      // 3. Delete the geofence
+      await fetchOrThrow(`/api/geofences/${geofenceId}`, { method: 'DELETE' });
+      refreshGeofences();
+    } catch (error) {
+      dispatch(errorsActions.push(error.message));
+    }
+    setRemovingGeofenceId(null);
+  };
+
     return (
       <div className={classes.emptyState}>
         <Box className={classes.emptyIcon}>
