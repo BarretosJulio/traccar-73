@@ -8,25 +8,34 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
+  Box,
+  Typography,
 } from '@mui/material';
 import { useTranslation } from '../../common/components/LocalizationProvider';
-import SelectField from '../../common/components/SelectField';
 
 const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
   const t = useTranslation();
 
   const [name, setName] = useState(t('sharedGeofence'));
   const [description, setDescription] = useState('');
-  const [calendarId, setCalendarId] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [hide, setHide] = useState(false);
 
   const handleSave = () => {
     if (!name.trim()) return;
+    const attributes = { hide };
+    if (startDate) attributes.startDate = startDate;
+    if (endDate) attributes.endDate = endDate;
+    if (startTime) attributes.startTime = startTime;
+    if (endTime) attributes.endTime = endTime;
+
     const data = {
       name: name.trim(),
       description: description.trim() || undefined,
-      calendarId: calendarId || undefined,
-      attributes: { hide },
+      attributes,
     };
     onSave(data);
     resetForm();
@@ -40,7 +49,10 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
   const resetForm = () => {
     setName(t('sharedGeofence'));
     setDescription('');
-    setCalendarId(null);
+    setStartDate('');
+    setEndDate('');
+    setStartTime('');
+    setEndTime('');
     setHide(false);
   };
 
@@ -58,13 +70,45 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
           autoFocus
           fullWidth
         />
-        <SelectField
-          label={t('sharedCalendar')}
-          value={calendarId}
-          onChange={(e) => setCalendarId(Number(e.target.value) || null)}
-          endpoint="/api/calendars"
-          fullWidth
-        />
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+          Período de ativação (opcional)
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 1.5 }}>
+          <TextField
+            label="Data início"
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="Data fim"
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1.5 }}>
+          <TextField
+            label="Hora início"
+            type="time"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="Hora fim"
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
         <TextField
           label={t('sharedDescription')}
           value={description}
