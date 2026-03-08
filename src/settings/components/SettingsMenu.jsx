@@ -13,6 +13,7 @@ import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import { useLocation } from 'react-router-dom';
