@@ -1,33 +1,37 @@
 
 
-# Modernizar Controles do Mapa + Botão WhatsApp
+# Criar API_DOCS.md
 
-## O que será feito
+## Arquivo a Criar
 
-1. **Estilizar os controles nativos do mapa** (zoom +/-, bússola, camadas, geocoder, notificação) com CSS customizado para visual moderno: cantos arredondados, glassmorphism, hover suave, sombras premium
-2. **Adicionar botão flutuante de WhatsApp** no mapa como um controle customizado maplibre
+### `API_DOCS.md`
 
-## Mudanças Técnicas
+Documentação completa das 4 Edge Functions com base na análise direta do código-fonte:
 
-### 1. CSS Global dos controles do mapa (`public/styles.css`)
-- Sobrescrever `.maplibregl-ctrl-group` com: border-radius 12px, backdrop-filter blur, background semi-transparente, box-shadow suave, border sutil
-- Estilizar botões internos (`.maplibregl-ctrl-group button`) com: hover com background teal suave, transições fluidas, ícones com cor cinza que ficam teal no hover
-- Adicionar separadores sutis entre botões
-- Manter responsivo para mobile
+**1. `traccar-proxy`** — Proxy multi-tenant para API Traccar
+- Autenticação: sem JWT, usa headers `x-tenant-slug` + `x-traccar-email`
+- Parâmetro obrigatório: `?path=/api/...`
+- Fluxos: login (POST /api/session → armazena JSESSIONID), logout (DELETE /api/session → limpa sessão), proxy genérico (GET/POST/PUT/DELETE com sessão armazenada)
+- Validação de subscription (bloqueia suspended/cancelled)
+- Auto-limpeza de sessão expirada em 401
 
-### 2. Geocoder (`src/map/geocoder/geocoder.css`)
-- Atualizar estilo do input de busca para combinar com o tema dark/glassmorphism
-- Border-radius mais arredondado, sombra premium
+**2. `whatsapp-proxy`** — Proxy autenticado para UAZAPI
+- Autenticação: Bearer JWT (Supabase Auth)
+- Resolve tenant pelo `user_id` do JWT
+- 8 actions via `?action=`: `create-instance`, `connect`/`qrcode`, `disconnect`, `send-text`, `get-alerts`, `save-alerts`, `get-messages`, `set-webhook`
+- Cada action documentada com método, body, resposta
 
-### 3. Notificação (`src/map/notification/notification.css`)
-- Atualizar ícones SVG com cores teal para combinar com o tema
+**3. `whatsapp-webhook`** — Receptor de webhooks
+- Autenticação: nenhuma (público)
+- 2 actions: `process-event` (processa evento Traccar → envia alerta WhatsApp), `delivery-receipt` (recibo de entrega UAZAPI)
+- Template variables: `{device}`, `{event}`, `{time}`, `{data}`
 
-### 4. Botão WhatsApp (`src/map/MapWhatsApp.js` - novo arquivo)
-- Criar controle customizado maplibre similar ao `MapNotification`
-- Ícone WhatsApp em SVG verde
-- Ao clicar, abre `https://wa.me/{numero}` em nova aba
-- Número configurável via atributos do servidor ou hardcoded
+**4. `create-tenant`** — Criação de tenants
+- Autenticação: nenhuma (público)
+- POST com body JSON: `company_name`, `owner_email`, `password` (obrigatórios) + `traccar_url`, `color_primary`, `color_secondary` (opcionais)
+- Cria auth user + tenant com trial de 7 dias
+- Rollback: deleta auth user se criação do tenant falhar
 
-### 5. Integrar no MainMap (`src/main/MainMap.jsx`)
-- Importar e adicionar `<MapWhatsApp />` ao lado dos outros controles
+### Formato
+Cada function terá: URL base, autenticação, endpoints/actions com método HTTP, headers, parâmetros, body de exemplo, resposta de sucesso e códigos de erro.
 
