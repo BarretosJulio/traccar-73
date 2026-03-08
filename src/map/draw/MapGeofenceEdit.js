@@ -103,12 +103,13 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
         refreshGeofences();
       } catch (error) {
         dispatch(errorsActions.push(error.message));
+        refreshGeofences();
       }
     };
 
     map.on('draw.delete', listener);
     return () => map.off('draw.delete', listener);
-  }, [dispatch, refreshGeofences]);
+  }, [dispatch, refreshGeofences, draw]);
 
   useEffect(() => {
     const listener = async (event) => {
