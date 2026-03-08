@@ -1,11 +1,10 @@
 import { ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const MenuItem = ({ title, link, icon, selected }) => (
+const MenuItem = ({ title, link, icon, selected, onClick }) => (
   <Tooltip title={title} placement="right" enterDelay={600}>
     <ListItemButton
-      component={Link}
-      to={link}
+      {...(onClick ? { onClick } : { component: Link, to: link })}
       selected={selected}
       sx={{
         borderRadius: 2,
