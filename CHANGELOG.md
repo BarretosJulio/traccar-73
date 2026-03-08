@@ -4,6 +4,18 @@ Formato: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [0.10.1] — 2026-03-08
+
+### Fixed
+- **HTTP 415 ao excluir geocercas via DELETE** (`traccar-proxy`)
+  - Contexto: Proxy encaminhava body vazio em requests DELETE, causando rejeição pelo Traccar (415 Unsupported Media Type)
+  - Justificativa: Restringir forwarding de body apenas para POST/PUT/PATCH, conforme protocolo HTTP
+  - Impacto em banco: Nenhum
+  - Impacto em APIs: Corrige exclusão de geocercas, dispositivos, notificações e qualquer recurso via DELETE
+  - Impacto em regras de negócio: Nenhum
+
+---
+
 ## [0.10.0] — 2026-03-08
 
 ### Added

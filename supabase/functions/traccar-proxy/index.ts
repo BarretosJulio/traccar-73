@@ -204,7 +204,7 @@ Deno.serve(async (req: Request) => {
       redirect: "follow",
     };
 
-    if (req.method !== "GET" && req.method !== "HEAD") {
+    if (["POST", "PUT", "PATCH"].includes(req.method)) {
       const contentType = req.headers.get("content-type");
       if (contentType) {
         traccarHeaders["Content-Type"] = contentType;
