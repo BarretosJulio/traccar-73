@@ -53,50 +53,50 @@ const ReportsMenu = () => {
           title={t('reportCombined')}
           link={buildLink('/reports/combined')}
           icon={<StarIcon />}
-          selected={location.pathname === '/reports/combined'}
+          selected={location.pathname === '/app/reports/combined'}
         />
         <MenuItem
           title={t('reportEvents')}
           link={buildLink('/reports/events')}
           icon={<NotificationsActiveIcon />}
-          selected={location.pathname === '/reports/events'}
+          selected={location.pathname === '/app/reports/events'}
         />
         <MenuItem
           title={t('sharedGeofences')}
           link={buildLink('/reports/geofences')}
           icon={<PlaceIcon />}
-          selected={location.pathname === '/reports/geofences'}
+          selected={location.pathname === '/app/reports/geofences'}
         />
         <MenuItem
           title={t('reportTrips')}
           link={buildLink('/reports/trips')}
           icon={<PlayCircleFilledIcon />}
-          selected={location.pathname === '/reports/trips'}
+          selected={location.pathname === '/app/reports/trips'}
         />
         <MenuItem
           title={t('reportStops')}
           link={buildLink('/reports/stops')}
           icon={<PauseCircleFilledIcon />}
-          selected={location.pathname === '/reports/stops'}
+          selected={location.pathname === '/app/reports/stops'}
         />
         <MenuItem
           title={t('reportSummary')}
           link={buildLink('/reports/summary')}
           icon={<FormatListBulletedIcon />}
-          selected={location.pathname === '/reports/summary'}
+          selected={location.pathname === '/app/reports/summary'}
         />
         <MenuItem
           title={t('reportChart')}
           link={buildLink('/reports/chart')}
           icon={<TrendingUpIcon />}
-          selected={location.pathname === '/reports/chart'}
+          selected={location.pathname === '/app/reports/chart'}
         />
-        <MenuItem title={t('reportReplay')} link={buildLink('/replay')} icon={<RouteIcon />} />
+        <MenuItem title={t('reportReplay')} link={buildLink('/replay')} icon={<RouteIcon />} selected={location.pathname === '/app/replay'} />
         <MenuItem
           title={t('reportPositions')}
           link={buildLink('/reports/route')}
           icon={<TimelineIcon />}
-          selected={location.pathname === '/reports/route'}
+          selected={location.pathname === '/app/reports/route'}
         />
       </List>
       <Divider />
