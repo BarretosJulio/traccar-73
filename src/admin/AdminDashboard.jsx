@@ -70,6 +70,7 @@ const AdminDashboard = () => {
     if (!tenant) return;
     setSaving(true);
     setMessage('');
+    setIsError(false);
     try {
       const { error } = await supabase
         .from('tenants')
