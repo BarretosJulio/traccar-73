@@ -3,8 +3,8 @@ import { useTheme } from '@mui/material';
 import { map } from './core/MapView';
 
 class WhatsAppControl {
-  constructor(phoneNumber) {
-    this.phoneNumber = phoneNumber;
+  constructor(onClick) {
+    this.onClick = onClick;
   }
 
   onAdd() {
@@ -14,9 +14,9 @@ class WhatsAppControl {
     this.icon.className = 'maplibregl-ctrl-icon';
     this.button.appendChild(this.icon);
     this.button.type = 'button';
-    this.button.title = 'WhatsApp';
+    this.button.title = 'WhatsApp Alertas';
     this.button.onclick = () => {
-      window.open(`https://wa.me/${this.phoneNumber}`, '_blank');
+      if (this.onClick) this.onClick();
     };
 
     this.container = document.createElement('div');
@@ -31,9 +31,9 @@ class WhatsAppControl {
   }
 }
 
-const MapWhatsApp = ({ phoneNumber = '5511999999999' }) => {
+const MapWhatsApp = ({ onClick }) => {
   const theme = useTheme();
-  const control = useMemo(() => new WhatsAppControl(phoneNumber), [phoneNumber]);
+  const control = useMemo(() => new WhatsAppControl(onClick), [onClick]);
 
   useEffect(() => {
     map.addControl(control, theme.direction === 'rtl' ? 'top-left' : 'top-right');
