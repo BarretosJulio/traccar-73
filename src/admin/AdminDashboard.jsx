@@ -406,7 +406,7 @@ const AdminDashboard = () => {
 
                   {/* Background Image Upload */}
                   <div style={{ marginBottom: 20 }}>
-                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgImage') || 'Imagem de Fundo'}</label>
+                    <label style={{ ...labelStyle, marginBottom: 10, display: 'block' }}>{t('adminLoginBgImage')}</label>
                     {tenant?.login_bg_image ? (
                       <div style={{
                         position: 'relative', borderRadius: 12, overflow: 'hidden', height: 120,
