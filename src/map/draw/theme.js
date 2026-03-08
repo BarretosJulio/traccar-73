@@ -12,9 +12,9 @@ export default [
       ['!=', 'mode', 'static'],
     ],
     paint: {
-      'fill-color': '#3bb2d0',
-      'fill-outline-color': '#3bb2d0',
-      'fill-opacity': 0.1,
+      'fill-color': '#2dd4bf',
+      'fill-outline-color': '#2dd4bf',
+      'fill-opacity': 0.12,
     },
   },
   {
@@ -50,7 +50,7 @@ export default [
       'line-join': 'round',
     },
     paint: {
-      'line-color': '#3bb2d0',
+      'line-color': '#2dd4bf',
       'line-width': 2,
     },
   },
@@ -82,7 +82,7 @@ export default [
       'line-join': 'round',
     },
     paint: {
-      'line-color': '#3bb2d0',
+      'line-color': '#2dd4bf',
       'line-width': 2,
     },
   },
@@ -146,7 +146,7 @@ export default [
     ],
     paint: {
       'circle-radius': 3,
-      'circle-color': '#3bb2d0',
+      'circle-color': '#2dd4bf',
     },
   },
   {
