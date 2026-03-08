@@ -388,6 +388,12 @@ const LoginPage = () => {
           </IconButton>
         }
       />
+      <Snackbar
+        open={sessionExpired}
+        message={t('loginSessionExpired')}
+        autoHideDuration={6000}
+        onClose={() => setSessionExpired(false)}
+      />
     </LoginLayout>
   );
 };
