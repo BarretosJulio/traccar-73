@@ -132,7 +132,7 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
 
     map.on('draw.update', listener);
     return () => map.off('draw.update', listener);
-  }, [dispatch, geofences, refreshGeofences]);
+  }, [dispatch, geofences, refreshGeofences, draw]);
 
   useEffect(() => {
     draw.deleteAll();
