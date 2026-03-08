@@ -39,7 +39,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
             <ListItemText primary={item.name} />
             <CollectionActions
               itemId={item.id}
-              editPath="/settings/geofence"
+              editPath="/app/settings/geofence"
               endpoint="geofences"
               setTimestamp={refreshGeofences}
             />
