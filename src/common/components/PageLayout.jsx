@@ -153,7 +153,7 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
             <Tooltip title={t('sharedBack')}>
               <IconButton
                 size="small"
-                onClick={() => navigate(-1)}
+                onClick={handleClose}
                 sx={{ mr: 1.5 }}
               >
                 <ArrowBackIcon fontSize="small" />
