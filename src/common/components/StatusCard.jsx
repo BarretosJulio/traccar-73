@@ -300,6 +300,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const [anchorEl, setAnchorEl] = useState(null);
   const [removing, setRemoving] = useState(false);
   const [positionDialogOpen, setPositionDialogOpen] = useState(false);
+  const [engineConfirm, setEngineConfirm] = useState(null); // 'block' | 'unblock' | null
 
   const attrs = position?.attributes || {};
   const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
