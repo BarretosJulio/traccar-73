@@ -17,6 +17,7 @@ import MapOverlay from '../map/overlay/MapOverlay';
 import MapScale from '../map/MapScale';
 import MapNotification from '../map/notification/MapNotification';
 import MapWhatsApp from '../map/MapWhatsApp';
+import MapHoverPopup from '../map/MapHoverPopup';
 import useFeatures from '../common/util/useFeatures';
 import { useTenant } from '../common/components/TenantProvider';
 import WhatsAppDeviceAlerts from './components/WhatsAppDeviceAlerts';
@@ -37,6 +38,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
   const tenantId = tenantCtx?.tenant?.id;
 
   const [whatsappOpen, setWhatsappOpen] = useState(false);
+  const [positionSourceIds, setPositionSourceIds] = useState(null);
 
   const onMarkerClick = useCallback(
     (_, deviceId) => {
@@ -47,6 +49,10 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
 
   const handleWhatsAppClick = useCallback(() => {
     setWhatsappOpen((prev) => !prev);
+  }, []);
+
+  const handleSourceReady = useCallback((sourceIds) => {
+    setPositionSourceIds(sourceIds);
   }, []);
 
   return (
@@ -61,6 +67,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
           onMarkerClick={onMarkerClick}
           selectedPosition={selectedPosition}
           showStatus
+          onSourceReady={handleSourceReady}
         />
         <MapDefaultCamera />
         <MapSelectedDevice />
@@ -68,6 +75,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
       </MapView>
       <MapScale />
       <MapCurrentLocation />
+      {desktop && positionSourceIds && <MapHoverPopup sourceIds={positionSourceIds} />}
       {!features.disableEvents && (
         <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
       )}

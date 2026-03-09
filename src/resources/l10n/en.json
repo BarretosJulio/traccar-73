@@ -917,5 +917,9 @@
     "pwaPermissionPending": "Pending",
     "pwaPermissionUnsupported": "Unsupported",
     "pwaAllowAll": "Allow All Permissions",
-    "pwaGoToApp": "Go to App"
+    "pwaGoToApp": "Go to App",
+    "commandEngineBlock": "Block Engine",
+    "commandEngineUnblock": "Unblock Engine",
+    "commandConfirmBlock": "Confirm engine block?",
+    "commandConfirmUnblock": "Confirm engine unblock?"
 }

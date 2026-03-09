@@ -917,5 +917,9 @@
     "pwaPermissionPending": "Pendente",
     "pwaPermissionUnsupported": "Não suportado",
     "pwaAllowAll": "Permitir Todas as Permissões",
-    "pwaGoToApp": "Ir para o App"
+    "pwaGoToApp": "Ir para o App",
+    "commandEngineBlock": "Bloquear Motor",
+    "commandEngineUnblock": "Desbloquear Motor",
+    "commandConfirmBlock": "Confirma o bloqueio do motor?",
+    "commandConfirmUnblock": "Confirma o desbloqueio do motor?"
 }

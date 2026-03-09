@@ -16,6 +16,7 @@ const MapPositions = ({
   showStatus,
   selectedPosition,
   titleField,
+  onSourceReady,
 }) => {
   const id = useId();
   const clusters = `${id}-clusters`;
@@ -229,6 +230,12 @@ const MapPositions = ({
       });
     };
   }, [mapCluster, clusters, onMarkerClickCallback, onClusterClick]);
+
+  useEffect(() => {
+    if (onSourceReady) {
+      onSourceReady([id, selected]);
+    }
+  }, [id, selected, onSourceReady]);
 
   useEffect(() => {
     [id, selected].forEach((source) => {

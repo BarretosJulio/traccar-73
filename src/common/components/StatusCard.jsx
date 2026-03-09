@@ -19,6 +19,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  Button,
   Table,
   TableHead,
   TableRow,
@@ -29,7 +31,6 @@ import { makeStyles } from 'tss-react/mui';
 import { useTheme, useMediaQuery } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RouteIcon from '@mui/icons-material/Route';
-import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PendingIcon from '@mui/icons-material/Pending';
@@ -54,6 +55,9 @@ import HeightIcon from '@mui/icons-material/Height';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import NetworkCellIcon from '@mui/icons-material/NetworkCell';
+import InfoIcon from '@mui/icons-material/Info';
+import ShareIcon from '@mui/icons-material/Share';
+import GridViewIcon from '@mui/icons-material/GridView';
 import dayjs from 'dayjs';
 
 import { useTranslation } from './LocalizationProvider';
@@ -296,6 +300,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const [anchorEl, setAnchorEl] = useState(null);
   const [removing, setRemoving] = useState(false);
   const [positionDialogOpen, setPositionDialogOpen] = useState(false);
+  const [engineConfirm, setEngineConfirm] = useState(null); // 'block' | 'unblock' | null
 
   const attrs = position?.attributes || {};
   const speedKmh = position ? Math.round((position.speed || 0) * 1.852) : 0;
@@ -335,6 +340,20 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
     });
     navigate(`/app/settings/geofence/${item.id}`);
   }, [navigate, position, demoMode]);
+
+  const handleEngineCommand = useCatch(async (type) => {
+    if (demoMode) {
+      dispatch(errorsActions.push(t('demoModeUnavailable')));
+      return;
+    }
+    setEngineConfirm(null);
+    const command = { deviceId, type };
+    await fetchOrThrow('/api/commands/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(command),
+    });
+  });
 
   // Build chips
   const chips = [];
@@ -681,29 +700,30 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               )}
 
               <CardActions classes={{ root: classes.actions }} disableSpacing>
-                <Tooltip title={t('sharedExtra')}>
+                <Tooltip title={t('sharedShowDetails')}>
                   <IconButton
-                    color="secondary"
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    onClick={() => setPositionDialogOpen(true)}
                     disabled={!position}
                   >
-                    <PendingIcon />
+                    <InfoIcon />
                   </IconButton>
                 </Tooltip>
+                {!shareDisabled && !user.temporary && (
+                  <Tooltip title={t('deviceShare')}>
+                    <IconButton
+                      onClick={() => navigate(`/app/settings/device/${deviceId}/share`)}
+                      disabled={disableActions}
+                    >
+                      <ShareIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
                 <Tooltip title={t('reportReplay')}>
                   <IconButton
                     onClick={() => navigate(`/app/replay?deviceId=${deviceId}`)}
                     disabled={disableActions || !position}
                   >
-                    <RouteIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('commandTitle')}>
-                  <IconButton
-                    onClick={() => navigate(`/app/settings/device/${deviceId}/command`)}
-                    disabled={disableActions}
-                  >
-                    <SendIcon />
+                    <GridViewIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
@@ -714,13 +734,31 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     <EditIcon />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={t('sharedRemove')}>
+                <Tooltip title={t('commandEngineUnblock')}>
                   <IconButton
-                    color="error"
-                    onClick={() => setRemoving(true)}
+                    onClick={() => setEngineConfirm('unblock')}
                     disabled={disableActions || deviceReadonly}
+                    sx={{ color: '#10b981', '&:hover': { backgroundColor: 'rgba(16,185,129,0.1)' } }}
                   >
-                    <DeleteIcon />
+                    <LockOpenIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t('commandEngineBlock')}>
+                  <IconButton
+                    onClick={() => setEngineConfirm('block')}
+                    disabled={disableActions || deviceReadonly}
+                    sx={{ color: '#ef4444', '&:hover': { backgroundColor: 'rgba(239,68,68,0.1)' } }}
+                  >
+                    <LockIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t('sharedExtra')}>
+                  <IconButton
+                    color="secondary"
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    disabled={!position}
+                  >
+                    <PendingIcon />
                   </IconButton>
                 </Tooltip>
               </CardActions>
@@ -831,6 +869,31 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
           </DialogContent>
         </Dialog>
       )}
+      {/* Engine block/unblock confirmation */}
+      <Dialog
+        open={Boolean(engineConfirm)}
+        onClose={() => setEngineConfirm(null)}
+        maxWidth="xs"
+      >
+        <DialogTitle sx={{ fontWeight: 700, fontSize: '1rem' }}>
+          {engineConfirm === 'block' ? t('commandConfirmBlock') : t('commandConfirmUnblock')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2">
+            {device?.name}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEngineConfirm(null)}>{t('sharedCancel')}</Button>
+          <Button
+            variant="contained"
+            color={engineConfirm === 'block' ? 'error' : 'success'}
+            onClick={() => handleEngineCommand(engineConfirm === 'block' ? 'engineStop' : 'engineResume')}
+          >
+            {engineConfirm === 'block' ? t('commandEngineBlock') : t('commandEngineUnblock')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
