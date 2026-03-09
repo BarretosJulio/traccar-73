@@ -4,7 +4,23 @@ Formato: [Semantic Versioning](https://semver.org/)
 
 ---
 
-## [0.10.1] — 2026-03-08
+## [0.11.0] — 2026-03-09
+
+### Added
+- **Push Notifications nativas no PWA** (módulo `src/common/notifications/`)
+  - Contexto: Implementação modular de notificações push usando Web Notifications API
+  - Módulos: `notificationManager.js` (permissão + exibição), `notificationEvents.js` (formatação de eventos Traccar), `useNotifications.js` (hook React)
+  - Tipos de evento suportados: ignitionOn/Off, geofenceEnter/Exit, alarm, deviceOnline/Offline, deviceMoving/Stopped, deviceOverspeed, fuelDrop/Increase, maintenance, driverChanged, commandResult, textMessage
+  - Funciona em desktop browser e PWA instalado (background notifications via service worker)
+  - Deduplicação via tag por event.id
+  - Justificativa: Usuários precisam de alertas em tempo real mesmo com app em background
+  - Impacto em banco: Nenhum (usa apenas API Traccar)
+  - Impacto em APIs: Novo polling de `GET /api/events` no SocketController (janela de 10s)
+  - Impacto em regras de negócio: Auto-request de permissão na primeira visita
+
+---
+
+
 
 ### Fixed
 - **HTTP 415 ao excluir geocercas via DELETE** (`traccar-proxy`)
