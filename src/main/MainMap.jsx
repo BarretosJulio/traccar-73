@@ -75,6 +75,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
       </MapView>
       <MapScale />
       <MapCurrentLocation />
+      {desktop && positionSourceIds && <MapHoverPopup sourceIds={positionSourceIds} />}
       {!features.disableEvents && (
         <MapNotification enabled={eventsAvailable} onClick={onEventsClick} />
       )}

@@ -232,6 +232,12 @@ const MapPositions = ({
   }, [mapCluster, clusters, onMarkerClickCallback, onClusterClick]);
 
   useEffect(() => {
+    if (onSourceReady) {
+      onSourceReady([id, selected]);
+    }
+  }, [id, selected, onSourceReady]);
+
+  useEffect(() => {
     [id, selected].forEach((source) => {
       map.getSource(source)?.setData({
         type: 'FeatureCollection',
