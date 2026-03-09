@@ -36,6 +36,10 @@ export default defineConfig(() => ({
         short_name: '${title}',
         name: '${description}',
         theme_color: '${colorPrimary}',
+        background_color: '#ffffff',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
         icons: [
           {
             src: 'pwa-64x64.png',
