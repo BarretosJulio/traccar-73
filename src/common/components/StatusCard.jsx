@@ -700,29 +700,30 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               )}
 
               <CardActions classes={{ root: classes.actions }} disableSpacing>
-                <Tooltip title={t('sharedExtra')}>
+                <Tooltip title={t('sharedShowDetails')}>
                   <IconButton
-                    color="secondary"
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    onClick={() => setPositionDialogOpen(true)}
                     disabled={!position}
                   >
-                    <PendingIcon />
+                    <InfoIcon />
                   </IconButton>
                 </Tooltip>
+                {!shareDisabled && !user.temporary && (
+                  <Tooltip title={t('deviceShare')}>
+                    <IconButton
+                      onClick={() => navigate(`/app/settings/device/${deviceId}/share`)}
+                      disabled={disableActions}
+                    >
+                      <ShareIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
                 <Tooltip title={t('reportReplay')}>
                   <IconButton
                     onClick={() => navigate(`/app/replay?deviceId=${deviceId}`)}
                     disabled={disableActions || !position}
                   >
-                    <RouteIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('commandTitle')}>
-                  <IconButton
-                    onClick={() => navigate(`/app/settings/device/${deviceId}/command`)}
-                    disabled={disableActions}
-                  >
-                    <SendIcon />
+                    <GridViewIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
@@ -733,13 +734,31 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     <EditIcon />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={t('sharedRemove')}>
+                <Tooltip title={t('commandEngineUnblock')}>
                   <IconButton
-                    color="error"
-                    onClick={() => setRemoving(true)}
+                    onClick={() => setEngineConfirm('unblock')}
                     disabled={disableActions || deviceReadonly}
+                    sx={{ color: '#10b981', '&:hover': { backgroundColor: 'rgba(16,185,129,0.1)' } }}
                   >
-                    <DeleteIcon />
+                    <LockOpenIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t('commandEngineBlock')}>
+                  <IconButton
+                    onClick={() => setEngineConfirm('block')}
+                    disabled={disableActions || deviceReadonly}
+                    sx={{ color: '#ef4444', '&:hover': { backgroundColor: 'rgba(239,68,68,0.1)' } }}
+                  >
+                    <LockIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t('sharedExtra')}>
+                  <IconButton
+                    color="secondary"
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    disabled={!position}
+                  >
+                    <PendingIcon />
                   </IconButton>
                 </Tooltip>
               </CardActions>
