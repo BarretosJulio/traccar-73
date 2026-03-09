@@ -4,6 +4,20 @@ Formato: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [0.12.0] — 2026-03-09
+
+### Added
+- **Página de instalação PWA** (`src/pwa/InstallPage.jsx`)
+  - Contexto: Página dedicada rota `/install` para guiar usuário na instalação do PWA no celular
+  - Hooks modulares: `usePwaInstallPrompt.js` (captura `beforeinstallprompt`, detecta standalone) e `useDevicePermissions.js` (gerencia Notification, Geolocation, Camera)
+  - Suporte iOS: instruções visuais "Compartilhar → Adicionar à Tela de Início"
+  - Dashboard de permissões com status visual (granted/denied/pending) e botão "Permitir Todas"
+  - Manifest atualizado: `display: standalone`, `orientation: portrait`, `start_url: /`
+  - Impacto em banco: Nenhum
+  - Impacto em APIs: Nenhum
+
+---
+
 ## [0.11.0] — 2026-03-09
 
 ### Added
