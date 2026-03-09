@@ -60,6 +60,7 @@ import LogsPage from './reports/LogsPage';
 import SharePage from './settings/SharePage';
 import AnnouncementPage from './settings/AnnouncementPage';
 import EmulatorPage from './other/EmulatorPage';
+import InstallPage from './pwa/InstallPage';
 import Loader from './common/components/Loader';
 import { generateLoginToken } from './common/components/NativeInterface';
 import { useLocalization } from './common/components/LocalizationProvider';
@@ -127,6 +128,7 @@ const Navigation = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/change-server" element={<ChangeServerPage />} />
+      <Route path="/install" element={<InstallPage />} />
       <Route path="/app" element={<App />}>
         <Route index element={<DashboardPage />} />
         <Route path="map" element={<MapPage />} />

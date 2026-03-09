@@ -35,8 +35,9 @@ Slices: `devices`, `session`, `events`, `geofences`, `groups`, `drivers`, `maint
 - Controles do mapa usam tema teal + glassmorphism
 - Geofences page tem MapView próprio — não usa MainMap de background
 - Demo mode normaliza categoria `pickup` → `car`
-
 - Push notifications nativas via Web Notifications API (modular: notificationManager, notificationEvents, useNotifications)
+- Página `/install` para instalação PWA + solicitação de permissões (Notification, Geolocation, Camera)
+- Hooks modulares: `usePwaInstallPrompt`, `useDevicePermissions`
 
 ## Última Atualização
 2026-03-09

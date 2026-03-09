@@ -900,5 +900,22 @@
     "notificationEnabled": "Notifications enabled",
     "notificationDisabled": "Notifications disabled",
     "notificationRequest": "Enable Notifications",
-    "notificationUnsupported": "Notifications not supported"
+    "notificationUnsupported": "Notifications not supported",
+    "pwaInstallTitle": "Install App",
+    "pwaInstallButton": "Install Now",
+    "pwaInstalled": "App Installed",
+    "pwaInstalledDescription": "The app is already installed on your device.",
+    "pwaIosInstructions": "To install on iPhone/iPad:",
+    "pwaIosStep": "Tap Share → Add to Home Screen",
+    "pwaOpenInBrowser": "Open this page in your mobile browser to install.",
+    "pwaPermissions": "Required Permissions",
+    "pwaPermissionNotification": "Notifications",
+    "pwaPermissionLocation": "Location",
+    "pwaPermissionCamera": "Camera",
+    "pwaPermissionGranted": "Granted",
+    "pwaPermissionDenied": "Denied",
+    "pwaPermissionPending": "Pending",
+    "pwaPermissionUnsupported": "Unsupported",
+    "pwaAllowAll": "Allow All Permissions",
+    "pwaGoToApp": "Go to App"
 }

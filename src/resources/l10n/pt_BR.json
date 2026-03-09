@@ -900,5 +900,22 @@
     "notificationEnabled": "Notificações ativadas",
     "notificationDisabled": "Notificações desativadas",
     "notificationRequest": "Ativar Notificações",
-    "notificationUnsupported": "Notificações não suportadas"
+    "notificationUnsupported": "Notificações não suportadas",
+    "pwaInstallTitle": "Instalar Aplicativo",
+    "pwaInstallButton": "Instalar Agora",
+    "pwaInstalled": "App Instalado",
+    "pwaInstalledDescription": "O aplicativo já está instalado no seu dispositivo.",
+    "pwaIosInstructions": "Para instalar no iPhone/iPad:",
+    "pwaIosStep": "Toque em Compartilhar → Adicionar à Tela de Início",
+    "pwaOpenInBrowser": "Abra esta página no navegador do celular para instalar.",
+    "pwaPermissions": "Permissões Necessárias",
+    "pwaPermissionNotification": "Notificações",
+    "pwaPermissionLocation": "Localização",
+    "pwaPermissionCamera": "Câmera",
+    "pwaPermissionGranted": "Concedida",
+    "pwaPermissionDenied": "Negada",
+    "pwaPermissionPending": "Pendente",
+    "pwaPermissionUnsupported": "Não suportado",
+    "pwaAllowAll": "Permitir Todas as Permissões",
+    "pwaGoToApp": "Ir para o App"
 }
