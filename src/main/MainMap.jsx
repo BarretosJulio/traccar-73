@@ -67,6 +67,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
           onMarkerClick={onMarkerClick}
           selectedPosition={selectedPosition}
           showStatus
+          onSourceReady={handleSourceReady}
         />
         <MapDefaultCamera />
         <MapSelectedDevice />
