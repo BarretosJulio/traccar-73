@@ -16,6 +16,7 @@ const MapPositions = ({
   showStatus,
   selectedPosition,
   titleField,
+  onSourceReady,
 }) => {
   const id = useId();
   const clusters = `${id}-clusters`;
