@@ -14,8 +14,10 @@ import {
   nativePostMessage,
 } from './common/components/NativeInterface';
 import fetchOrThrow from './common/util/fetchOrThrow';
+import useNotifications from './common/notifications/useNotifications';
 
 const POLLING_INTERVAL = 5000; // 5 seconds
+const EVENT_POLLING_WINDOW_MS = 10000; // Look back 10s for events
 
 const SocketController = ({ demoMode }) => {
   const dispatch = useDispatch();
@@ -24,7 +26,7 @@ const SocketController = ({ demoMode }) => {
   const authenticated = useSelector((state) => Boolean(state.session.user));
 
   const pollingRef = useRef(null);
-  const lastEventIdRef = useRef(0);
+  const processedEventIdsRef = useRef(new Set());
 
   const [notifications, setNotifications] = useState([]);
 
@@ -32,6 +34,7 @@ const SocketController = ({ demoMode }) => {
   const soundAlarms = useAttributePreference('soundAlarms', 'sos');
 
   const features = useFeatures();
+  const { sendEventNotification } = useNotifications();
 
   const handleEvents = useCallback(
     (events) => {
@@ -54,9 +57,42 @@ const SocketController = ({ demoMode }) => {
           show: true,
         })),
       );
+
+      // Send push notifications for each event
+      events.forEach((event) => {
+        sendEventNotification(event);
+      });
     },
-    [features, dispatch, soundEvents, soundAlarms],
+    [features, dispatch, soundEvents, soundAlarms, sendEventNotification],
   );
+
+  const pollEvents = useCallback(async () => {
+    try {
+      const now = new Date();
+      const from = new Date(now.getTime() - EVENT_POLLING_WINDOW_MS);
+      const params = new URLSearchParams({
+        from: from.toISOString(),
+        to: now.toISOString(),
+      });
+      const response = await fetchOrThrow(`/api/events?${params}`);
+      const events = await response.json();
+
+      // Filter out already-processed events
+      const newEvents = events.filter((e) => !processedEventIdsRef.current.has(e.id));
+      if (newEvents.length > 0) {
+        newEvents.forEach((e) => processedEventIdsRef.current.add(e.id));
+        handleEvents(newEvents);
+
+        // Prune old event IDs to prevent memory leak (keep last 200)
+        if (processedEventIdsRef.current.size > 200) {
+          const arr = Array.from(processedEventIdsRef.current);
+          processedEventIdsRef.current = new Set(arr.slice(-100));
+        }
+      }
+    } catch {
+      // Silent fail — event polling is non-critical
+    }
+  }, [handleEvents]);
 
   const pollData = useCallback(async () => {
     try {
@@ -71,10 +107,13 @@ const SocketController = ({ demoMode }) => {
       dispatch(devicesActions.update(devices));
       dispatch(sessionActions.updatePositions(positions));
       dispatch(sessionActions.updateSocket(true));
+
+      // Poll events alongside data
+      pollEvents();
     } catch (error) {
       dispatch(sessionActions.updateSocket(false));
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, pollEvents]);
 
   // Start polling when authenticated (skip in demo mode)
   useEffect(() => {
