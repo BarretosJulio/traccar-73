@@ -35,6 +35,7 @@ src/
 ├── common/
 │   ├── attributes/     # Hooks de atributos (device, user, server, etc.)
 │   ├── components/     # Componentes compartilhados (BottomMenu, Loader, etc.)
+│   ├── notifications/ # Push notifications (manager, events, hook)
 │   ├── theme/          # Tema MUI (palette, components, dimensions)
 │   └── util/           # Utilitários (formatter, permissions, constants)
 ├── landing/            # Landing page e onboarding

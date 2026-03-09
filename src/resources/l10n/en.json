@@ -895,5 +895,10 @@
     "sharedRefresh": "Refresh",
     "commandProtocol": "Protocol",
     "commandQuickActions": "Available Commands",
-    "commandSelectCommand": "Parameters"
+    "commandSelectCommand": "Parameters",
+    "notificationPermission": "Notification Permission",
+    "notificationEnabled": "Notifications enabled",
+    "notificationDisabled": "Notifications disabled",
+    "notificationRequest": "Enable Notifications",
+    "notificationUnsupported": "Notifications not supported"
 }

@@ -36,5 +36,7 @@ Slices: `devices`, `session`, `events`, `geofences`, `groups`, `drivers`, `maint
 - Geofences page tem MapView próprio — não usa MainMap de background
 - Demo mode normaliza categoria `pickup` → `car`
 
+- Push notifications nativas via Web Notifications API (modular: notificationManager, notificationEvents, useNotifications)
+
 ## Última Atualização
-2026-03-08
+2026-03-09
