@@ -869,6 +869,31 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
           </DialogContent>
         </Dialog>
       )}
+      {/* Engine block/unblock confirmation */}
+      <Dialog
+        open={Boolean(engineConfirm)}
+        onClose={() => setEngineConfirm(null)}
+        maxWidth="xs"
+      >
+        <DialogTitle sx={{ fontWeight: 700, fontSize: '1rem' }}>
+          {engineConfirm === 'block' ? t('commandConfirmBlock') : t('commandConfirmUnblock')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2">
+            {device?.name}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEngineConfirm(null)}>{t('sharedCancel')}</Button>
+          <Button
+            variant="contained"
+            color={engineConfirm === 'block' ? 'error' : 'success'}
+            onClick={() => handleEngineCommand(engineConfirm === 'block' ? 'engineStop' : 'engineResume')}
+          >
+            {engineConfirm === 'block' ? t('commandEngineBlock') : t('commandEngineUnblock')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
