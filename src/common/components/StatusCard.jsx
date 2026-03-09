@@ -341,6 +341,20 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
     navigate(`/app/settings/geofence/${item.id}`);
   }, [navigate, position, demoMode]);
 
+  const handleEngineCommand = useCatch(async (type) => {
+    if (demoMode) {
+      dispatch(errorsActions.push(t('demoModeUnavailable')));
+      return;
+    }
+    setEngineConfirm(null);
+    const command = { deviceId, type };
+    await fetchOrThrow('/api/commands/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(command),
+    });
+  });
+
   // Build chips
   const chips = [];
   if (attrs.ignition !== undefined) {
