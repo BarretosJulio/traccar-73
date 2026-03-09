@@ -19,6 +19,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  Button,
   Table,
   TableHead,
   TableRow,
@@ -29,7 +31,6 @@ import { makeStyles } from 'tss-react/mui';
 import { useTheme, useMediaQuery } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RouteIcon from '@mui/icons-material/Route';
-import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PendingIcon from '@mui/icons-material/Pending';
@@ -54,6 +55,9 @@ import HeightIcon from '@mui/icons-material/Height';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import NetworkCellIcon from '@mui/icons-material/NetworkCell';
+import InfoIcon from '@mui/icons-material/Info';
+import ShareIcon from '@mui/icons-material/Share';
+import GridViewIcon from '@mui/icons-material/GridView';
 import dayjs from 'dayjs';
 
 import { useTranslation } from './LocalizationProvider';
