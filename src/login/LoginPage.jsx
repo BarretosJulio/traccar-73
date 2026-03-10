@@ -119,10 +119,10 @@ const LoginPage = () => {
   }, []);
 
   const handleDemoLogin = () => {
+    dispatch(sessionActions.updateUser(DEMO_USER));
     dispatch(devicesActions.refresh([]));
     dispatch(eventsActions.deleteAll());
     dispatch(sessionActions.updatePositions([]));
-    dispatch(sessionActions.updateUser(DEMO_USER));
     window.sessionStorage.setItem('demoMode', 'true');
     navigate('/app', { replace: true });
   };
