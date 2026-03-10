@@ -15,6 +15,10 @@ Formato: [Semantic Versioning](https://semver.org/)
   - Contexto: O sistema quebrava ao carregar o `App.jsx` devido à falta da importação do hook `useCallback` do React.
   - Justificativa técnica: Adição do import `{ useCallback }` no `App.jsx`.
 
+- **Modo Demo intermitente (Submit de Form e Perda de Sessão)**
+  - Contexto: O botão de Demo dentro de um `<form>` causava refresh antes da navegação, e o sistema não recuperava o `DEMO_USER` após F5.
+  - Correção: Adição de `type="button"` nos botões de login e lógica de auto-restore do `DEMO_USER` no `App.jsx`.
+
 - **PWA: Suporte nativo a iOS e Manifest inválido**
   - Contexto: O app não rodava em tela cheia no iPhone e o manifest do Android estava quebrado com placeholders `${title}`.
   - Correção: Adição de meta tags `apple-mobile-web-app-capable` e normalização das strings literais no `vite.config.js`.

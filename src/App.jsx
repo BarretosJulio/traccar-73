@@ -18,7 +18,7 @@ import { apiUrl } from './common/util/apiUrl';
 import MainMap from './main/MainMap';
 import usePwaInstallTracker from './common/util/usePwaInstallTracker';
 import { useTenant } from './common/components/TenantProvider';
-import { DEFAULT_TENANT_SLUG } from './common/util/constants';
+import { DEFAULT_TENANT_SLUG, DEMO_USER } from './common/util/constants';
 
 const useStyles = makeStyles()(() => ({
   page: {
@@ -85,6 +85,12 @@ const App = () => {
     }
     return null;
   }, [demoMode]);
+
+  useEffect(() => {
+    if (demoMode && !user) {
+      dispatch(sessionActions.updateUser(DEMO_USER));
+    }
+  }, [demoMode, user, dispatch]);
 
   if (user == null) {
     return <Loader />;

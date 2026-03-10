@@ -344,6 +344,7 @@ const LoginPage = () => {
         <Button
           onClick={handleDemoLogin}
           variant="outlined"
+          type="button"
           sx={{
             py: 1,
             fontSize: '0.8rem',
@@ -363,6 +364,7 @@ const LoginPage = () => {
             onClick={() => navigate('/install')}
             variant="contained"
             color="primary"
+            type="button"
             startIcon={<GetAppIcon />}
             sx={{
               py: 1,
