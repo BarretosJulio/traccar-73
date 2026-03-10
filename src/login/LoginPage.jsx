@@ -22,6 +22,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LoginIcon from '@mui/icons-material/Login';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -42,6 +43,7 @@ import fetchOrThrow from '../common/util/fetchOrThrow';
 import { apiUrl } from '../common/util/apiUrl';
 import { DEFAULT_TENANT_SLUG, DEMO_USER } from '../common/util/constants';
 import { lightInputSx } from './loginStyles';
+import usePwaInstallPrompt from '../common/util/usePwaInstallPrompt';
 
 const useStyles = makeStyles()((theme) => ({
   options: {
@@ -74,6 +76,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const t = useTranslation();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { isInstalled } = usePwaInstallPrompt();
 
   const { languages, language, setLocalLanguage } = useLocalization();
   const languageList = Object.entries(languages).map((values) => ({
@@ -354,6 +358,25 @@ const LoginPage = () => {
         >
           {t('loginDemoButton')}
         </Button>
+        {isMobile && !isInstalled && (
+          <Button
+            onClick={() => navigate('/install')}
+            variant="contained"
+            color="primary"
+            startIcon={<GetAppIcon />}
+            sx={{
+              py: 1,
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              boxShadow: '0 4px 14px 0 rgba(0, 245, 160, 0.39)',
+              '&:hover': {
+                boxShadow: '0 6px 20px rgba(0, 245, 160, 0.5)',
+              },
+            }}
+          >
+            Instalar App
+          </Button>
+        )}
         {!openIdForced && (
           <div className={classes.extraContainer}>
             {registrationEnabled && (
