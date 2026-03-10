@@ -10,10 +10,20 @@ Formato: [Semantic Versioning](https://semver.org/)
 - **Botão Modo Demo inoperante (Validação de Termos de Uso)**
   - Contexto: Após o ajuste do `demoMode` via `sessionStorage`, clicar em "Entrar como Cliente Demo" silenciosamente falhava ao renderizar o `/app`. Isso acontecia pois o usuário fake possui `attributes: {}`, o que obrigava o `App.jsx` a abrir o popup de "Aceitar Termos" sem um ID válido.
   - Justificativa técnica: O `App.jsx` foi atualizado para ignorar a condição de aceite de termos caso o estado da sessão seja `demoMode=true`.
-  - Impacto em banco: Nenhum
-  - Impacto em APIs: Nenhum
-  - Impacto em regras de negócio: O botão "Demo" agora entra diretamente para o Dashboard mesmo se o tenant possuir Termos de Uso ativados.
 
+- **Crash (ReferenceError: useCallback is not defined)**
+  - Contexto: O sistema quebrava ao carregar o `App.jsx` devido à falta da importação do hook `useCallback` do React.
+  - Justificativa técnica: Adição do import `{ useCallback }` no `App.jsx`.
+
+- **PWA: Suporte nativo a iOS e Manifest inválido**
+  - Contexto: O app não rodava em tela cheia no iPhone e o manifest do Android estava quebrado com placeholders `${title}`.
+  - Correção: Adição de meta tags `apple-mobile-web-app-capable` e normalização das strings literais no `vite.config.js`.
+
+### Added
+- **Botão "Instalar App" no Login Mobile**
+  - Contexto: Adicionado botão de instalação do PWA que aparece apenas em dispositivos móveis, guiando o usuário para a tela de permissões `/install`.
+
+### Fixed
 - **Modo Demo (Dashboard redirecionando p/ Login e vazando dados)**
   - Contexto: A sessão do modo demo "caía" instantaneamente ao recarregar a página (perdendo a flag `demoMode`) e exibindo veículos reais da conta admin em background (cache residente + WebSocket ativo).
   - Justificativa técnica: O `App.jsx` excluía imperativamente a flag do sessionStorage, e o `LoginPage` herdava o estado do Redux das conexões passadas.
