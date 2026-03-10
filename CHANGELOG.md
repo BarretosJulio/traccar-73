@@ -6,6 +6,14 @@ Formato: [Semantic Versioning](https://semver.org/)
 
 ## [0.12.0] — 2026-03-09
 
+### Fixed
+- **Modo Demo (Dashboard redirecionando p/ Login e vazando dados)**
+  - Contexto: A sessão do modo demo "caía" instantaneamente ao recarregar a página (perdendo a flag `demoMode`) e exibindo veículos reais da conta admin em background (cache residente + WebSocket ativo).
+  - Justificativa técnica: O `App.jsx` excluía imperativamente a flag do sessionStorage, e o `LoginPage` herdava o estado do Redux das conexões passadas.
+  - Impacto em banco: Nenhum
+  - Impacto em APIs: Alterado interceptador `fetchOrThrow.js` para ignorar HTTP 401 em modo Demo.
+  - Impacto em regras de negócio: O ambiente Demo passa a ser um sandbox limpo através da deleção dos stores `devices`, `positions` e `events`.
+
 ### Added
 - **Página de instalação PWA** (`src/pwa/InstallPage.jsx`)
   - Contexto: Página dedicada rota `/install` para guiar usuário na instalação do PWA no celular

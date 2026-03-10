@@ -25,7 +25,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { sessionActions } from '../store';
+import { sessionActions, devicesActions, eventsActions } from '../store';
 import { useLocalization, useTranslation } from '../common/components/LocalizationProvider';
 import LoginLayout from './LoginLayout';
 import usePersistedState from '../common/util/usePersistedState';
@@ -115,6 +115,9 @@ const LoginPage = () => {
   }, []);
 
   const handleDemoLogin = () => {
+    dispatch(devicesActions.refresh([]));
+    dispatch(eventsActions.deleteAll());
+    dispatch(sessionActions.updatePositions([]));
     dispatch(sessionActions.updateUser(DEMO_USER));
     window.sessionStorage.setItem('demoMode', 'true');
     navigate('/app', { replace: true });

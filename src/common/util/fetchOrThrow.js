@@ -87,12 +87,17 @@ const fetchOrThrow = async (input, init) => {
 
   if (!response.ok) {
     if (response.status === 401) {
-      const loginPath = '/login';
-      if (window.location.pathname !== loginPath) {
-        window.sessionStorage.setItem('sessionExpired', 'true');
-        window.location.href = loginPath;
+      const isDemo = window.sessionStorage.getItem('demoMode') === 'true';
+      if (!isDemo) {
+        const loginPath = '/login';
+        if (window.location.pathname !== loginPath) {
+          window.sessionStorage.setItem('sessionExpired', 'true');
+          window.location.href = loginPath;
+        }
+        throw new Error('Sessão expirada. Faça login novamente.');
+      } else {
+        throw new Error('Não autorizado no modo Demo.');
       }
-      throw new Error('Sessão expirada. Faça login novamente.');
     }
 
     const contentType = response.headers.get('content-type') || '';

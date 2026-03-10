@@ -44,14 +44,16 @@ const App = () => {
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const isSettingsRoute = pathname.startsWith('/app/settings');
-  const [demoMode, setDemoMode] = useState(() => {
-    const saved = window.sessionStorage.getItem('demoMode');
-    if (saved === 'true') {
+  const [demoMode, setDemoModeState] = useState(() => window.sessionStorage.getItem('demoMode') === 'true');
+
+  const setDemoMode = (value) => {
+    setDemoModeState(value);
+    if (value) {
+      window.sessionStorage.setItem('demoMode', 'true');
+    } else {
       window.sessionStorage.removeItem('demoMode');
-      return true;
     }
-    return false;
-  });
+  };
 
   const newServer = useSelector((state) => state.session.server.newServer);
   const termsUrl = useSelector((state) => state.session.server.attributes.termsUrl);
