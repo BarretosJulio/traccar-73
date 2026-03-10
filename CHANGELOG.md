@@ -7,6 +7,13 @@ Formato: [Semantic Versioning](https://semver.org/)
 ## [0.12.0] — 2026-03-09
 
 ### Fixed
+- **Botão Modo Demo inoperante (Validação de Termos de Uso)**
+  - Contexto: Após o ajuste do `demoMode` via `sessionStorage`, clicar em "Entrar como Cliente Demo" silenciosamente falhava ao renderizar o `/app`. Isso acontecia pois o usuário fake possui `attributes: {}`, o que obrigava o `App.jsx` a abrir o popup de "Aceitar Termos" sem um ID válido.
+  - Justificativa técnica: O `App.jsx` foi atualizado para ignorar a condição de aceite de termos caso o estado da sessão seja `demoMode=true`.
+  - Impacto em banco: Nenhum
+  - Impacto em APIs: Nenhum
+  - Impacto em regras de negócio: O botão "Demo" agora entra diretamente para o Dashboard mesmo se o tenant possuir Termos de Uso ativados.
+
 - **Modo Demo (Dashboard redirecionando p/ Login e vazando dados)**
   - Contexto: A sessão do modo demo "caía" instantaneamente ao recarregar a página (perdendo a flag `demoMode`) e exibindo veículos reais da conta admin em background (cache residente + WebSocket ativo).
   - Justificativa técnica: O `App.jsx` excluía imperativamente a flag do sessionStorage, e o `LoginPage` herdava o estado do Redux das conexões passadas.

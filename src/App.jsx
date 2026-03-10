@@ -46,14 +46,14 @@ const App = () => {
   const isSettingsRoute = pathname.startsWith('/app/settings');
   const [demoMode, setDemoModeState] = useState(() => window.sessionStorage.getItem('demoMode') === 'true');
 
-  const setDemoMode = (value) => {
+  const setDemoMode = useCallback((value) => {
     setDemoModeState(value);
     if (value) {
       window.sessionStorage.setItem('demoMode', 'true');
     } else {
       window.sessionStorage.removeItem('demoMode');
     }
-  };
+  }, []);
 
   const newServer = useSelector((state) => state.session.server.newServer);
   const termsUrl = useSelector((state) => state.session.server.attributes.termsUrl);
@@ -89,7 +89,7 @@ const App = () => {
   if (user == null) {
     return <Loader />;
   }
-  if (termsUrl && !user.attributes.termsAccepted) {
+  if (termsUrl && !demoMode && !user.attributes.termsAccepted) {
     return <TermsDialog open onCancel={() => navigate('/login')} onAccept={() => acceptTerms()} />;
   }
   return (
@@ -101,7 +101,7 @@ const App = () => {
       <DemoController active={demoMode} />
       {desktop && isSettingsRoute && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
-          <MainMap filteredPositions={[]} selectedPosition={null} onEventsClick={() => {}} />
+          <MainMap filteredPositions={[]} selectedPosition={null} onEventsClick={() => { }} />
         </div>
       )}
       <div className={classes.page}>
