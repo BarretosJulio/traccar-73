@@ -35,11 +35,12 @@ const AppThemeProvider = ({ children }) => {
   const preferDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [userDarkMode, setUserDarkMode] = usePersistedState('darkMode', null);
 
-  const darkMode = userDarkMode !== null
-    ? userDarkMode
-    : server?.attributes?.darkMode !== undefined
-      ? server.attributes.darkMode
-      : preferDarkMode;
+  const darkMode =
+    userDarkMode !== null
+      ? userDarkMode
+      : server?.attributes?.darkMode !== undefined
+        ? server.attributes.darkMode
+        : preferDarkMode;
 
   const toggleDarkMode = useCallback(() => {
     setUserDarkMode(!darkMode);

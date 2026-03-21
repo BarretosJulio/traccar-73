@@ -1,10 +1,10 @@
 /**
  * Notification Manager Module
- * 
+ *
  * Manages browser/PWA push notification permissions and delivery.
  * Uses the Web Notifications API (no Firebase/VAPID required).
  * Works on desktop browsers and installed PWAs.
- * 
+ *
  * @module notificationManager
  */
 
@@ -57,7 +57,7 @@ export const wasPermissionAsked = () => {
  * Shows a native browser/PWA notification.
  * Uses service worker registration when available (PWA background support).
  * Falls back to standard Notification constructor.
- * 
+ *
  * @param {string} title - Notification title
  * @param {Object} options - Notification options
  * @param {string} options.body - Notification body text

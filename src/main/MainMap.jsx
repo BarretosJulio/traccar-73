@@ -11,6 +11,7 @@ import PoiMap from '../map/main/PoiMap';
 import MapPadding from '../map/MapPadding';
 import { devicesActions } from '../store';
 import MapDefaultCamera from '../map/main/MapDefaultCamera';
+import MapCenterControl from '../map/main/MapCenterControl';
 import MapLiveRoutes from '../map/main/MapLiveRoutes';
 import MapPositions from '../map/MapPositions';
 import MapOverlay from '../map/overlay/MapOverlay';
@@ -71,6 +72,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
         />
         <MapDefaultCamera />
         <MapSelectedDevice />
+        <MapCenterControl />
         <PoiMap />
       </MapView>
       <MapScale />

@@ -1,10 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  List, ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction,
-  IconButton, Typography, Autocomplete, TextField, Button,
-  CircularProgress, Box, Chip, Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  IconButton,
+  Typography,
+  Autocomplete,
+  TextField,
+  Button,
+  CircularProgress,
+  Box,
+  Chip,
+  Tooltip,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
@@ -212,9 +226,11 @@ const GeofenceDevicesDialog = ({ open, onClose, geofenceId, geofenceName }) => {
                       onClick={() => handleRemove(device.id)}
                       disabled={removingId === device.id}
                     >
-                      {removingId === device.id
-                        ? <CircularProgress size={16} />
-                        : <DeleteIcon fontSize="small" />}
+                      {removingId === device.id ? (
+                        <CircularProgress size={16} />
+                      ) : (
+                        <DeleteIcon fontSize="small" />
+                      )}
                     </IconButton>
                   </Tooltip>
                 </ListItemSecondaryAction>

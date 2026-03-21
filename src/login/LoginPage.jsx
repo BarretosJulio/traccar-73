@@ -191,7 +191,10 @@ const LoginPage = () => {
     <LoginLayout>
       <div className={classes.options}>
         {nativeEnvironment && changeEnabled && (
-          <IconButton sx={{ color: 'rgba(255,255,255,0.7)' }} onClick={() => navigate('/change-server')}>
+          <IconButton
+            sx={{ color: 'rgba(255,255,255,0.7)' }}
+            onClick={() => navigate('/change-server')}
+          >
             <Tooltip
               title={`${t('settingsServer')}: ${window.location.hostname}`}
               open={showServerTooltip}
@@ -218,7 +221,9 @@ const LoginPage = () => {
                 borderRadius: '10px',
                 fontWeight: 600,
                 '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.25)' },
-                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.5)' },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'rgba(255,255,255,0.5)',
+                },
                 '.MuiSvgIcon-root': { color: '#fff' },
               }}
             >
@@ -387,7 +392,11 @@ const LoginPage = () => {
                 className={classes.link}
                 underline="none"
                 variant="caption"
-                sx={{ fontWeight: 500, color: 'rgba(255,255,255,0.6)', '&:hover': { color: '#fff' } }}
+                sx={{
+                  fontWeight: 500,
+                  color: 'rgba(255,255,255,0.6)',
+                  '&:hover': { color: '#fff' },
+                }}
               >
                 {t('loginRegister')}
               </Link>
@@ -398,7 +407,11 @@ const LoginPage = () => {
                 className={classes.link}
                 underline="none"
                 variant="caption"
-                sx={{ fontWeight: 500, color: 'rgba(255,255,255,0.6)', '&:hover': { color: '#fff' } }}
+                sx={{
+                  fontWeight: 500,
+                  color: 'rgba(255,255,255,0.6)',
+                  '&:hover': { color: '#fff' },
+                }}
               >
                 {t('loginReset')}
               </Link>

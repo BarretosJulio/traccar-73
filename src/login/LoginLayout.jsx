@@ -70,7 +70,10 @@ const LoginLayout = ({ children }) => {
   const tenantCtx = useTenant();
   const tenant = tenantCtx?.tenant;
 
-  const sidebarColor = tenant?.login_sidebar_color || tenant?.color_primary || (theme.palette.mode === 'dark' ? '#134e4a' : '#0f766e');
+  const sidebarColor =
+    tenant?.login_sidebar_color ||
+    tenant?.color_primary ||
+    (theme.palette.mode === 'dark' ? '#134e4a' : '#0f766e');
   const bgImage = tenant?.login_bg_image;
   const bgColor = tenant?.login_bg_color;
 
@@ -84,9 +87,10 @@ const LoginLayout = ({ children }) => {
   } else if (bgColor) {
     contentStyle.backgroundColor = bgColor;
   } else {
-    contentStyle.background = theme.palette.mode === 'dark'
-      ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
-      : 'linear-gradient(135deg, #f0fdfa 0%, #f5f7fa 50%, #ecfdf5 100%)';
+    contentStyle.background =
+      theme.palette.mode === 'dark'
+        ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
+        : 'linear-gradient(135deg, #f0fdfa 0%, #f5f7fa 50%, #ecfdf5 100%)';
   }
 
   return (

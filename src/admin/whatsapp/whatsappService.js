@@ -4,10 +4,12 @@ const SUPABASE_PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || 'foifugn
 const EDGE_BASE = `https://${SUPABASE_PROJECT_ID}.supabase.co/functions/v1`;
 
 const getAuthHeaders = async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   if (!session) throw new Error('Not authenticated');
   return {
-    'Authorization': `Bearer ${session.access_token}`,
+    Authorization: `Bearer ${session.access_token}`,
     'Content-Type': 'application/json',
   };
 };
@@ -37,20 +39,20 @@ const callProxy = async (action, body = null, params = {}) => {
 
 export const whatsappService = {
   createInstance: () => callProxy('create-instance', {}),
-  
+
   getConnectionStatus: () => callProxy('connect'),
-  
+
   disconnect: () => callProxy('disconnect', {}),
-  
+
   sendText: (phone, message, messageType = 'manual') =>
     callProxy('send-text', { phone, message, messageType }),
-  
+
   getAlerts: () => callProxy('get-alerts'),
-  
+
   saveAlerts: (alerts) => callProxy('save-alerts', { alerts }),
-  
+
   getMessages: (limit = 50) => callProxy('get-messages', null, { limit: String(limit) }),
-  
+
   setWebhook: (webhookUrl) => callProxy('set-webhook', { webhookUrl }),
 };
 

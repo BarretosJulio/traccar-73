@@ -1,10 +1,10 @@
 /**
  * Notification Events Formatter Module
- * 
+ *
  * Maps Traccar event types to human-readable notification content.
  * Supports all standard Traccar event types: ignition, geofences, alarms,
  * speed, fuel, maintenance, driver changes, etc.
- * 
+ *
  * @module notificationEvents
  */
 
@@ -57,7 +57,7 @@ const EVENT_EMOJIS = {
 
 /**
  * Formats a Traccar event into a notification payload.
- * 
+ *
  * @param {Object} event - Traccar event object
  * @param {number} event.id - Event ID
  * @param {string} event.type - Event type (e.g., 'ignitionOn', 'geofenceEnter')
@@ -120,7 +120,7 @@ export const formatEventNotification = (event, devices, t) => {
 /**
  * Checks if an event type should trigger a notification.
  * All event types are enabled by default.
- * 
+ *
  * @param {string} eventType - Traccar event type
  * @returns {boolean}
  */

@@ -56,18 +56,41 @@ const EventPage = () => {
   );
 
   useEffectAsync(async () => {
+    const isDemo = window.sessionStorage.getItem('demoMode') === 'true';
     if (id) {
-      const response = await fetchOrThrow(`/api/events/${id}`);
-      setEvent(await response.json());
+      if (isDemo) {
+        setEvent({
+          id: Number(id),
+          deviceId: 99901,
+          type: 'deviceOverspeed',
+          eventTime: new Date().toISOString(),
+          attributes: { message: '[DEMO] Alerta simulado' }
+        });
+      } else {
+        const response = await fetchOrThrow(`/api/events/${id}`);
+        setEvent(await response.json());
+      }
     }
   }, [id]);
 
   useEffectAsync(async () => {
+    const isDemo = window.sessionStorage.getItem('demoMode') === 'true';
     if (event && event.positionId) {
-      const response = await fetchOrThrow(`/api/positions?id=${event.positionId}`);
-      const positions = await response.json();
-      if (positions.length > 0) {
-        setPosition(positions[0]);
+      if (isDemo) {
+        setPosition({
+          id: event.positionId,
+          deviceId: event.deviceId,
+          latitude: event.latitude || -23.5505,
+          longitude: event.longitude || -46.6333,
+          address: event.address || 'Praça da Sé, Centro, São Paulo, SP',
+          fixTime: event.eventTime,
+        });
+      } else {
+        const response = await fetchOrThrow(`/api/positions?id=${event.positionId}`);
+        const positions = await response.json();
+        if (positions.length > 0) {
+          setPosition(positions[0]);
+        }
       }
     }
   }, [event]);

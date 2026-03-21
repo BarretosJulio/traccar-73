@@ -18,6 +18,8 @@ import SettingsMenu from './components/SettingsMenu';
 import SelectField from '../common/components/SelectField';
 import { geofencesActions } from '../store';
 import useSettingsStyles from './common/useSettingsStyles';
+import { Box, Chip } from '@mui/material';
+import { GEOFENCE_TYPES } from '../common/util/geofenceTypes';
 
 const GeofencePage = () => {
   const { classes } = useSettingsStyles();
@@ -74,6 +76,33 @@ const GeofencePage = () => {
                 endpoint="/api/calendars"
                 label={t('sharedCalendar')}
               />
+              <Typography variant="subtitle2" sx={{ mt: 1, mb: 1, color: 'text.secondary' }}>Categoria / Tipo</Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                {GEOFENCE_TYPES.map((typeObj) => {
+                  const currentType = item.attributes.type || 'custom';
+                  return (
+                    <Chip
+                      key={typeObj.value}
+                      icon={typeObj.icon}
+                      label={typeObj.label}
+                      onClick={() => setItem({ ...item, attributes: { ...item.attributes, type: typeObj.value } })}
+                      variant={currentType === typeObj.value ? 'filled' : 'outlined'}
+                      sx={{
+                        fontWeight: 600,
+                        borderColor: typeObj.color + '50',
+                        color: currentType === typeObj.value ? '#fff' : typeObj.color,
+                        backgroundColor: currentType === typeObj.value ? typeObj.color : 'transparent',
+                        '&:hover': {
+                          backgroundColor: currentType === typeObj.value ? typeObj.color : typeObj.color + '15',
+                        },
+                        '& .MuiChip-icon': {
+                          color: currentType === typeObj.value ? '#fff' : typeObj.color,
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </Box>
               <FormControlLabel
                 control={
                   <Checkbox

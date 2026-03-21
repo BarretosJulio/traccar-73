@@ -10,17 +10,16 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  Accordion,
-  AccordionSummary,
-  Typography,
-  AccordionDetails,
+  Collapse,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TuneIcon from '@mui/icons-material/Tune';
 import AddAttributeDialog from './AddAttributeDialog';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import { useAttributePreference } from '../../common/util/preferences';
+import { useHudTheme } from '../../common/util/ThemeContext';
 import {
   distanceFromMeters,
   distanceToMeters,
@@ -33,7 +32,6 @@ import {
   volumeUnitString,
 } from '../../common/util/converter';
 import useFeatures from '../../common/util/useFeatures';
-import useSettingsStyles from '../common/useSettingsStyles';
 
 const EditAttributesAccordion = ({
   attribute,
@@ -42,16 +40,16 @@ const EditAttributesAccordion = ({
   definitions,
   focusAttribute,
 }) => {
-  const { classes } = useSettingsStyles();
   const t = useTranslation();
-
   const features = useFeatures();
+  const { theme } = useHudTheme();
 
   const speedUnit = useAttributePreference('speedUnit');
   const distanceUnit = useAttributePreference('distanceUnit');
   const volumeUnit = useAttributePreference('volumeUnit');
 
   const [addDialogShown, setAddDialogShown] = useState(false);
+  const [isOpen, setIsOpen] = useState(!!attribute);
 
   const updateAttribute = (key, value, type, subtype) => {
     const updatedAttributes = { ...attributes };
@@ -176,72 +174,111 @@ const EditAttributesAccordion = ({
     }
   };
 
-  return features.disableAttributes ? (
-    ''
-  ) : (
-    <Accordion defaultExpanded={!!attribute}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="subtitle1">{t('sharedAttributes')}</Typography>
-      </AccordionSummary>
-      <AccordionDetails className={classes.details}>
-        {convertToList(attributes).map(({ key, value, type, subtype }) => {
-          if (type === 'boolean') {
-            return (
-              <Grid container direction="row" justifyContent="space-between" key={key}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={value}
-                      onChange={(e) => updateAttribute(key, e.target.checked)}
-                    />
-                  }
-                  label={getAttributeName(key, subtype)}
-                />
-                <IconButton
-                  size="small"
-                  className={classes.removeButton}
-                  onClick={() => deleteAttribute(key)}
+  if (features.disableAttributes) {
+    return null;
+  }
+
+  return (
+    <div 
+      className="mb-4 rounded-3xl shadow-md border overflow-hidden transition-all duration-300"
+      style={{ background: theme.bgSecondary, borderColor: theme.border }}
+    >
+      <div
+        className="p-4 flex items-center justify-between cursor-pointer active:opacity-70 transition-all"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="flex items-center gap-3">
+          <div 
+            className="w-8 h-8 rounded-xl flex items-center justify-center shadow-inner"
+            style={{ background: theme.bg, color: theme.accent, border: `1px solid ${theme.border}` }}
+          >
+            <TuneIcon sx={{ fontSize: 16 }} />
+          </div>
+          <h3 className="text-[11px] font-black uppercase tracking-widest" style={{ color: theme.textPrimary }}>{t('sharedAttributes')}</h3>
+        </div>
+        <ExpandMoreIcon sx={{ fontSize: 18 }} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} style={{ color: theme.textMuted }} />
+      </div>
+      <Collapse in={isOpen}>
+        <div className="p-4 pt-1 flex flex-col gap-4">
+          <div className="h-px mb-1 opacity-10" style={{ background: theme.textMuted }} />
+
+          {convertToList(attributes).map(({ key, value, type, subtype }) => {
+            if (type === 'boolean') {
+              return (
+                <div 
+                  key={key} 
+                  className="flex items-center justify-between p-2 px-3 rounded-2xl border shadow-inner"
+                  style={{ background: theme.bg, borderColor: theme.border }}
                 >
-                  <CloseIcon fontSize="small" />
-                </IconButton>
-              </Grid>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={value}
+                        onChange={(e) => updateAttribute(key, e.target.checked)}
+                        sx={{ color: theme.accent, '&.Mui-checked': { color: theme.accent } }}
+                      />
+                    }
+                    label={<span className="text-[10px] font-black uppercase tracking-widest" style={{ color: theme.textPrimary }}>{getAttributeName(key, subtype)}</span>}
+                  />
+                  <IconButton size="small" onClick={() => deleteAttribute(key)} style={{ color: theme.textMuted }}>
+                    <CloseIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                </div>
+              );
+            }
+            return (
+              <div key={key} className="flex flex-col gap-1.5">
+                <span className="text-[9px] font-black uppercase px-1" style={{ color: theme.textMuted }}>{getAttributeName(key, subtype)}</span>
+                <FormControl key={key} fullWidth size="small">
+                  <OutlinedInput
+                    type={type === 'number' ? 'number' : 'text'}
+                    value={getDisplayValue(value, subtype)}
+                    onChange={(e) => updateAttribute(key, e.target.value, type, subtype)}
+                    autoFocus={focusAttribute === key}
+                    sx={{ 
+                      borderRadius: '12px', 
+                      background: theme.bg, 
+                      fontSize: '12px',
+                      '& .MuiOutlinedInput-notchedOutline': { borderColor: theme.border },
+                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: theme.accent },
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton size="small" edge="end" onClick={() => deleteAttribute(key)} style={{ color: theme.textMuted }}>
+                          <CloseIcon sx={{ fontSize: 14 }} />
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
+              </div>
             );
-          }
-          return (
-            <FormControl key={key}>
-              <InputLabel>{getAttributeName(key, subtype)}</InputLabel>
-              <OutlinedInput
-                label={getAttributeName(key, subtype)}
-                type={type === 'number' ? 'number' : 'text'}
-                value={getDisplayValue(value, subtype)}
-                onChange={(e) => updateAttribute(key, e.target.value, type, subtype)}
-                autoFocus={focusAttribute === key}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton size="small" edge="end" onClick={() => deleteAttribute(key)}>
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-          );
-        })}
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => setAddDialogShown(true)}
-          startIcon={<AddIcon />}
-        >
-          {t('sharedAdd')}
-        </Button>
-        <AddAttributeDialog
-          open={addDialogShown}
-          onResult={handleAddResult}
-          definitions={definitions}
-        />
-      </AccordionDetails>
-    </Accordion>
+          })}
+
+          <button
+            type="button"
+            onClick={() => setAddDialogShown(true)}
+            className="flex items-center justify-center gap-2 py-2.5 rounded-xl border shadow-md text-[9px] font-black uppercase tracking-widest mt-1 active:scale-95 transition-all"
+            style={{ 
+              background: theme.bg, 
+              borderColor: theme.border, 
+              color: theme.accent,
+              boxShadow: theme.isDark ? 'inset 2px 2px 5px rgba(0,0,0,0.3)' : 'none'
+            }}
+          >
+            <AddIcon sx={{ fontSize: 14 }} />
+            {t('sharedAdd')}
+          </button>
+
+          <AddAttributeDialog
+            open={addDialogShown}
+            onResult={handleAddResult}
+            definitions={definitions}
+          />
+        </div>
+      </Collapse>
+    </div>
   );
 };
 

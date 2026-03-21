@@ -70,7 +70,7 @@ const SettingsMenu = () => {
               selected={location.pathname.startsWith('/app/settings/device')}
             />
             <MenuItem
-            title={t('sharedGeofences')}
+              title={t('sharedGeofences')}
               link="/app/geofences"
               icon={<ShareLocationOutlinedIcon />}
               selected={location.pathname.startsWith('/app/geofence')}
@@ -126,7 +126,10 @@ const SettingsMenu = () => {
                 title={t('sharedSavedCommands')}
                 link="/app/settings/commands"
                 icon={<TerminalOutlinedIcon />}
-                selected={location.pathname.startsWith('/app/settings/command') && location.pathname !== '/app/settings/command-center'}
+                selected={
+                  location.pathname.startsWith('/app/settings/command') &&
+                  location.pathname !== '/app/settings/command-center'
+                }
               />
             )}
           </>
@@ -135,7 +138,11 @@ const SettingsMenu = () => {
           <MenuItem title={t('userBilling')} link={billingLink} icon={<PaymentOutlinedIcon />} />
         )}
         {supportLink && (
-          <MenuItem title={t('settingsSupport')} link={supportLink} icon={<HelpOutlineOutlinedIcon />} />
+          <MenuItem
+            title={t('settingsSupport')}
+            link={supportLink}
+            icon={<HelpOutlineOutlinedIcon />}
+          />
         )}
       </List>
       {manager && (

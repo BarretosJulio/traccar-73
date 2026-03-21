@@ -164,19 +164,22 @@ const MapPositions = ({
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
     });
-    map.addLayer({
-      id: selectedCircle,
-      type: 'circle',
-      source: selectedCircle,
-      paint: {
-        'circle-radius': 28,
-        'circle-color': '#3b82f6',
-        'circle-opacity': 0.25,
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#3b82f6',
-        'circle-stroke-opacity': 0.6,
+    map.addLayer(
+      {
+        id: selectedCircle,
+        type: 'circle',
+        source: selectedCircle,
+        paint: {
+          'circle-radius': 28,
+          'circle-color': '#3b82f6',
+          'circle-opacity': 0.25,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#3b82f6',
+          'circle-stroke-opacity': 0.6,
+        },
       },
-    }, id); // Insert below the main markers layer
+      id,
+    ); // Insert below the main markers layer
     map.addLayer({
       id: clusters,
       type: 'symbol',
@@ -264,14 +267,16 @@ const MapPositions = ({
     map.getSource(selectedCircle)?.setData({
       type: 'FeatureCollection',
       features: selectedPos
-        ? [{
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [selectedPos.longitude, selectedPos.latitude],
+        ? [
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [selectedPos.longitude, selectedPos.latitude],
+              },
+              properties: {},
             },
-            properties: {},
-          }]
+          ]
         : [],
     });
 
@@ -290,7 +295,16 @@ const MapPositions = ({
       };
       animate();
     }
-  }, [mapCluster, clusters, onMarkerClick, onClusterClick, devices, positions, selectedPosition, selectedDeviceId]);
+  }, [
+    mapCluster,
+    clusters,
+    onMarkerClick,
+    onClusterClick,
+    devices,
+    positions,
+    selectedPosition,
+    selectedDeviceId,
+  ]);
 
   return null;
 };

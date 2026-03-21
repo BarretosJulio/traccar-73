@@ -8,8 +8,9 @@ const usePwaInstallPrompt = () => {
   useEffect(() => {
     // Detect if already installed (standalone mode)
     const checkInstalled = () => {
-      const standalone = window.matchMedia('(display-mode: standalone)').matches
-        || window.navigator.standalone === true;
+      const standalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
       setIsInstalled(standalone);
     };
 

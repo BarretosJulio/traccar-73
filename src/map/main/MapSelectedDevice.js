@@ -31,17 +31,30 @@ const MapSelectedDevice = ({ mapReady }) => {
         position.latitude !== previousPosition.latitude ||
         position.longitude !== previousPosition.longitude);
 
+    // Force follow if a device is selected, or use user preference
+    const shouldFollow = currentId || mapFollow;
+
     if (
       (currentId !== previousId ||
         currentTime !== previousTime ||
-        (mapFollow && positionChanged)) &&
+        (shouldFollow && positionChanged)) &&
       position
     ) {
-      // Shift map center up so vehicle appears above the StatusCard
-      const verticalOffset = -Math.round(window.innerHeight * 0.25);
-      const offset = isPhone
-        ? [0, verticalOffset]
-        : [0, verticalOffset];
+      // Calculate offsets based on responsive sidebars
+      let offset = [0, 0];
+
+      if (isPhone) {
+        // Mobile: StatusCard is at the bottom (~33% height)
+        offset[1] = -Math.round(window.innerHeight * 0.33);
+      } else {
+        // Desktop Dual Sidebar: 
+        // Left (FleetSidebar) = 360px
+        // Right (VehicleDetails) = 400px
+        // Map center needs to shift to the visible horizontal middle
+        const horizontalShift = (360 - 400) / 2; // Center point relative to total viewport
+        offset[0] = horizontalShift;
+        offset[1] = 0; // Vertically centered on PC
+      }
 
       map.easeTo({
         center: [position.longitude, position.latitude],
@@ -49,7 +62,17 @@ const MapSelectedDevice = ({ mapReady }) => {
         offset,
       });
     }
-  }, [currentId, previousId, currentTime, previousTime, mapFollow, position, selectZoom, mapReady, isPhone]);
+  }, [
+    currentId,
+    previousId,
+    currentTime,
+    previousTime,
+    mapFollow,
+    position,
+    selectZoom,
+    mapReady,
+    isPhone,
+  ]);
 
   return null;
 };

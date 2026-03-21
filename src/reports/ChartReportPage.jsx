@@ -14,11 +14,11 @@ import {
 import ReportFilter from './components/ReportFilter';
 import { formatTime } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
-import PageLayout from '../common/components/PageLayout';
-import ReportsMenu from './components/ReportsMenu';
+import PwaPageLayout from '../common/components/PwaPageLayout';
 import usePositionAttributes from '../common/attributes/usePositionAttributes';
 import { useCatch } from '../reactHelper';
 import { useAttributePreference } from '../common/util/preferences';
+import { useHudTheme } from '../common/util/ThemeContext';
 import {
   altitudeFromMeters,
   distanceFromMeters,
@@ -26,12 +26,11 @@ import {
   speedToKnots,
   volumeFromLiters,
 } from '../common/util/converter';
-import useReportStyles from './common/useReportStyles';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 
 const ChartReportPage = () => {
-  const { classes } = useReportStyles();
   const theme = useTheme();
+  const { theme: appTheme } = useHudTheme();
   const t = useTranslation();
 
   const positionAttributes = usePositionAttributes(t);
@@ -48,7 +47,7 @@ const ChartReportPage = () => {
 
   const values = items.map((it) =>
     selectedTypes.map((type) => it[type]).filter((value) => value != null),
-  );
+  ).flat();
   const minValue = values.length ? Math.min(...values) : 0;
   const maxValue = values.length ? Math.max(...values) : 100;
   const valueRange = maxValue - minValue;
@@ -78,22 +77,22 @@ const ChartReportPage = () => {
             switch (definition.dataType) {
               case 'speed':
                 if (key == 'obdSpeed') {
-                  formatted[key] = speedFromKnots(speedToKnots(value, 'kmh'), speedUnit).toFixed(2);
+                  formatted[key] = speedFromKnots(speedToKnots(value, 'kmh'), speedUnit);
                 } else {
-                  formatted[key] = speedFromKnots(value, speedUnit).toFixed(2);
+                  formatted[key] = speedFromKnots(value, speedUnit);
                 }
                 break;
               case 'altitude':
-                formatted[key] = altitudeFromMeters(value, altitudeUnit).toFixed(2);
+                formatted[key] = altitudeFromMeters(value, altitudeUnit);
                 break;
               case 'distance':
-                formatted[key] = distanceFromMeters(value, distanceUnit).toFixed(2);
+                formatted[key] = distanceFromMeters(value, distanceUnit);
                 break;
               case 'volume':
-                formatted[key] = volumeFromLiters(value, volumeUnit).toFixed(2);
+                formatted[key] = volumeFromLiters(value, volumeUnit);
                 break;
               case 'hours':
-                formatted[key] = (value / 1000).toFixed(2);
+                formatted[key] = (value / 1000);
                 break;
               default:
                 formatted[key] = value;
@@ -114,109 +113,106 @@ const ChartReportPage = () => {
   });
 
   const colorPalette = [
-    theme.palette.primary.main,
-    theme.palette.secondary.main,
-    theme.palette.error.main,
-    theme.palette.warning.main,
-    theme.palette.info.main,
-    theme.palette.success.main,
-    theme.palette.text.secondary,
+    '#39ff14', // Neon Green
+    '#ff3939', // Neon Red
+    '#3b82f6', // Bright Blue
+    '#f59e0b', // Amber
+    '#8b5cf6', // Violet
+    '#ec4899', // Pink
   ];
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportChart']}>
-      <ReportFilter onShow={onShow} deviceType="single">
-        <div className={classes.filterItem}>
-          <FormControl fullWidth>
-            <InputLabel>{t('reportChartType')}</InputLabel>
-            <Select
-              label={t('reportChartType')}
-              value={selectedTypes}
-              onChange={(e) => setSelectedTypes(e.target.value)}
-              multiple
-              disabled={!items.length}
-            >
-              {types.map((key) => (
-                <MenuItem key={key} value={key}>
-                  {positionAttributes[key]?.name || key}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-        <div className={classes.filterItem}>
-          <FormControl fullWidth>
-            <InputLabel>{t('reportTimeType')}</InputLabel>
-            <Select
-              label={t('reportTimeType')}
-              value={timeType}
-              onChange={(e) => setTimeType(e.target.value)}
-              disabled={!items.length}
-            >
-              <MenuItem value="fixTime">{t('positionFixTime')}</MenuItem>
-              <MenuItem value="deviceTime">{t('positionDeviceTime')}</MenuItem>
-              <MenuItem value="serverTime">{t('positionServerTime')}</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-      </ReportFilter>
-      {items.length > 0 && (
-        <div className={classes.chart}>
-          <ResponsiveContainer>
-            <LineChart
-              data={items}
-              margin={{
-                top: 10,
-                right: 40,
-                left: 0,
-                bottom: 10,
-              }}
-            >
-              <XAxis
-                stroke={theme.palette.text.primary}
-                dataKey={timeType}
-                type="number"
-                tickFormatter={(value) => formatTime(value, 'time')}
-                domain={['dataMin', 'dataMax']}
-                scale="time"
-              />
-              <YAxis
-                stroke={theme.palette.text.primary}
-                type="number"
-                tickFormatter={(value) => value.toFixed(2)}
-                domain={[minValue - valueRange / 5, maxValue + valueRange / 5]}
-              />
-              <CartesianGrid stroke={theme.palette.divider} strokeDasharray="3 3" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: theme.palette.background.default,
-                  color: theme.palette.text.primary,
-                }}
-                formatter={(value, key) => [value, positionAttributes[key]?.name || key]}
-                labelFormatter={(value) => formatTime(value, 'seconds')}
-              />
-              <Brush
-                dataKey={timeType}
-                height={30}
-                stroke={theme.palette.primary.main}
-                tickFormatter={() => ''}
-              />
-              {selectedTypes.map((type, index) => (
-                <Line
-                  key={type}
-                  type="monotone"
-                  dataKey={type}
-                  stroke={colorPalette[index % colorPalette.length]}
-                  dot={false}
-                  activeDot={{ r: 6 }}
-                  connectNulls
+    <PwaPageLayout title="Gráfico de Telemetria">
+      <div className="flex flex-col gap-4">
+        <ReportFilter onShow={onShow} deviceType="single">
+          <div className="flex flex-col gap-4 pl-1 pb-1">
+            <FormControl variant="outlined" fullWidth size="small">
+              <InputLabel style={{ color: appTheme.textMuted }}>{t('reportChartType')}</InputLabel>
+              <Select
+                label={t('reportChartType')}
+                value={selectedTypes}
+                onChange={(e) => setSelectedTypes(e.target.value)}
+                multiple
+                disabled={!items.length}
+                className="rounded-xl shadow-inner transition-colors"
+                style={{ background: appTheme.bg, color: appTheme.textPrimary }}
+                sx={{ '& .MuiOutlinedInput-notchedOutline': { borderColor: appTheme.border } }}
+              >
+                {types.map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {positionAttributes[key]?.name || key}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl variant="outlined" fullWidth size="small">
+              <InputLabel style={{ color: appTheme.textMuted }}>{t('reportTimeType')}</InputLabel>
+              <Select
+                label={t('reportTimeType')}
+                value={timeType}
+                onChange={(e) => setTimeType(e.target.value)}
+                disabled={!items.length}
+                className="rounded-xl shadow-inner transition-colors"
+                style={{ background: appTheme.bg, color: appTheme.textPrimary }}
+                sx={{ '& .MuiOutlinedInput-notchedOutline': { borderColor: appTheme.border } }}
+              >
+                <MenuItem value="fixTime">{t('positionFixTime')}</MenuItem>
+                <MenuItem value="deviceTime">{t('positionDeviceTime')}</MenuItem>
+                <MenuItem value="serverTime">{t('positionServerTime')}</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </ReportFilter>
+
+        {items.length > 0 && (
+          <div 
+            className="p-5 rounded-3xl shadow-md border h-[400px] transition-colors"
+            style={{ background: appTheme.bgSecondary, borderColor: appTheme.border }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={items} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid stroke={appTheme.border} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey={timeType}
+                  type="number"
+                  tickFormatter={(value) => dayjs(value).format('HH:mm')}
+                  domain={['dataMin', 'dataMax']}
+                  scale="time"
+                  tick={{ fontSize: 9, fill: appTheme.textMuted }}
+                  axisLine={false}
                 />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-    </PageLayout>
+                <YAxis
+                  type="number"
+                  tickFormatter={(value) => value.toFixed(1)}
+                  domain={[minValue - valueRange / 5, maxValue + valueRange / 5]}
+                  tick={{ fontSize: 9, fill: appTheme.textMuted }}
+                  axisLine={false}
+                />
+                <Tooltip
+                  contentStyle={{ backgroundColor: appTheme.bg, borderColor: appTheme.border, borderRadius: '12px', fontSize: '10px' }}
+                  itemStyle={{ color: appTheme.accent }}
+                  labelFormatter={(value) => dayjs(value).format('HH:mm:ss')}
+                  formatter={(value, key) => [value.toFixed(2), positionAttributes[key]?.name || key]}
+                />
+                {selectedTypes.map((type, index) => (
+                  <Line
+                    key={type}
+                    type="monotone"
+                    dataKey={type}
+                    stroke={colorPalette[index % colorPalette.length]}
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 4, fill: appTheme.accent, strokeWidth: 0 }}
+                    connectNulls
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+    </PwaPageLayout>
   );
 };
 

@@ -88,9 +88,7 @@ const WhatsAppDeviceAlerts = ({ deviceId, tenantId, onClose }) => {
   const [prefs, setPrefs] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const device = useSelector((state) =>
-    deviceId ? state.devices.items[deviceId] : null,
-  );
+  const device = useSelector((state) => (deviceId ? state.devices.items[deviceId] : null));
 
   const user = useSelector((state) => state.session.user);
   const userEmail = user?.email || '';
@@ -118,9 +116,15 @@ const WhatsAppDeviceAlerts = ({ deviceId, tenantId, onClose }) => {
 
         // Build prefs map: start with tenant defaults, override with device prefs
         const map = {};
-        ALERT_TYPES.forEach((a) => { map[a.key] = false; });
-        tenantDefaults?.forEach((d) => { map[d.alert_type] = d.enabled; });
-        devicePrefs?.forEach((p) => { map[p.alert_type] = p.enabled; });
+        ALERT_TYPES.forEach((a) => {
+          map[a.key] = false;
+        });
+        tenantDefaults?.forEach((d) => {
+          map[d.alert_type] = d.enabled;
+        });
+        devicePrefs?.forEach((p) => {
+          map[p.alert_type] = p.enabled;
+        });
 
         setPrefs(map);
       } catch (err) {
@@ -133,13 +137,12 @@ const WhatsAppDeviceAlerts = ({ deviceId, tenantId, onClose }) => {
     load();
   }, [deviceId, tenantId, userEmail]);
 
-  const handleToggle = useCallback(async (alertType, enabled) => {
-    setPrefs((prev) => ({ ...prev, [alertType]: enabled }));
+  const handleToggle = useCallback(
+    async (alertType, enabled) => {
+      setPrefs((prev) => ({ ...prev, [alertType]: enabled }));
 
-    try {
-      await supabase
-        .from('whatsapp_device_alert_prefs')
-        .upsert(
+      try {
+        await supabase.from('whatsapp_device_alert_prefs').upsert(
           {
             tenant_id: tenantId,
             device_id: deviceId,
@@ -150,12 +153,14 @@ const WhatsAppDeviceAlerts = ({ deviceId, tenantId, onClose }) => {
           },
           { onConflict: 'tenant_id,device_id,user_email,alert_type' },
         );
-    } catch (err) {
-      console.error('Error saving alert pref:', err);
-      // Revert on error
-      setPrefs((prev) => ({ ...prev, [alertType]: !enabled }));
-    }
-  }, [tenantId, deviceId, userEmail]);
+      } catch (err) {
+        console.error('Error saving alert pref:', err);
+        // Revert on error
+        setPrefs((prev) => ({ ...prev, [alertType]: !enabled }));
+      }
+    },
+    [tenantId, deviceId, userEmail],
+  );
 
   if (!deviceId) {
     return (
@@ -181,9 +186,7 @@ const WhatsAppDeviceAlerts = ({ deviceId, tenantId, onClose }) => {
           <CloseIcon fontSize="small" />
         </IconButton>
       </div>
-      <Typography className={classes.deviceName}>
-        {device?.name || `Device ${deviceId}`}
-      </Typography>
+      <Typography className={classes.deviceName}>{device?.name || `Device ${deviceId}`}</Typography>
       <Divider sx={{ borderColor: 'rgba(45, 212, 191, 0.1)' }} />
       {loading ? (
         <div className={classes.loading}>

@@ -1,13 +1,9 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Typography,
-  Container,
   FormControl,
   InputLabel,
   Select,
@@ -21,14 +17,19 @@ import {
   Autocomplete,
   TextField,
   createFilterOptions,
-  Button,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CachedIcon from '@mui/icons-material/Cached';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import MapIcon from '@mui/icons-material/Map';
+import DevicesIcon from '@mui/icons-material/Devices';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import InfoIcon from '@mui/icons-material/Info';
+import SaveIcon from '@mui/icons-material/Save';
+
 import { useTranslation, useTranslationKeys } from '../common/components/LocalizationProvider';
-import PageLayout from '../common/components/PageLayout';
-import SettingsMenu from './components/SettingsMenu';
+import PwaPageLayout from '../common/components/PwaPageLayout';
 import usePositionAttributes from '../common/attributes/usePositionAttributes';
 import { prefixString, unprefixString } from '../common/util/stringUtils';
 import SelectField from '../common/components/SelectField';
@@ -37,9 +38,9 @@ import useMapOverlays from '../map/overlay/useMapOverlays';
 import { useCatch } from '../reactHelper';
 import { sessionActions } from '../store';
 import { useAdministrator, useRestriction } from '../common/util/permissions';
-import useSettingsStyles from './common/useSettingsStyles';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { apiUrl } from '../common/util/apiUrl';
+import { useHudTheme } from '../common/util/ThemeContext';
 
 const deviceFields = [
   { id: 'name', name: 'sharedName' },
@@ -53,16 +54,16 @@ const deviceFields = [
 ];
 
 const PreferencesPage = () => {
-  const { classes } = useSettingsStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useTranslation();
+  const { theme } = useHudTheme();
 
   const admin = useAdministrator();
   const readonly = useRestriction('readonly');
 
   const user = useSelector((state) => state.session.user);
-  const [attributes, setAttributes] = useState(user.attributes);
+  const [attributes, setAttributes] = useState(user.attributes || {});
 
   const versionApp = import.meta.env.VITE_APP_VERSION;
   const versionServer = useSelector((state) => state.session.server.version);
@@ -75,9 +76,7 @@ const PreferencesPage = () => {
 
   const mapStyles = useMapStyles();
   const mapOverlays = useMapOverlays();
-
   const positionAttributes = usePositionAttributes(t);
-
   const filter = createFilterOptions();
 
   const generateToken = useCatch(async () => {
@@ -109,29 +108,63 @@ const PreferencesPage = () => {
     throw Error(response.statusText);
   });
 
+  const NeumorphicSection = ({ title, icon: Icon, children, defaultOpen = false }) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    return (
+      <div 
+        className="mb-6 rounded-3xl shadow-md border overflow-hidden transition-all duration-300"
+        style={{ background: theme.bgSecondary, borderColor: theme.border }}
+      >
+        <div
+          className="p-5 flex items-center justify-between cursor-pointer active:opacity-70 transition-all font-bold"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <div className="flex items-center gap-3">
+            <div 
+              className="w-10 h-10 rounded-xl flex items-center justify-center shadow-inner"
+              style={{ background: theme.bg, color: theme.accent, border: `1px solid ${theme.border}` }}
+            >
+              <Icon sx={{ fontSize: 20 }} />
+            </div>
+            <h3 className="text-sm font-black uppercase tracking-widest" style={{ color: theme.textPrimary }}>{title}</h3>
+          </div>
+          <ExpandMoreIcon className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} style={{ color: theme.textMuted }} />
+        </div>
+        <Collapse in={isOpen}>
+          <div className="p-5 pt-0 flex flex-col gap-5">
+            <div className="h-px mb-2 opacity-10" style={{ background: theme.textMuted }} />
+            {children}
+          </div>
+        </Collapse>
+      </div>
+    );
+  };
+
+  const headerActions = (
+    <button
+      onClick={handleSave}
+      className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-md border active:scale-95 transition-all duration-300"
+      style={{ background: theme.bgSecondary, borderColor: theme.border, color: theme.accent }}
+    >
+      <SaveIcon sx={{ fontSize: 20 }} />
+    </button>
+  );
+
   return (
-    <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedPreferences']}>
-      <Container maxWidth="xs" className={classes.container}>
+    <PwaPageLayout title={t('sharedPreferences')} actions={headerActions}>
+      <div className="flex flex-col pb-32">
         {!readonly && (
           <>
-            <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">{t('mapTitle')}</Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
-                <FormControl>
-                  <InputLabel>{t('mapActive')}</InputLabel>
+            <NeumorphicSection title={t('mapTitle')} icon={MapIcon} defaultOpen>
+              <div className="flex flex-col gap-4">
+                <FormControl variant="outlined" fullWidth size="small">
+                  <InputLabel className="text-slate-400">{t('mapActive')}</InputLabel>
                   <Select
                     label={t('mapActive')}
-                    value={
-                      attributes.activeMapStyles?.split(',') || [
-                        'locationIqStreets',
-                        'locationIqDark',
-                        'openFreeMap',
-                      ]
-                    }
+                    value={attributes.activeMapStyles?.split(',') || ['locationIqStreets', 'locationIqDark', 'openFreeMap']}
                     onChange={(e, child) => {
-                      const clicked = mapStyles.find((s) => s.id === child.props.value);
+                      const clickedStyle = Array.isArray(child) ? child[0] : child;
+                      const clicked = mapStyles.find((s) => s.id === clickedStyle.props.value);
                       if (clicked.available) {
                         setAttributes({ ...attributes, activeMapStyles: e.target.value.join(',') });
                       } else if (clicked.id !== 'custom') {
@@ -140,24 +173,30 @@ const PreferencesPage = () => {
                       }
                     }}
                     multiple
+                    className="rounded-xl border-none shadow-inner"
+                    style={{ background: theme.bg, color: theme.textPrimary }}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                    }}
                   >
                     {mapStyles.map((style) => (
                       <MenuItem key={style.id} value={style.id}>
-                        <Typography
-                          component="span"
-                          color={style.available ? 'textPrimary' : 'error'}
-                        >
+                        <Typography component="span" color={style.available ? 'textPrimary' : 'error'}>
                           {style.title}
                         </Typography>
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-                <FormControl>
-                  <InputLabel>{t('mapOverlay')}</InputLabel>
+
+                <FormControl variant="outlined" fullWidth size="small">
+                  <InputLabel className="text-slate-400">{t('mapOverlay')}</InputLabel>
                   <Select
                     label={t('mapOverlay')}
                     value={attributes.selectedMapOverlay || ''}
+                    className="rounded-xl border-none shadow-inner"
+                    style={{ background: theme.bg, color: theme.textPrimary }}
+                    sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' } }}
                     onChange={(e) => {
                       const clicked = mapOverlays.find((o) => o.id === e.target.value);
                       if (!clicked || clicked.available) {
@@ -171,148 +210,42 @@ const PreferencesPage = () => {
                     <MenuItem value="">{'\u00a0'}</MenuItem>
                     {mapOverlays.map((overlay) => (
                       <MenuItem key={overlay.id} value={overlay.id}>
-                        <Typography
-                          component="span"
-                          color={overlay.available ? 'textPrimary' : 'error'}
-                        >
+                        <Typography component="span" color={overlay.available ? 'textPrimary' : 'error'}>
                           {overlay.title}
                         </Typography>
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-                <Autocomplete
-                  multiple
-                  freeSolo
-                  options={Object.keys(positionAttributes)}
-                  getOptionLabel={(option) => {
-                    if (typeof option === 'object' && option.inputValue) {
-                      return option.inputValue;
-                    }
-                    return positionAttributes[option]?.name || option;
-                  }}
-                  value={
-                    attributes.positionItems?.split(',') || [
-                      'fixTime',
-                      'address',
-                      'speed',
-                      'totalDistance',
-                    ]
-                  }
-                  onChange={(_, newValue) => {
-                    setAttributes({
-                      ...attributes,
-                      positionItems: newValue
-                        .map((x) => (typeof x === 'string' ? x : x.inputValue))
-                        .join(','),
-                    });
-                  }}
-                  filterOptions={(options, params) => {
-                    const filtered = filter(options, params);
-                    if (params.inputValue && !options.includes(params.inputValue)) {
-                      filtered.push({
-                        inputValue: params.inputValue,
-                        name: `${t('sharedAdd')} "${params.inputValue}"`,
-                      });
-                    }
-                    return filtered;
-                  }}
-                  renderOption={(props, option) => (
-                    <li {...props}>
-                      {option.name ? option.name : positionAttributes[option]?.name || option}
-                    </li>
-                  )}
-                  renderInput={(params) => (
-                    <TextField {...params} label={t('attributePopupInfo')} />
-                  )}
-                />
-                <FormControl>
-                  <InputLabel>{t('mapLiveRoutes')}</InputLabel>
-                  <Select
-                    label={t('mapLiveRoutes')}
-                    value={attributes.mapLiveRoutes || 'none'}
-                    onChange={(e) =>
-                      setAttributes({ ...attributes, mapLiveRoutes: e.target.value })
-                    }
-                  >
-                    <MenuItem value="none">{t('sharedDisabled')}</MenuItem>
-                    <MenuItem value="selected">{t('deviceSelected')}</MenuItem>
-                    <MenuItem value="all">{t('notificationAlways')}</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <InputLabel>{t('mapDirection')}</InputLabel>
-                  <Select
-                    label={t('mapDirection')}
-                    value={attributes.mapDirection || 'selected'}
-                    onChange={(e) => setAttributes({ ...attributes, mapDirection: e.target.value })}
-                  >
-                    <MenuItem value="none">{t('sharedDisabled')}</MenuItem>
-                    <MenuItem value="selected">{t('deviceSelected')}</MenuItem>
-                    <MenuItem value="all">{t('notificationAlways')}</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormGroup>
+
+                <FormGroup 
+                  className="p-4 rounded-2xl border shadow-inner"
+                  style={{ background: `${theme.isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)'}`, borderColor: theme.border }}
+                >
                   <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={
-                          attributes.hasOwnProperty('mapGeofences') ? attributes.mapGeofences : true
-                        }
-                        onChange={(e) =>
-                          setAttributes({ ...attributes, mapGeofences: e.target.checked })
-                        }
-                      />
-                    }
-                    label={t('attributeShowGeofences')}
+                    control={<Checkbox checked={attributes.hasOwnProperty('mapGeofences') ? attributes.mapGeofences : true}
+                      onChange={(e) => setAttributes({ ...attributes, mapGeofences: e.target.checked })}
+                      sx={{ color: theme.accent, '&.Mui-checked': { color: theme.accent } }} />}
+                    label={<span className="text-xs font-bold uppercase tracking-widest" style={{ color: theme.textPrimary }}>{t('attributeShowGeofences')}</span>}
                   />
                   <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={
-                          attributes.hasOwnProperty('mapFollow') ? attributes.mapFollow : false
-                        }
-                        onChange={(e) =>
-                          setAttributes({ ...attributes, mapFollow: e.target.checked })
-                        }
-                      />
-                    }
-                    label={t('deviceFollow')}
+                    control={<Checkbox checked={attributes.hasOwnProperty('mapCluster') ? attributes.mapCluster : true}
+                      onChange={(e) => setAttributes({ ...attributes, mapCluster: e.target.checked })}
+                      sx={{ color: theme.accent, '&.Mui-checked': { color: theme.accent } }} />}
+                    label={<span className="text-xs font-bold uppercase tracking-widest" style={{ color: theme.textPrimary }}>{t('mapClustering')}</span>}
                   />
                   <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={
-                          attributes.hasOwnProperty('mapCluster') ? attributes.mapCluster : true
-                        }
-                        onChange={(e) =>
-                          setAttributes({ ...attributes, mapCluster: e.target.checked })
-                        }
-                      />
-                    }
-                    label={t('mapClustering')}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={
-                          attributes.hasOwnProperty('mapOnSelect') ? attributes.mapOnSelect : true
-                        }
-                        onChange={(e) =>
-                          setAttributes({ ...attributes, mapOnSelect: e.target.checked })
-                        }
-                      />
-                    }
-                    label={t('mapOnSelect')}
+                    control={<Checkbox checked={attributes.hasOwnProperty('mapFollow') ? attributes.mapFollow : false}
+                      onChange={(e) => setAttributes({ ...attributes, mapFollow: e.target.checked })}
+                      sx={{ color: theme.accent, '&.Mui-checked': { color: theme.accent } }} />}
+                    label={<span className="text-xs font-bold uppercase tracking-widest" style={{ color: theme.textPrimary }}>{t('deviceFollow')}</span>}
                   />
                 </FormGroup>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">{t('deviceTitle')}</Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
+              </div>
+            </NeumorphicSection>
+
+            <NeumorphicSection title={t('deviceTitle')} icon={DevicesIcon}>
+              <div className="flex flex-col gap-4">
                 <SelectField
                   value={attributes.devicePrimary || 'name'}
                   onChange={(e) => setAttributes({ ...attributes, devicePrimary: e.target.value })}
@@ -322,26 +255,20 @@ const PreferencesPage = () => {
                 />
                 <SelectField
                   value={attributes.deviceSecondary}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, deviceSecondary: e.target.value })
-                  }
+                  onChange={(e) => setAttributes({ ...attributes, deviceSecondary: e.target.value })}
                   data={deviceFields}
                   titleGetter={(it) => t(it.name)}
                   label={t('deviceSecondaryInfo')}
                 />
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">{t('sharedSound')}</Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
+              </div>
+            </NeumorphicSection>
+
+            <NeumorphicSection title={t('sharedSound')} icon={NotificationsActiveIcon}>
+              <div className="flex flex-col gap-4" style={{ color: theme.textPrimary }}>
                 <SelectField
                   multiple
                   value={attributes.soundEvents?.split(',') || []}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, soundEvents: e.target.value.join(',') })
-                  }
+                  onChange={(e) => setAttributes({ ...attributes, soundEvents: e.target.value.join(',') })}
                   endpoint="/api/notifications/types"
                   keyGetter={(it) => it.type}
                   titleGetter={(it) => t(prefixString('event', it.type))}
@@ -350,104 +277,142 @@ const PreferencesPage = () => {
                 <SelectField
                   multiple
                   value={attributes.soundAlarms?.split(',') || ['sos']}
-                  onChange={(e) =>
-                    setAttributes({ ...attributes, soundAlarms: e.target.value.join(',') })
-                  }
+                  onChange={(e) => setAttributes({ ...attributes, soundAlarms: e.target.value.join(',') })}
                   data={alarms}
                   keyGetter={(it) => it.key}
                   label={t('eventsSoundAlarms')}
                 />
-              </AccordionDetails>
-            </Accordion>
+              </div>
+            </NeumorphicSection>
           </>
         )}
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle1">{t('userToken')}</Typography>
-          </AccordionSummary>
-          <AccordionDetails className={classes.details}>
+
+        <NeumorphicSection title={t('userToken')} icon={VpnKeyIcon}>
+          <div className="flex flex-col gap-4">
             <TextField
               label={t('userExpirationTime')}
               type="date"
               value={tokenExpiration}
+              fullWidth
+              size="small"
+              InputLabelProps={{ shrink: true }}
               onChange={(e) => {
                 setTokenExpiration(e.target.value);
                 setToken(null);
               }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px', background: theme.bg } }}
             />
-            <FormControl>
+            <div className="relative">
               <OutlinedInput
                 multiline
-                rows={6}
+                rows={4}
                 readOnly
-                type="text"
+                fullWidth
                 value={token || ''}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <div className={classes.verticalActions}>
-                      <IconButton
-                        size="small"
-                        edge="end"
-                        onClick={generateToken}
-                        disabled={!!token}
-                      >
-                        <CachedIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        edge="end"
-                        onClick={() => navigator.clipboard.writeText(token)}
-                        disabled={!token}
-                      >
-                        <ContentCopyIcon fontSize="small" />
-                      </IconButton>
-                    </div>
-                  </InputAdornment>
-                }
+                placeholder="Clique para gerar token..."
+                className="rounded-2xl shadow-inner text-xs font-mono border-none"
+                style={{ background: theme.bg, color: theme.textPrimary }}
+                sx={{ '& .MuiOutlinedInput-notchedOutline': { border: 'none' } }}
               />
-            </FormControl>
-          </AccordionDetails>
-        </Accordion>
-        {!readonly && (
-          <>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">{t('sharedInfoTitle')}</Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
-                <TextField value={versionApp} label={t('settingsAppVersion')} disabled />
-                <TextField
-                  value={versionServer || '-'}
-                  label={t('settingsServerVersion')}
-                  disabled
-                />
-                <TextField
-                  value={socket ? t('deviceStatusOnline') : t('deviceStatusOffline')}
-                  label={t('settingsConnection')}
-                  disabled
-                />
-                <Button variant="outlined" color="primary" onClick={() => navigate('/app/emulator')}>
-                  {t('sharedEmulator')}
-                </Button>
-                {admin && (
-                  <Button variant="outlined" color="error" onClick={handleReboot}>
-                    {t('serverReboot')}
-                  </Button>
-                )}
-              </AccordionDetails>
-            </Accordion>
-            <div className={classes.buttons}>
-              <Button type="button" color="primary" variant="outlined" onClick={() => navigate(-1)}>
-                {t('sharedCancel')}
-              </Button>
-              <Button type="button" color="primary" variant="contained" onClick={handleSave}>
-                {t('sharedSave')}
-              </Button>
+              <div className="absolute right-3 bottom-3 flex flex-col gap-2">
+                <IconButton
+                  size="small"
+                  onClick={generateToken}
+                  disabled={!!token}
+                  className="shadow-md border"
+                  style={{ background: theme.bgSecondary, borderColor: theme.border, color: theme.accent }}
+                >
+                  <CachedIcon sx={{ fontSize: 16 }} />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => navigator.clipboard.writeText(token)}
+                  disabled={!token}
+                  className="shadow-md border"
+                  style={{ background: theme.bgSecondary, borderColor: theme.border, color: theme.accent }}
+                >
+                  <ContentCopyIcon sx={{ fontSize: 16 }} />
+                </IconButton>
+              </div>
             </div>
-          </>
-        )}
-      </Container>
-    </PageLayout>
+          </div>
+        </NeumorphicSection>
+
+        <NeumorphicSection title={t('sharedInfoTitle')} icon={InfoIcon}>
+          <div className="flex flex-col gap-4">
+            <div 
+              className="flex justify-between items-center p-3 rounded-xl border shadow-inner"
+              style={{ background: `${theme.isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)'}`, borderColor: theme.border }}
+            >
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: theme.textMuted }}>{t('settingsAppVersion')}</span>
+              <span className="text-xs font-black" style={{ color: theme.accent }}>{versionApp}</span>
+            </div>
+            <div 
+              className="flex justify-between items-center p-3 rounded-xl border shadow-inner"
+              style={{ background: `${theme.isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)'}`, borderColor: theme.border }}
+            >
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: theme.textMuted }}>{t('settingsServerVersion')}</span>
+              <span className="text-xs font-black" style={{ color: theme.textPrimary }}>{versionServer || '-'}</span>
+            </div>
+            <div 
+              className="flex justify-between items-center p-3 rounded-xl border shadow-inner"
+              style={{ background: `${theme.isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)'}`, borderColor: theme.border }}
+            >
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: theme.textMuted }}>{t('settingsConnection')}</span>
+              <div className="flex items-center gap-2">
+                <div 
+                  className={`w-2 h-2 rounded-full transition-all`} 
+                  style={{ 
+                    background: socket ? theme.accent : '#ef4444', 
+                    boxShadow: socket ? `0 0 8px ${theme.accent}` : '0 0 8px #ef4444' 
+                  }} 
+                />
+                <span className="text-xs font-black uppercase" style={{ color: theme.textPrimary }}>{socket ? t('deviceStatusOnline') : t('deviceStatusOffline')}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mt-2">
+              <button
+                onClick={() => navigate('/app/emulator')}
+                className="py-3 rounded-2xl border shadow-md active:scale-95 transition-all text-[10px] font-black uppercase tracking-widest"
+                style={{ background: theme.bgSecondary, borderColor: theme.border, color: theme.accent }}
+              >
+                {t('sharedEmulator')}
+              </button>
+              {admin && (
+                <button
+                  onClick={handleReboot}
+                  className="py-3 rounded-2xl border shadow-md active:scale-95 transition-all text-[10px] font-black uppercase tracking-widest"
+                  style={{ background: theme.bgSecondary, borderColor: theme.border, color: '#ef4444' }}
+                >
+                  {t('serverReboot')}
+                </button>
+              )}
+            </div>
+          </div>
+        </NeumorphicSection>
+
+        {/* Action Buttons */}
+        <div className="fixed bottom-24 left-4 right-4 z-40 flex gap-4 pointer-events-none">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="pointer-events-auto flex-1 h-14 rounded-[20px] border shadow-lg text-xs font-bold uppercase tracking-widest active:scale-95 transition-all"
+            style={{ background: theme.bgSecondary, borderColor: theme.border, color: theme.textMuted }}
+          >
+            {t('sharedCancel')}
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="pointer-events-auto flex-1 h-14 rounded-[20px] shadow-lg font-black uppercase tracking-[2px] text-xs active:scale-95 transition-all"
+            style={{ background: theme.accent, color: theme.isDark ? 'black' : 'white' }}
+          >
+            {t('sharedSave')}
+          </button>
+        </div>
+      </div>
+    </PwaPageLayout>
   );
 };
 

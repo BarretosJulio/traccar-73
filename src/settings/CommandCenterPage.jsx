@@ -158,42 +158,42 @@ const CommandCenterPage = () => {
     }
   }, []);
 
-  const fetchCommandLog = useCallback(async (deviceId) => {
-    if (!deviceId) {
-      setCommandLog([]);
-      return;
-    }
-    setLoadingLog(true);
-    try {
-      const from = dayjs().subtract(7, 'day').toISOString();
-      const to = dayjs().toISOString();
-      const response = await fetchOrThrow(
-        `/api/reports/events?deviceId=${deviceId}&type=commandResult&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
-        { headers: { Accept: 'application/json' } },
-      );
-      const events = await response.json();
-      const logEntries = events.map((ev) => ({
-        id: ev.id,
-        time: ev.eventTime || ev.serverTime,
-        type: ev.type,
-        description: ev.attributes?.result || ev.attributes?.command || t('commandResponse'),
-        status: 'received',
-      }));
-      logEntries.sort((a, b) => new Date(b.time) - new Date(a.time));
-      setCommandLog(logEntries);
-    } catch {
-      setCommandLog([]);
-    } finally {
-      setLoadingLog(false);
-    }
-  }, [t]);
+  const fetchCommandLog = useCallback(
+    async (deviceId) => {
+      if (!deviceId) {
+        setCommandLog([]);
+        return;
+      }
+      setLoadingLog(true);
+      try {
+        const from = dayjs().subtract(7, 'day').toISOString();
+        const to = dayjs().toISOString();
+        const response = await fetchOrThrow(
+          `/api/reports/events?deviceId=${deviceId}&type=commandResult&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+          { headers: { Accept: 'application/json' } },
+        );
+        const events = await response.json();
+        const logEntries = events.map((ev) => ({
+          id: ev.id,
+          time: ev.eventTime || ev.serverTime,
+          type: ev.type,
+          description: ev.attributes?.result || ev.attributes?.command || t('commandResponse'),
+          status: 'received',
+        }));
+        logEntries.sort((a, b) => new Date(b.time) - new Date(a.time));
+        setCommandLog(logEntries);
+      } catch {
+        setCommandLog([]);
+      } finally {
+        setLoadingLog(false);
+      }
+    },
+    [t],
+  );
 
   useEffectAsync(async () => {
     if (selectedDevice) {
-      await Promise.all([
-        fetchCommandTypes(selectedDevice.id),
-        fetchCommandLog(selectedDevice.id),
-      ]);
+      await Promise.all([fetchCommandTypes(selectedDevice.id), fetchCommandLog(selectedDevice.id)]);
     }
   }, [selectedDevice]);
 
@@ -243,11 +243,35 @@ const CommandCenterPage = () => {
   const getStatusChip = (status) => {
     switch (status) {
       case 'received':
-        return <Chip icon={<CheckCircleIcon />} label={t('commandDelivered')} color="success" size="small" variant="outlined" />;
+        return (
+          <Chip
+            icon={<CheckCircleIcon />}
+            label={t('commandDelivered')}
+            color="success"
+            size="small"
+            variant="outlined"
+          />
+        );
       case 'pending':
-        return <Chip icon={<HourglassEmptyIcon />} label={t('commandPending')} color="warning" size="small" variant="outlined" />;
+        return (
+          <Chip
+            icon={<HourglassEmptyIcon />}
+            label={t('commandPending')}
+            color="warning"
+            size="small"
+            variant="outlined"
+          />
+        );
       case 'failed':
-        return <Chip icon={<ErrorIcon />} label={t('commandFailed')} color="error" size="small" variant="outlined" />;
+        return (
+          <Chip
+            icon={<ErrorIcon />}
+            label={t('commandFailed')}
+            color="error"
+            size="small"
+            variant="outlined"
+          />
+        );
       default:
         return <Chip label={status} size="small" variant="outlined" />;
     }
@@ -276,16 +300,24 @@ const CommandCenterPage = () => {
               isOptionEqualToValue={(option, value) => option.id === value?.id}
               value={selectedDevice}
               onChange={handleDeviceChange}
-              renderInput={(params) => (
-                <TextField {...params} label={t('reportDevice')} />
-              )}
+              renderInput={(params) => <TextField {...params} label={t('reportDevice')} />}
             />
           </AccordionDetails>
         </Accordion>
 
         {/* Protocol & Port Info */}
         {selectedDevice && (
-          <Paper sx={{ mt: 2, px: 2.5, py: 1.5, display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
+          <Paper
+            sx={{
+              mt: 2,
+              px: 2.5,
+              py: 1.5,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 3,
+              flexWrap: 'wrap',
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <RouterIcon color="primary" fontSize="small" />
               <Typography variant="body2" color="text.secondary">
@@ -324,11 +356,21 @@ const CommandCenterPage = () => {
                 <CircularProgress size={28} />
               </Box>
             ) : commandTypes.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ py: 2, textAlign: 'center' }}
+              >
                 {t('sharedNoData')}
               </Typography>
             ) : (
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 1.5 }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+                  gap: 1.5,
+                }}
+              >
                 {commandTypes.map((type) => (
                   <Card
                     key={type}
@@ -336,13 +378,27 @@ const CommandCenterPage = () => {
                     sx={{
                       borderColor: selectedCommandType === type ? 'primary.main' : 'divider',
                       borderWidth: selectedCommandType === type ? 2 : 1,
-                      bgcolor: selectedCommandType === type ? 'action.selected' : 'background.paper',
+                      bgcolor:
+                        selectedCommandType === type ? 'action.selected' : 'background.paper',
                       transition: 'all 0.15s ease',
                     }}
                   >
                     <CardActionArea onClick={() => handleCommandSelect(type)} sx={{ p: 1.5 }}>
-                      <CardContent sx={{ p: 0, '&:last-child': { pb: 0 }, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-                        <Box sx={{ color: selectedCommandType === type ? 'primary.main' : 'text.secondary' }}>
+                      <CardContent
+                        sx={{
+                          p: 0,
+                          '&:last-child': { pb: 0 },
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 0.5,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            color: selectedCommandType === type ? 'primary.main' : 'text.secondary',
+                          }}
+                        >
                           {getCommandIcon(type)}
                         </Box>
                         <Typography
@@ -397,10 +453,13 @@ const CommandCenterPage = () => {
                     size="small"
                     type={param.type === 'number' ? 'number' : 'text'}
                     value={item[param.key] || ''}
-                    onChange={(e) => setItem({
-                      ...item,
-                      [param.key]: param.type === 'number' ? Number(e.target.value) : e.target.value,
-                    })}
+                    onChange={(e) =>
+                      setItem({
+                        ...item,
+                        [param.key]:
+                          param.type === 'number' ? Number(e.target.value) : e.target.value,
+                      })
+                    }
                   />
                 );
               })}
@@ -439,10 +498,22 @@ const CommandCenterPage = () => {
         {/* Command History */}
         {selectedDevice && (
           <Paper sx={{ mt: 2, mb: 4 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                px: 2,
+                py: 1.5,
+              }}
+            >
               <Typography variant="subtitle1">{t('commandHistory')}</Typography>
               <Tooltip title={t('sharedRefresh') || 'Refresh'}>
-                <IconButton size="small" onClick={() => fetchCommandLog(selectedDevice.id)} disabled={loadingLog}>
+                <IconButton
+                  size="small"
+                  onClick={() => fetchCommandLog(selectedDevice.id)}
+                  disabled={loadingLog}
+                >
                   {loadingLog ? <CircularProgress size={20} /> : <RefreshIcon />}
                 </IconButton>
               </Tooltip>
@@ -485,7 +556,11 @@ const CommandCenterPage = () => {
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} variant="filled">
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>

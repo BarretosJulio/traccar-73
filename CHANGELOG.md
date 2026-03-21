@@ -4,6 +4,47 @@ Formato: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [0.12.2] — 2026-03-21
+
+### Fixed
+- **Mobile Rendering: Disappearing Cars (UI/UX)**
+  - Context: The `DeviceRow.jsx` rendered nothing on mobile/tablet devices because it lacked a specific mobile layout.
+  - Justificativa técnica: Adição de layout responsivo no `DeviceRow.jsx` para garantir que a lista de veículos seja visível em todos os dispositivos (desktop/mobile).
+- **Theme Inconsistency: Forced Dark Mode in Settings (UI/Theming)**
+  - Context: Multiple settings and report pages had hardcoded dark styles, appearing broken in light mode.
+  - Justificativa técnica: Refatoração de diversos componentes (`EditItemView`, `ReportsHubPage`, `PreferencesPage`, etc.) para utilizar o hook `useHudTheme`, permitindo adaptação dinâmica ao tema global.
+- **Map Visibility: Obscured Features (Map/UI)**
+  - Context: `PwaPageLayout` tinha um background fixo que bloqueava elementos do mapa como Cercas e Heatmaps.
+  - Justificativa técnica: Implementação da prop `transparent` no `PwaPageLayout` e refatoração da `GeofencesPage` para permitir visão clara do mapa em background.
+- **Demo Mode: Missing Geofences (Functional/Demo)**
+  - Context: Funcionalidades de cercas não podiam ser testadas em modo demo.
+  - Justificativa técnica: Injeção de `DEMO_GEOFENCES` no `DemoController.jsx` e correção de erro de sintaxe na simulação de movimento.
+
+### Added
+- **Global Branding: Logo Integration**
+  - Context: Logotipo da empresa ausente em áreas críticas do dashboard.
+  - Justificativa técnica: Integração do componente `LogoImage` na `MainToolbar` (mobile), `FleetSidebar` e `DashboardPage` para visibilidade consistente da marca.
+- **Innovative Reports Hub (UX/Data)**
+  - Context: Demanda por visual inovador e dados reais/demo nos relatórios.
+  - Justificativa técnica: Novo layout em grid para o Reports Hub com cabeçalho de estatísticas em tempo real (veículos ativos, movimento e velocidade média).
+
+---
+
+## [0.12.1] — 2026-03-20
+
+### Fixed
+- **Loop Infinito de Requisições na API `devices` (Performance/Network)**
+  - Contexto: O array de dependências do `useEffect` principal do `SocketController.jsx` continha `pollData`. Durante a inicialização ou a cada polling, a busca de dispositivos alterava o array Redux `devices`, causando recriação do observer de notificações e do `pollData`, gerando chamadas consecutivas infinitas da API.
+  - Justificativa técnica: Implementação do padrão `useRef` para armazenar e invocar o `pollData` dentro do `setInterval` sem recriar as subscrições dos React Hooks, quebrando a cascata de recriações. 
+  - Impacto em APIs: Redução drástica na sobrecarga do Traccar ocasionada por infinitas chamadas de `GET /api/devices`.
+  - Impacto em regras de negócio: O polling volta à cadência original de 5000ms.
+
+- **Deduplicação Falha de Notificações de Evento (Bug Lógico)**
+  - Contexto: O limite máximo do Set `processedEventIdsRef` ficava estagnado em 200 itens, sendo truncado para 100. Picos de conexão rodando eventos simultaneamente faziam eventos esquecidos caírem na rede do polling, disparando notificações duplicadas.
+  - Justificativa técnica: Aumento do teto seguro de limpeza do buffer de eventos para 5000 para impedir reprocessamento cíclico dos loops em janelas sub-10s.
+
+---
+
 ## [0.12.0] — 2026-03-09
 
 ### Fixed
@@ -132,4 +173,4 @@ Formato: [Semantic Versioning](https://semver.org/)
 ---
 
 ## Última Atualização
-2026-03-08
+2026-03-21

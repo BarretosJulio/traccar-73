@@ -91,7 +91,12 @@ const ReportsMenu = () => {
           icon={<TrendingUpIcon />}
           selected={location.pathname === '/app/reports/chart'}
         />
-        <MenuItem title={t('reportReplay')} link={buildLink('/replay')} icon={<RouteIcon />} selected={location.pathname === '/app/replay'} />
+        <MenuItem
+          title={t('reportReplay')}
+          link={buildLink('/replay')}
+          icon={<RouteIcon />}
+          selected={location.pathname === '/app/replay'}
+        />
         <MenuItem
           title={t('reportPositions')}
           link={buildLink('/reports/route')}

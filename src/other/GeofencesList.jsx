@@ -1,10 +1,16 @@
 import { Fragment, useState, useCallback, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { makeStyles } from 'tss-react/mui';
 import {
-  List, ListItemButton, ListItemText, Typography, Box,
-  Collapse, Chip, IconButton, Tooltip, Snackbar, Button,
+  Typography,
+  Box,
+  Collapse,
+  Chip,
+  IconButton,
+  Tooltip,
+  Snackbar,
+  Button,
   CircularProgress,
 } from '@mui/material';
 import FenceIcon from '@mui/icons-material/Fence';
@@ -20,7 +26,6 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import PaletteIcon from '@mui/icons-material/Palette';
-
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -29,130 +34,9 @@ import { useCatchCallback } from '../reactHelper';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import GeofenceDevicesDialog from './GeofenceDevicesDialog';
-
-const useStyles = makeStyles()((theme) => ({
-  list: {
-    flexGrow: 1,
-    overflow: 'auto',
-    padding: theme.spacing(0.5),
-  },
-  listItem: {
-    borderRadius: 10,
-    margin: theme.spacing(0.25, 0),
-    padding: theme.spacing(0.75, 1.5),
-    transition: 'all 0.15s ease',
-    '&:hover': {
-      backgroundColor: `${theme.palette.primary.main}10`,
-    },
-    '&.Mui-selected': {
-      backgroundColor: `${theme.palette.primary.main}15`,
-      '&:hover': {
-        backgroundColor: `${theme.palette.primary.main}20`,
-      },
-    },
-  },
-  itemIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 8,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: `${theme.palette.primary.main}12`,
-    color: theme.palette.primary.main,
-    marginRight: theme.spacing(1.5),
-    flexShrink: 0,
-  },
-  itemIconDisabled: {
-    backgroundColor: `${theme.palette.action.disabled}15`,
-    color: theme.palette.action.disabled,
-  },
-  itemName: {
-    fontWeight: 500,
-    fontSize: '0.875rem',
-    color: theme.palette.text.primary,
-  },
-  itemNameDisabled: {
-    color: theme.palette.text.disabled,
-    textDecoration: 'line-through',
-  },
-  actionButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 7,
-    transition: 'all 0.15s ease',
-  },
-  pauseButton: {
-    color: theme.palette.warning.main,
-    '&:hover': {
-      backgroundColor: `${theme.palette.warning.main}15`,
-    },
-  },
-  playButton: {
-    color: theme.palette.success.main,
-    '&:hover': {
-      backgroundColor: `${theme.palette.success.main}15`,
-    },
-  },
-  expandButton: {
-    color: theme.palette.text.secondary,
-    '&:hover': {
-      backgroundColor: `${theme.palette.action.hover}`,
-    },
-  },
-  detailsPanel: {
-    padding: theme.spacing(1, 1.5, 1.5, 6),
-  },
-  detailRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(0.75),
-    marginBottom: theme.spacing(0.5),
-  },
-  detailIcon: {
-    fontSize: '0.9rem',
-    color: theme.palette.text.secondary,
-  },
-  detailLabel: {
-    fontSize: '0.75rem',
-    color: theme.palette.text.secondary,
-    fontWeight: 500,
-    minWidth: 70,
-  },
-  detailValue: {
-    fontSize: '0.75rem',
-    color: theme.palette.text.primary,
-  },
-  chipRow: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: theme.spacing(0.5),
-    marginTop: theme.spacing(0.5),
-  },
-  emptyState: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-    gap: theme.spacing(1.5),
-    padding: theme.spacing(6),
-  },
-  emptyIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: `${theme.palette.primary.main}10`,
-    color: theme.palette.primary.main,
-    opacity: 0.6,
-  },
-}));
+import { getGeofenceTheme } from '../common/util/geofenceTypes';
 
 const GeofencesList = ({ onGeofenceSelected }) => {
-  const { classes, cx } = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useTranslation();
@@ -167,7 +51,6 @@ const GeofencesList = ({ onGeofenceSelected }) => {
   const items = useSelector((state) => state.geofences.items);
   const geofenceList = Object.values(items);
 
-  // Fetch device counts for all geofences on mount
   useEffect(() => {
     geofenceList.forEach(async (item) => {
       if (deviceCounts[item.id] === undefined) {
@@ -180,7 +63,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
         }
       }
     });
-  }, [geofenceList.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [geofenceList.length]);
 
   const refreshGeofences = useCatchCallback(async () => {
     const response = await fetchOrThrow('/api/geofences');
@@ -211,16 +94,19 @@ const GeofencesList = ({ onGeofenceSelected }) => {
     setTogglingId(null);
   };
 
-  const fetchDeviceCount = useCallback(async (geofenceId) => {
-    if (deviceCounts[geofenceId] !== undefined) return;
-    try {
-      const response = await fetchOrThrow(`/api/devices?geofenceId=${geofenceId}`);
-      const devices = await response.json();
-      setDeviceCounts((prev) => ({ ...prev, [geofenceId]: devices.length }));
-    } catch {
-      setDeviceCounts((prev) => ({ ...prev, [geofenceId]: 0 }));
-    }
-  }, [deviceCounts]);
+  const fetchDeviceCount = useCallback(
+    async (geofenceId) => {
+      if (deviceCounts[geofenceId] !== undefined) return;
+      try {
+        const response = await fetchOrThrow(`/api/devices?geofenceId=${geofenceId}`);
+        const devices = await response.json();
+        setDeviceCounts((prev) => ({ ...prev, [geofenceId]: devices.length }));
+      } catch {
+        setDeviceCounts((prev) => ({ ...prev, [geofenceId]: 0 }));
+      }
+    },
+    [deviceCounts],
+  );
 
   const handleToggleExpand = (event, itemId) => {
     event.stopPropagation();
@@ -233,11 +119,6 @@ const GeofencesList = ({ onGeofenceSelected }) => {
 
   const handleCardClick = (item) => {
     onGeofenceSelected(item.id);
-    setExpandedId((prev) => {
-      const next = prev === item.id ? null : item.id;
-      if (next) fetchDeviceCount(next);
-      return next;
-    });
   };
 
   const handleOpenDevicesDialog = (event, item) => {
@@ -247,7 +128,6 @@ const GeofencesList = ({ onGeofenceSelected }) => {
 
   const handleCloseDevicesDialog = () => {
     if (dialogGeofence) {
-      // Refresh count after dialog closes
       setDeviceCounts((prev) => {
         const copy = { ...prev };
         delete copy[dialogGeofence.id];
@@ -271,7 +151,7 @@ const GeofencesList = ({ onGeofenceSelected }) => {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ deviceId: device.id, geofenceId }),
-          }).catch(() => {}),
+          }).catch(() => { }),
         ),
       );
       await fetchOrThrow(`/api/geofences/${geofenceId}`, { method: 'DELETE' });
@@ -285,224 +165,175 @@ const GeofencesList = ({ onGeofenceSelected }) => {
 
   if (geofenceList.length === 0) {
     return (
-      <div className={classes.emptyState}>
-        <Box className={classes.emptyIcon}>
-          <FenceIcon sx={{ fontSize: '1.5rem' }} />
-        </Box>
-        <Typography variant="body2" color="text.secondary" textAlign="center">
-          {t('sharedNoData') || 'Nenhuma cerca cadastrada'}
+      <div className="flex flex-col items-center justify-center py-12 px-6 gap-4">
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-[#1e1f24] shadow-[inset_3px_3px_6px_rgba(0,0,0,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.02)] text-slate-600">
+          <FenceIcon sx={{ fontSize: 32 }} />
+        </div>
+        <Typography variant="body2" className="text-slate-400 font-bold uppercase tracking-widest text-center">
+          {t('sharedNoData') || 'Nenhuma cerca'}
         </Typography>
-        <Typography variant="caption" color="text.secondary" textAlign="center" sx={{ opacity: 0.7 }}>
-          Desenhe no mapa para criar
+        <Typography variant="caption" className="text-slate-500 font-medium text-center uppercase tracking-tighter opacity-70">
+          Desenhe no mapa para começar
         </Typography>
       </div>
     );
   }
 
   return (
-    <>
-    <List className={classes.list} disablePadding>
+    <div className="flex flex-col gap-4">
       {geofenceList.map((item) => {
         const isDisabled = item.attributes?.disabled;
+        const isExpired = item.attributes?.endDate && dayjs(item.attributes.endDate).isBefore(dayjs(), 'day');
         const isExpanded = expandedId === item.id;
         const isToggling = togglingId === item.id;
+        const theme = getGeofenceTheme(item.attributes?.type);
+        const IconComponent = theme.icon;
 
         return (
-          <Fragment key={item.id}>
-            <ListItemButton
-              className={classes.listItem}
+          <div
+            key={item.id}
+            className={`w-full bg-[#1e1f24] rounded-2xl overflow-hidden shadow-[6px_6px_12px_rgba(0,0,0,0.4),-6px_-6px_12px_rgba(255,255,255,0.01)] border border-white/5 transition-all duration-300 ${isExpired ? 'opacity-70 grayscale-[50%]' : ''}`}
+            style={{ boxShadow: isExpanded ? `0 0 0 1px ${theme.color}40` : undefined }}
+          >
+            <div
+              className="p-4 flex items-center justify-between cursor-pointer"
               onClick={() => handleCardClick(item)}
             >
-              <Box className={cx(classes.itemIcon, isDisabled && classes.itemIconDisabled)}>
-                <FenceIcon sx={{ fontSize: '1rem' }} />
-              </Box>
-              <ListItemText
-                primary={item.name}
-                primaryTypographyProps={{
-                  className: cx(classes.itemName, isDisabled && classes.itemNameDisabled),
-                  noWrap: true,
-                }}
-              />
-              <Tooltip title="Dispositivos vinculados">
-                <Chip
-                  size="small"
-                  icon={<DirectionsCarIcon sx={{ fontSize: '0.8rem !important' }} />}
-                  label={deviceCounts[item.id] ?? '—'}
-                  variant="outlined"
-                  color="primary"
-                  onClick={(e) => handleOpenDevicesDialog(e, item)}
-                  sx={{ fontSize: '0.7rem', height: 22, cursor: 'pointer', mr: 0.5 }}
-                />
-              </Tooltip>
-              <Tooltip title={isDisabled ? 'Ativar cerca' : 'Pausar cerca'}>
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-[#24262b] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.4)] ${isDisabled ? 'text-slate-600' : ''}`} style={!isDisabled ? { color: theme.color, boxShadow: `0 0 8px ${theme.color}33` } : {}}>
+                  <IconComponent sx={{ fontSize: 20 }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <Typography className={`text-sm font-bold tracking-wide truncate ${isDisabled ? 'text-slate-500 line-through' : 'text-slate-100'}`}>
+                    {item.name}
+                  </Typography>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className={`w-1.5 h-1.5 rounded-full ${isDisabled || isExpired ? 'bg-slate-600' : ''}`} style={(!isDisabled && !isExpired) ? { backgroundColor: theme.color, boxShadow: `0 0 4px ${theme.color}` } : {}} />
+                    <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">
+                      {isExpired ? 'Expirada' : (isDisabled ? 'Inativa' : (item.attributes?.type ? theme.label : 'Monitorada'))}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1">
                 <IconButton
-                  className={cx(classes.actionButton, isDisabled ? classes.playButton : classes.pauseButton)}
                   size="small"
-                  onClick={(e) => handleTogglePause(e, item)}
-                  disabled={isToggling}
+                  onClick={(e) => handleToggleExpand(e, item.id)}
+                  className="text-slate-500"
                 >
-                  {isDisabled
-                    ? <PlayCircleOutlineIcon sx={{ fontSize: '1.1rem' }} />
-                    : <PauseCircleOutlineIcon sx={{ fontSize: '1.1rem' }} />}
+                  {isExpanded ? <ExpandLessIcon sx={{ fontSize: 18 }} /> : <ExpandMoreIcon sx={{ fontSize: 18 }} />}
                 </IconButton>
-              </Tooltip>
-              <IconButton
-                className={cx(classes.actionButton, classes.expandButton)}
-                size="small"
-                onClick={(e) => handleToggleExpand(e, item.id)}
-              >
-                {isExpanded
-                  ? <ExpandLessIcon sx={{ fontSize: '1rem' }} />
-                  : <ExpandMoreIcon sx={{ fontSize: '1rem' }} />}
-              </IconButton>
-              <Tooltip title={t('sharedEdit')}>
                 <IconButton
-                  className={classes.actionButton}
                   size="small"
-                  onClick={(e) => { e.stopPropagation(); navigate(`/app/settings/geofence/${item.id}`); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/app/settings/geofence/${item.id}`);
+                  }}
+                  className="text-slate-400"
                 >
-                  <EditIcon sx={{ fontSize: '1rem' }} />
+                  <EditIcon sx={{ fontSize: 18 }} />
                 </IconButton>
-              </Tooltip>
-              <Tooltip title={t('sharedRemove')}>
-                <IconButton
-                  className={classes.actionButton}
-                  size="small"
-                  color="error"
-                  onClick={(e) => { e.stopPropagation(); setRemovingGeofenceId(item.id); }}
-                >
-                  <DeleteIcon sx={{ fontSize: '1rem' }} />
-                </IconButton>
-              </Tooltip>
-            </ListItemButton>
+              </div>
+            </div>
+
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <Box className={classes.detailsPanel}>
-                {item.description && (
-                  <div className={classes.detailRow}>
-                    <DescriptionIcon className={classes.detailIcon} />
-                    <Typography className={classes.detailLabel}>Descrição:</Typography>
-                    <Typography className={classes.detailValue}>{item.description}</Typography>
+              <div className="px-5 pb-5 pt-1 flex flex-col gap-3 border-t border-white/5 bg-black/10">
+                {/* Details Grid */}
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  <div className="bg-[#24262b] rounded-xl p-3 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3)]">
+                    <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Dispositivos</p>
+                    <div
+                      className="flex items-center justify-between cursor-pointer group"
+                      onClick={(e) => handleOpenDevicesDialog(e, item)}
+                    >
+                      <span className="text-xs font-black text-slate-200">{deviceCounts[item.id] ?? '—'}</span>
+                      <DirectionsCarIcon sx={{ fontSize: 14, color: '#39ff14' }} />
+                    </div>
                   </div>
-                )}
-                {item.calendarId && (
-                  <div className={classes.detailRow}>
-                    <ScheduleIcon className={classes.detailIcon} />
-                    <Typography className={classes.detailLabel}>Agenda:</Typography>
-                    <Typography className={classes.detailValue}>Calendário #{item.calendarId}</Typography>
+                  <div className="bg-[#24262b] rounded-xl p-3 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3)]">
+                    <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Status</p>
+                    <div
+                      className={`flex items-center justify-between cursor-pointer ${isToggling ? 'opacity-50' : ''}`}
+                      onClick={(e) => handleTogglePause(e, item)}
+                    >
+                      <span className={`text-[9px] font-black uppercase tracking-tighter ${isDisabled || isExpired ? 'text-amber-500' : 'text-[#39ff14]'}`}>
+                        {isExpired ? 'Pausada (Vencida)' : (isDisabled ? 'Pausada' : 'Ativa')}
+                      </span>
+                      {isDisabled || isExpired ? <PlayCircleOutlineIcon sx={{ fontSize: 14, color: '#39ff14' }} /> : <PauseCircleOutlineIcon sx={{ fontSize: 14, color: '#ff3939' }} />}
+                    </div>
                   </div>
-                )}
-                {item.attributes?.startTime && (
-                  <div className={classes.detailRow}>
-                    <AccessTimeIcon className={classes.detailIcon} />
-                    <Typography className={classes.detailLabel}>Hora início:</Typography>
-                    <Typography className={classes.detailValue}>{item.attributes.startTime}</Typography>
-                  </div>
-                )}
-                {item.attributes?.endTime && (
-                  <div className={classes.detailRow}>
-                    <AccessTimeIcon className={classes.detailIcon} />
-                    <Typography className={classes.detailLabel}>Hora fim:</Typography>
-                    <Typography className={classes.detailValue}>{item.attributes.endTime}</Typography>
-                  </div>
-                )}
-                {item.attributes?.activeDays && (
-                  <div className={classes.detailRow}>
-                    <CalendarTodayIcon className={classes.detailIcon} />
-                    <Typography className={classes.detailLabel}>Dias ativos:</Typography>
-                    <Typography className={classes.detailValue}>
-                      {String(item.attributes.activeDays).split(',').map((d) => ({ MO: 'SEG', TU: 'TER', WE: 'QUA', TH: 'QUI', FR: 'SEX', SA: 'SÁB', SU: 'DOM' })[d.trim()] || d).join(' / ')}
-                    </Typography>
-                  </div>
-                )}
-                {(item.attributes?.startDate || item.attributes?.endDate) && (
-                  <div className={classes.detailRow}>
-                    <CalendarTodayIcon className={classes.detailIcon} />
-                    <Typography className={classes.detailLabel}>Período:</Typography>
-                    <Typography className={classes.detailValue}>
-                      {item.attributes.startDate || '—'} até {item.attributes.endDate || '—'}
-                    </Typography>
-                  </div>
-                )}
-                {item.attributes?.speedLimit && (
-                  <div className={classes.detailRow}>
-                    <SpeedIcon className={classes.detailIcon} />
-                    <Typography className={classes.detailLabel}>Vel. Limite:</Typography>
-                    <Typography className={classes.detailValue}>
-                      {(item.attributes.speedLimit * 1.852).toFixed(0)} km/h
-                    </Typography>
-                  </div>
-                )}
-                <div className={classes.chipRow}>
-                  <Chip
-                    size="small"
-                    label={isDisabled ? 'Pausada' : 'Ativa'}
-                    color={isDisabled ? 'default' : 'success'}
-                    variant="outlined"
-                    sx={{ fontSize: '0.7rem', height: 22 }}
-                  />
-                  {item.attributes?.hide && (
-                    <Chip
-                      size="small"
-                      icon={<VisibilityOffIcon sx={{ fontSize: '0.75rem !important' }} />}
-                      label="Oculta no mapa"
-                      variant="outlined"
-                      sx={{ fontSize: '0.7rem', height: 22 }}
-                    />
+                </div>
+
+                {/* Additional Info Row */}
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {item.attributes?.speedLimit && (
+                    <div className="bg-[#24262b] px-3 py-1.5 rounded-lg flex items-center gap-2 border border-white/5 shadow-[2px_2px_4px_rgba(0,0,0,0.3)]">
+                      <SpeedIcon sx={{ fontSize: 12, color: '#f59e0b' }} />
+                      <span className="text-[9px] font-bold text-slate-300">{(item.attributes.speedLimit * 1.852).toFixed(0)} km/h</span>
+                    </div>
+                  )}
+                  {item.calendarId && (
+                    <div className="bg-[#24262b] px-3 py-1.5 rounded-lg flex items-center gap-2 border border-white/5 shadow-[2px_2px_4px_rgba(0,0,0,0.3)]">
+                      <ScheduleIcon sx={{ fontSize: 12, color: '#8b5cf6' }} />
+                      <span className="text-[9px] font-bold text-slate-300">Agenda Ativa</span>
+                    </div>
                   )}
                   {item.attributes?.color && (
-                    <Chip
-                      size="small"
-                      icon={<PaletteIcon sx={{ fontSize: '0.75rem !important' }} />}
-                      label={item.attributes.color}
-                      variant="outlined"
-                      sx={{
-                        fontSize: '0.7rem',
-                        height: 22,
-                        borderColor: item.attributes.color,
-                        color: item.attributes.color,
-                      }}
-                    />
+                    <div
+                      className="bg-[#24262b] px-3 py-1.5 rounded-lg flex items-center gap-2 border shadow-[2px_2px_4px_rgba(0,0,0,0.3)]"
+                      style={{ borderColor: item.attributes.color + '40' }}
+                    >
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.attributes.color }} />
+                      <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">{item.attributes.color}</span>
+                    </div>
                   )}
                 </div>
-                {/* Show all other attributes as key-value pairs */}
-                {Object.entries(item.attributes || {}).filter(
-                  ([key]) => !['disabled', 'hide', 'color', 'speedLimit', 'startTime', 'endTime', 'activeDays', 'startDate', 'endDate'].includes(key),
-                ).map(([key, value]) => (
-                  <div className={classes.detailRow} key={key}>
-                    <Typography className={classes.detailLabel}>{key}:</Typography>
-                    <Typography className={classes.detailValue}>{String(value)}</Typography>
+
+                {item.description && (
+                  <div className="bg-black/20 p-3 rounded-xl border border-white/5 mt-1">
+                    <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Descrição</p>
+                    <p className="text-[10px] font-medium text-slate-400 italic">"{item.description}"</p>
                   </div>
-                ))}
-                {!item.description && !item.calendarId && Object.keys(item.attributes || {}).filter(
-                  (k) => k !== 'disabled',
-                ).length === 0 && (
-                  <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.6 }}>
-                    Nenhuma configuração adicional
-                  </Typography>
                 )}
-              </Box>
+
+                {/* Footer Action */}
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRemovingGeofenceId(item.id);
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-500/10 text-[#ff3939] text-[9px] font-black uppercase tracking-widest hover:bg-red-500/20 transition-colors shadow-[2px_2px_4px_rgba(0,0,0,0.3)] border border-red-500/20"
+                  >
+                    <DeleteIcon sx={{ fontSize: 14 }} />
+                    Excluir
+                  </button>
+                </div>
+              </div>
             </Collapse>
-          </Fragment>
+          </div>
         );
       })}
-    </List>
-    <GeofenceDevicesDialog
-      open={Boolean(dialogGeofence)}
-      onClose={handleCloseDevicesDialog}
-      geofenceId={dialogGeofence?.id}
-      geofenceName={dialogGeofence?.name}
-    />
-    <Snackbar
-      open={Boolean(removingGeofenceId)}
-      onClose={() => !isDeleting && setRemovingGeofenceId(null)}
-      message={isDeleting ? 'Removendo geocerca...' : t('sharedRemoveConfirm')}
-      action={
-        <Button size="small" color="error" onClick={handleRemoveGeofence} disabled={isDeleting}>
-          {isDeleting ? <CircularProgress size={16} color="inherit" /> : t('sharedRemove')}
-        </Button>
-      }
-    />
-    </>
+
+      <GeofenceDevicesDialog
+        open={Boolean(dialogGeofence)}
+        onClose={handleCloseDevicesDialog}
+        geofenceId={dialogGeofence?.id}
+        geofenceName={dialogGeofence?.name}
+      />
+
+      <Snackbar
+        open={Boolean(removingGeofenceId)}
+        onClose={() => !isDeleting && setRemovingGeofenceId(null)}
+        message={isDeleting ? 'Removendo geocerca...' : t('sharedRemoveConfirm')}
+        action={
+          <Button size="small" color="error" onClick={handleRemoveGeofence} disabled={isDeleting}>
+            {isDeleting ? <CircularProgress size={16} color="inherit" /> : t('sharedRemove')}
+          </Button>
+        }
+      />
+    </div>
   );
 };
 

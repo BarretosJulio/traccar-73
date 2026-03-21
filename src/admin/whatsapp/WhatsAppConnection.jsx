@@ -11,7 +11,9 @@ const WhatsAppConnection = ({ t }) => {
   const pollRef = useRef(null);
 
   const cardStyle = {
-    padding: 24, borderRadius: 16, background: 'transparent',
+    padding: 24,
+    borderRadius: 16,
+    background: 'transparent',
     border: '1px solid rgba(255,255,255,0.08)',
   };
 
@@ -109,50 +111,78 @@ const WhatsAppConnection = ({ t }) => {
 
   return (
     <div style={cardStyle}>
-      <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+      <h3
+        style={{
+          fontSize: 16,
+          fontWeight: 700,
+          color: '#fff',
+          margin: '0 0 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
         📱 {t('whatsappConnection') || 'Conexão WhatsApp'}
       </h3>
 
       {/* Status Badge */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        <span style={{
-          padding: '6px 14px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-          background: statusInfo.bg, color: statusInfo.color,
-        }}>
+        <span
+          style={{
+            padding: '6px 14px',
+            borderRadius: 8,
+            fontSize: 13,
+            fontWeight: 600,
+            background: statusInfo.bg,
+            color: statusInfo.color,
+          }}
+        >
           {statusInfo.label}
         </span>
-        {phoneNumber && (
-          <span style={{ fontSize: 13, color: '#94a3b8' }}>
-            📞 {phoneNumber}
-          </span>
-        )}
+        {phoneNumber && <span style={{ fontSize: 13, color: '#94a3b8' }}>📞 {phoneNumber}</span>}
       </div>
 
       {/* QR Code */}
       {status !== 'connected' && qrCode && (
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
-          padding: 20, borderRadius: 12, background: '#fff', marginBottom: 20,
-          maxWidth: 280, margin: '0 auto 20px',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 12,
+            padding: 20,
+            borderRadius: 12,
+            background: '#fff',
+            marginBottom: 20,
+            maxWidth: 280,
+            margin: '0 auto 20px',
+          }}
+        >
           <img
             src={qrCode.startsWith('data:') ? qrCode : `data:image/png;base64,${qrCode}`}
             alt="QR Code WhatsApp"
             style={{ width: 240, height: 240, imageRendering: 'pixelated' }}
           />
           <p style={{ fontSize: 12, color: '#475569', textAlign: 'center', margin: 0 }}>
-            {t('whatsappScanQr') || 'Abra o WhatsApp Business > Dispositivos vinculados > Vincular dispositivo'}
+            {t('whatsappScanQr') ||
+              'Abra o WhatsApp Business > Dispositivos vinculados > Vincular dispositivo'}
           </p>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div style={{
-          padding: '10px 14px', borderRadius: 8, marginBottom: 16,
-          background: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)',
-          color: '#ff6b6b', fontSize: 13,
-        }}>
+        <div
+          style={{
+            padding: '10px 14px',
+            borderRadius: 8,
+            marginBottom: 16,
+            background: 'rgba(255,100,100,0.1)',
+            border: '1px solid rgba(255,100,100,0.2)',
+            color: '#ff6b6b',
+            fontSize: 13,
+          }}
+        >
           {error}
         </div>
       )}
@@ -160,31 +190,62 @@ const WhatsAppConnection = ({ t }) => {
       {/* Actions */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         {status === 'disconnected' && (
-          <button onClick={handleConnect} disabled={loading} style={{
-            padding: '10px 20px', borderRadius: 8, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-            background: 'linear-gradient(135deg, #25D366, #128C7E)', color: '#fff',
-            fontWeight: 600, fontSize: 13, fontFamily: 'inherit', opacity: loading ? 0.6 : 1,
-          }}>
+          <button
+            onClick={handleConnect}
+            disabled={loading}
+            style={{
+              padding: '10px 20px',
+              borderRadius: 8,
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              background: 'linear-gradient(135deg, #25D366, #128C7E)',
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: 13,
+              fontFamily: 'inherit',
+              opacity: loading ? 0.6 : 1,
+            }}
+          >
             {loading ? '⏳' : '🔗'} {t('whatsappConnect') || 'Conectar WhatsApp'}
           </button>
         )}
 
         {(status === 'connecting' || (status !== 'connected' && qrCode)) && (
-          <button onClick={handleRefreshQr} disabled={loading} style={{
-            padding: '10px 20px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)',
-            background: 'rgba(255,255,255,0.06)', color: '#e2e8f0', cursor: 'pointer',
-            fontWeight: 600, fontSize: 13, fontFamily: 'inherit',
-          }}>
+          <button
+            onClick={handleRefreshQr}
+            disabled={loading}
+            style={{
+              padding: '10px 20px',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.12)',
+              background: 'rgba(255,255,255,0.06)',
+              color: '#e2e8f0',
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: 13,
+              fontFamily: 'inherit',
+            }}
+          >
             🔄 {t('whatsappRefreshQr') || 'Atualizar QR'}
           </button>
         )}
 
         {status === 'connected' && (
-          <button onClick={handleDisconnect} disabled={loading} style={{
-            padding: '10px 20px', borderRadius: 8, border: '1px solid rgba(255,100,100,0.3)',
-            background: 'rgba(255,100,100,0.1)', color: '#ff6b6b', cursor: 'pointer',
-            fontWeight: 600, fontSize: 13, fontFamily: 'inherit',
-          }}>
+          <button
+            onClick={handleDisconnect}
+            disabled={loading}
+            style={{
+              padding: '10px 20px',
+              borderRadius: 8,
+              border: '1px solid rgba(255,100,100,0.3)',
+              background: 'rgba(255,100,100,0.1)',
+              color: '#ff6b6b',
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: 13,
+              fontFamily: 'inherit',
+            }}
+          >
             ❌ {t('whatsappDisconnect') || 'Desconectar'}
           </button>
         )}

@@ -17,13 +17,11 @@ const buildPopupHtml = (device, position) => {
   const statusDot = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${statusColor};margin-right:4px;"></span>`;
   const statusText = isOnline ? 'Online' : 'Offline';
 
-  const ignitionText = attrs.ignition !== undefined
-    ? (attrs.ignition ? '🟢 Ligada' : '🔴 Desligada')
-    : '—';
+  const ignitionText =
+    attrs.ignition !== undefined ? (attrs.ignition ? '🟢 Ligada' : '🔴 Desligada') : '—';
 
-  const blockedText = attrs.blocked !== undefined
-    ? (attrs.blocked ? '🔒 Bloqueado' : '🔓 Desbloqueado')
-    : '—';
+  const blockedText =
+    attrs.blocked !== undefined ? (attrs.blocked ? '🔒 Bloqueado' : '🔓 Desbloqueado') : '—';
 
   const lastUpdate = position.fixTime ? dayjs(position.fixTime).fromNow() : '—';
 
@@ -36,7 +34,10 @@ const buildPopupHtml = (device, position) => {
     { label: 'Velocidade', value: `${speedKmh} km/h` },
     { label: 'Satélites', value: attrs.sat != null ? attrs.sat : '—' },
     { label: 'Protocolo', value: position.protocol || '—' },
-    { label: 'Coordenadas', value: `${position.latitude.toFixed(5)}, ${position.longitude.toFixed(5)}` },
+    {
+      label: 'Coordenadas',
+      value: `${position.latitude.toFixed(5)}, ${position.longitude.toFixed(5)}`,
+    },
     { label: 'Última att.', value: lastUpdate },
   ];
 
@@ -44,9 +45,12 @@ const buildPopupHtml = (device, position) => {
     rows.splice(5, 0, { label: 'Endereço', value: position.address });
   }
 
-  const rowsHtml = rows.map((r) =>
-    `<tr><td style="padding:2px 8px 2px 0;color:#94a3b8;font-size:11px;white-space:nowrap;">${r.label}</td><td style="padding:2px 0;font-size:11px;font-weight:600;">${r.value}</td></tr>`
-  ).join('');
+  const rowsHtml = rows
+    .map(
+      (r) =>
+        `<tr><td style="padding:2px 8px 2px 0;color:#94a3b8;font-size:11px;white-space:nowrap;">${r.label}</td><td style="padding:2px 0;font-size:11px;font-weight:600;">${r.value}</td></tr>`,
+    )
+    .join('');
 
   return `
     <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-width:220px;">

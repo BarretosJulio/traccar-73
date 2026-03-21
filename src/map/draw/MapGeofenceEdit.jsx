@@ -73,78 +73,81 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
     [handleCircleCreated],
   );
 
-  const handleDialogSave = useCallback(async (data) => {
-    if (!pendingArea) return;
-    try {
-      let calendarId;
+  const handleDialogSave = useCallback(
+    async (data) => {
+      if (!pendingArea) return;
+      try {
+        let calendarId;
 
-      // If calendar data was generated, create calendar first via Traccar API
-      if (data.calendarData) {
-        const calendarResponse = await fetchOrThrow('/api/calendars', {
+        // If calendar data was generated, create calendar first via Traccar API
+        if (data.calendarData) {
+          const calendarResponse = await fetchOrThrow('/api/calendars', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: `${data.name} - Agenda`,
+              data: data.calendarData,
+              attributes: {},
+            }),
+          });
+          const calendar = await calendarResponse.json();
+          calendarId = calendar.id;
+        }
+
+        const newItem = {
+          name: data.name,
+          area: pendingArea,
+          description: data.description,
+          calendarId: calendarId || undefined,
+          attributes: data.attributes || {},
+        };
+        const geofenceResponse = await fetchOrThrow('/api/geofences', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: `${data.name} - Agenda`,
-            data: data.calendarData,
-            attributes: {},
-          }),
+          body: JSON.stringify(newItem),
         });
-        const calendar = await calendarResponse.json();
-        calendarId = calendar.id;
+        const geofence = await geofenceResponse.json();
+
+        // Link geofence to devices/groups via permissions API
+        if (data.linkMode === 'all') {
+          // Link to current user — Traccar applies to all user's devices
+          const session = await fetchOrThrow('/api/session');
+          const user = await session.json();
+          await fetchOrThrow('/api/permissions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, geofenceId: geofence.id }),
+          });
+        } else if (data.linkMode === 'devices' && data.selectedDeviceIds?.length) {
+          await Promise.all(
+            data.selectedDeviceIds.map((deviceId) =>
+              fetchOrThrow('/api/permissions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ deviceId, geofenceId: geofence.id }),
+              }),
+            ),
+          );
+        } else if (data.linkMode === 'groups' && data.selectedGroupIds?.length) {
+          await Promise.all(
+            data.selectedGroupIds.map((groupId) =>
+              fetchOrThrow('/api/permissions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ groupId, geofenceId: geofence.id }),
+              }),
+            ),
+          );
+        }
+
+        refreshGeofences();
+      } catch (error) {
+        dispatch(errorsActions.push(error.message));
       }
-
-      const newItem = {
-        name: data.name,
-        area: pendingArea,
-        description: data.description,
-        calendarId: calendarId || undefined,
-        attributes: data.attributes || {},
-      };
-      const geofenceResponse = await fetchOrThrow('/api/geofences', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newItem),
-      });
-      const geofence = await geofenceResponse.json();
-
-      // Link geofence to devices/groups via permissions API
-      if (data.linkMode === 'all') {
-        // Link to current user — Traccar applies to all user's devices
-        const session = await fetchOrThrow('/api/session');
-        const user = await session.json();
-        await fetchOrThrow('/api/permissions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, geofenceId: geofence.id }),
-        });
-      } else if (data.linkMode === 'devices' && data.selectedDeviceIds?.length) {
-        await Promise.all(
-          data.selectedDeviceIds.map((deviceId) =>
-            fetchOrThrow('/api/permissions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ deviceId, geofenceId: geofence.id }),
-            }),
-          ),
-        );
-      } else if (data.linkMode === 'groups' && data.selectedGroupIds?.length) {
-        await Promise.all(
-          data.selectedGroupIds.map((groupId) =>
-            fetchOrThrow('/api/permissions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ groupId, geofenceId: geofence.id }),
-            }),
-          ),
-        );
-      }
-
-      refreshGeofences();
-    } catch (error) {
-      dispatch(errorsActions.push(error.message));
-    }
-    setPendingArea(null);
-  }, [pendingArea, dispatch, refreshGeofences]);
+      setPendingArea(null);
+    },
+    [pendingArea, dispatch, refreshGeofences],
+  );
 
   const handleDialogCancel = useCallback(() => {
     setPendingArea(null);
@@ -156,7 +159,9 @@ const MapGeofenceEdit = ({ selectedGeofenceId }) => {
     map.addControl(draw, 'top-right');
 
     // After draw is added, find its container and inject circle button
-    const drawContainer = document.querySelector('.maplibregl-ctrl-group .mapbox-gl-draw_ctrl-draw-btn')?.parentElement;
+    const drawContainer = document.querySelector(
+      '.maplibregl-ctrl-group .mapbox-gl-draw_ctrl-draw-btn',
+    )?.parentElement;
     if (drawContainer) {
       circleControl.attach(map, drawContainer);
     }

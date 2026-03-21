@@ -57,7 +57,12 @@ const DevicesPage = () => {
     try {
       const query = new URLSearchParams({ all: showAll });
       const response = await fetchOrThrow(`/api/devices?${query.toString()}`);
-      setItems(await response.json());
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setItems(data);
+      } else {
+        setItems([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -109,7 +114,7 @@ const DevicesPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {!loading ? (
+          {!loading && Array.isArray(items) ? (
             items.filter(filterByKeyword(searchKeyword)).map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.name}</TableCell>

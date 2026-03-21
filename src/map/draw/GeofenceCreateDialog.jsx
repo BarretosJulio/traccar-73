@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import { useEffectAsync } from '../../reactHelper';
 import fetchOrThrow from '../../common/util/fetchOrThrow';
+import { GEOFENCE_TYPES } from '../../common/util/geofenceTypes';
 
 const DAYS_CONFIG = [
   { value: 'MO', label: 'Seg' },
@@ -51,11 +52,17 @@ const generateICS = ({ startDate, endDate, startTime, endTime, selectedDays, day
 
   const dtStart = startDate
     ? dayjs(`${startDate}T${start}`)
-    : dayjs().startOf('day').hour(parseInt(start.split(':')[0], 10)).minute(parseInt(start.split(':')[1], 10));
+    : dayjs()
+        .startOf('day')
+        .hour(parseInt(start.split(':')[0], 10))
+        .minute(parseInt(start.split(':')[1], 10));
 
   const dtEnd = startDate
     ? dayjs(`${startDate}T${end}`)
-    : dayjs().startOf('day').hour(parseInt(end.split(':')[0], 10)).minute(parseInt(end.split(':')[1], 10));
+    : dayjs()
+        .startOf('day')
+        .hour(parseInt(end.split(':')[0], 10))
+        .minute(parseInt(end.split(':')[1], 10));
 
   // Build RRULE
   let rrule;
@@ -102,6 +109,7 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
   const [dayMode, setDayMode] = useState('all');
   const [selectedDays, setSelectedDays] = useState([...ALL_DAYS]);
   const [hide, setHide] = useState(false);
+  const [type, setType] = useState('custom'); // new type state
   const [linkMode, setLinkMode] = useState('all'); // 'all' | 'devices' | 'groups'
   const [selectedDevices, setSelectedDevices] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
@@ -136,7 +144,8 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
     if (newDays.length > 0) {
       setSelectedDays(newDays);
       if (newDays.length === 7) setDayMode('all');
-      else if (newDays.length === 5 && WEEKDAYS.every((d) => newDays.includes(d))) setDayMode('weekdays');
+      else if (newDays.length === 5 && WEEKDAYS.every((d) => newDays.includes(d)))
+        setDayMode('weekdays');
       else setDayMode('custom');
     }
   };
@@ -166,7 +175,7 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
     const data = {
       name: name.trim(),
       description: description.trim() || undefined,
-      attributes: { hide, ...scheduleAttrs },
+      attributes: { hide, type, ...scheduleAttrs },
       calendarData,
       linkMode,
       selectedDeviceIds: selectedDevices.map((d) => d.id),
@@ -191,6 +200,7 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
     setDayMode('all');
     setSelectedDays([...ALL_DAYS]);
     setHide(false);
+    setType('custom');
     setLinkMode('all');
     setSelectedDevices([]);
     setSelectedGroups([]);
@@ -210,6 +220,33 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
           autoFocus
           fullWidth
         />
+
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+          Categoria / Tipo
+        </Typography>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {GEOFENCE_TYPES.map((t) => (
+            <Chip
+              key={t.value}
+              icon={t.icon}
+              label={t.label}
+              onClick={() => setType(t.value)}
+              variant={type === t.value ? 'filled' : 'outlined'}
+              sx={{
+                fontWeight: 600,
+                borderColor: t.color + '50',
+                color: type === t.value ? '#fff' : t.color,
+                backgroundColor: type === t.value ? t.color : 'transparent',
+                '&:hover': {
+                  backgroundColor: type === t.value ? t.color : t.color + '15',
+                },
+                '& .MuiChip-icon': {
+                  color: type === t.value ? '#fff' : t.color,
+                }
+              }}
+            />
+          ))}
+        </Box>
 
         <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
           Período de ativação (opcional)
@@ -309,7 +346,12 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
         <Typography variant="caption" color="text.secondary">
           Vincular a dispositivos
         </Typography>
-        <RadioGroup row value={linkMode} onChange={(e) => setLinkMode(e.target.value)} sx={{ gap: 1 }}>
+        <RadioGroup
+          row
+          value={linkMode}
+          onChange={(e) => setLinkMode(e.target.value)}
+          sx={{ gap: 1 }}
+        >
           <FormControlLabel
             value="all"
             control={<Radio size="small" />}
@@ -339,7 +381,12 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
             )}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.name} size="small" />
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option.id}
+                  label={option.name}
+                  size="small"
+                />
               ))
             }
             size="small"
@@ -358,7 +405,12 @@ const GeofenceCreateDialog = ({ open, onSave, onCancel }) => {
             )}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip {...getTagProps({ index })} key={option.id} label={option.name} size="small" />
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option.id}
+                  label={option.name}
+                  size="small"
+                />
               ))
             }
             size="small"

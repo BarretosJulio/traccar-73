@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import svgr from 'vite-plugin-svgr';
 import { VitePWA } from 'vite-plugin-pwa';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(() => ({
   server: {
@@ -23,6 +24,7 @@ export default defineConfig(() => ({
     outDir: 'dist',
   },
   plugins: [
+    tailwindcss(),
     svgr(),
     react(),
     VitePWA({
@@ -35,8 +37,8 @@ export default defineConfig(() => ({
       manifest: {
         short_name: 'HyTraccar',
         name: 'HyperTraccar - Rastreador GPS',
-        theme_color: '#00f5a0',
-        background_color: '#0a0a0f',
+        theme_color: '#1e1f24',
+        background_color: '#1a1b1e',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',

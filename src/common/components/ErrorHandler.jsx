@@ -31,7 +31,11 @@ const ErrorHandler = () => {
 
   return (
     <>
-      <Snackbar open={Boolean(error) && !expanded} autoHideDuration={6000} onClose={() => dispatch(errorsActions.pop())}>
+      <Snackbar
+        open={Boolean(error) && !expanded}
+        autoHideDuration={6000}
+        onClose={() => dispatch(errorsActions.pop())}
+      >
         <Alert
           elevation={6}
           onClose={() => dispatch(errorsActions.pop())}
@@ -52,7 +56,11 @@ const ErrorHandler = () => {
       <Dialog open={expanded} onClose={() => setExpanded(false)} maxWidth={false}>
         <DialogContent>
           <DialogContentText component="div">
-            <Typography component="pre" variant="caption" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+            <Typography
+              component="pre"
+              variant="caption"
+              sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+            >
               {rawMessage}
             </Typography>
           </DialogContentText>

@@ -1,21 +1,22 @@
 import { useState } from 'react';
-import { Table, TableRow, TableCell, TableHead, TableBody } from '@mui/material';
+import { CircularProgress, IconButton } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
+
 import { useEffectAsync } from '../reactHelper';
 import { prefixString } from '../common/util/stringUtils';
-import { formatBoolean } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
-import PageLayout from '../common/components/PageLayout';
-import SettingsMenu from './components/SettingsMenu';
-import CollectionFab from './components/CollectionFab';
+import PwaPageLayout from '../common/components/PwaPageLayout';
 import CollectionActions from './components/CollectionActions';
-import TableShimmer from '../common/components/TableShimmer';
-import SearchHeader, { filterByKeyword } from './components/SearchHeader';
-import useSettingsStyles from './common/useSettingsStyles';
 import fetchOrThrow from '../common/util/fetchOrThrow';
+import { useHudTheme } from '../common/util/ThemeContext';
 
 const NotificationsPage = () => {
-  const { classes } = useSettingsStyles();
   const t = useTranslation();
+  const { theme } = useHudTheme();
 
   const [timestamp, setTimestamp] = useState(Date.now());
   const [items, setItems] = useState([]);
@@ -43,46 +44,124 @@ const NotificationsPage = () => {
     return '';
   };
 
+  const headerActions = (
+    <button
+      onClick={() => window.location.hash = '/settings/notification'}
+      className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-md border active:scale-95 transition-all duration-300"
+      style={{ background: theme.bgSecondary, borderColor: theme.border, color: theme.accent }}
+    >
+      <AddIcon sx={{ fontSize: 24 }} />
+    </button>
+  );
+
+  const filteredItems = items.filter((item) => {
+    if (!searchKeyword) return true;
+    const keyword = searchKeyword.toLowerCase();
+    return (
+      (item.description && item.description.toLowerCase().includes(keyword)) ||
+      t(prefixString('event', item.type)).toLowerCase().includes(keyword)
+    );
+  });
+
   return (
-    <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedNotifications']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('sharedDescription')}</TableCell>
-            <TableCell>{t('notificationType')}</TableCell>
-            <TableCell>{t('notificationAlways')}</TableCell>
-            <TableCell>{t('sharedAlarms')}</TableCell>
-            <TableCell>{t('notificationNotificators')}</TableCell>
-            <TableCell className={classes.columnAction} />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!loading ? (
-            items.filter(filterByKeyword(searchKeyword)).map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>{t(prefixString('event', item.type))}</TableCell>
-                <TableCell>{formatBoolean(item.always, t)}</TableCell>
-                <TableCell>{formatList('alarm', item.attributes.alarms)}</TableCell>
-                <TableCell>{formatList('notificator', item.notificators)}</TableCell>
-                <TableCell className={classes.columnAction} padding="none">
-                  <CollectionActions
-                    itemId={item.id}
-                    editPath="/settings/notification"
-                    endpoint="notifications"
-                    setTimestamp={setTimestamp}
-                  />
-                </TableCell>
-              </TableRow>
-            ))
+    <PwaPageLayout title={t('sharedNotifications')} actions={headerActions}>
+      <div className="flex flex-col gap-6">
+
+        {/* Search Bar */}
+        <div 
+          className="rounded-2xl p-1 shadow-inner border flex items-center px-4 gap-3 transition-colors"
+          style={{ background: theme.bg, borderColor: theme.border }}
+        >
+          <SearchIcon sx={{ fontSize: 18 }} style={{ color: theme.textMuted }} />
+          <input
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            placeholder={t('sharedSearch')}
+            className="flex-1 bg-transparent border-none outline-none py-3 text-sm font-medium"
+            style={{ color: theme.textPrimary }}
+          />
+        </div>
+
+        {/* Notifications List */}
+        <div className="flex flex-col gap-4 pb-32">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <CircularProgress size={32} sx={{ color: theme.accent }} />
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: theme.textMuted }}>{t('sharedLoading')}</span>
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div 
+              className="p-10 rounded-3xl border flex flex-col items-center justify-center gap-3 shadow-md"
+              style={{ background: theme.bgSecondary, borderColor: theme.border }}
+            >
+              <NotificationsIcon sx={{ fontSize: 40 }} style={{ color: theme.textMuted }} />
+              <p className="text-xs font-bold uppercase tracking-widest text-center" style={{ color: theme.textMuted }}>{t('sharedNoResults')}</p>
+            </div>
           ) : (
-            <TableShimmer columns={5} endAction />
+            filteredItems.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-3xl p-5 shadow-md border flex flex-col gap-4 border transition-all"
+                style={{ background: theme.bgSecondary, borderColor: theme.border }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shadow-inner border"
+                      style={{ background: theme.bg, color: theme.accent, borderColor: theme.border }}
+                    >
+                      <NotificationsIcon sx={{ fontSize: 20 }} />
+                    </div>
+                    <div>
+                      <h3 className="text-[11px] font-black uppercase tracking-tighter" style={{ color: theme.textPrimary }}>
+                        {t(prefixString('event', item.type))}
+                      </h3>
+                      <p className="text-[9px] font-bold uppercase tracking-widest mt-0.5" style={{ color: theme.textMuted }}>
+                        {item.description || t('sharedNoDescription')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <CollectionActions
+                      itemId={item.id}
+                      editPath="/settings/notification"
+                      endpoint="notifications"
+                      setTimestamp={setTimestamp}
+                      customButtons={(
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => window.location.hash = `/settings/notification/${item.id}`}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm border active:scale-95 transition-all"
+                            style={{ background: theme.bg, borderColor: theme.border, color: theme.textMuted }}
+                          >
+                            <EditIcon sx={{ fontSize: 14 }} />
+                          </button>
+                        </div>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 rounded-2xl shadow-inner border" style={{ background: theme.bg, borderColor: theme.border }}>
+                    <p className="text-[7px] font-black uppercase mb-1" style={{ color: theme.textMuted }}>{t('notificationNotificators')}</p>
+                    <p className="text-[9px] font-bold uppercase truncate" style={{ color: theme.textPrimary }}>
+                      {formatList('notificator', item.notificators)}
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-2xl shadow-inner border" style={{ background: theme.bg, borderColor: theme.border }}>
+                    <p className="text-[7px] font-black uppercase mb-1" style={{ color: theme.textMuted }}>{t('notificationAlways')}</p>
+                    <p className={`text-[9px] font-black uppercase`} style={{ color: item.always ? theme.accent : theme.textMuted }}>
+                      {item.always ? t('sharedYes') : t('sharedNo')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))
           )}
-        </TableBody>
-      </Table>
-      <CollectionFab editPath="/settings/notification" />
-    </PageLayout>
+        </div>
+      </div>
+    </PwaPageLayout>
   );
 };
 

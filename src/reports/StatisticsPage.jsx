@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { Table, TableRow, TableCell, TableHead, TableBody } from '@mui/material';
 import { formatTime } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
-import PageLayout from '../common/components/PageLayout';
-import ReportsMenu from './components/ReportsMenu';
+import PwaPageLayout from '../common/components/PwaPageLayout';
 import ReportFilter from './components/ReportFilter';
 import usePersistedState from '../common/util/usePersistedState';
 import ColumnSelect from './components/ColumnSelect';
 import { useCatch } from '../reactHelper';
-import useReportStyles from './common/useReportStyles';
-import TableShimmer from '../common/components/TableShimmer';
 import fetchOrThrow from '../common/util/fetchOrThrow';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import { useHudTheme } from '../common/util/ThemeContext';
 
 const columnsArray = [
   ['captureTime', 'statisticsCaptureTime'],
@@ -27,8 +26,8 @@ const columnsArray = [
 const columnsMap = new Map(columnsArray);
 
 const StatisticsPage = () => {
-  const { classes } = useReportStyles();
   const t = useTranslation();
+  const { theme } = useHudTheme();
 
   const [columns, setColumns] = usePersistedState('statisticsColumns', [
     'captureTime',
@@ -51,37 +50,59 @@ const StatisticsPage = () => {
   });
 
   return (
-    <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'statisticsTitle']}>
-      <div className={classes.header}>
+    <PwaPageLayout title={t('statisticsTitle')}>
+      <div className="flex flex-col gap-6">
         <ReportFilter onShow={onShow} deviceType="none" loading={loading}>
           <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
         </ReportFilter>
-      </div>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columns.map((key) => (
-              <TableCell key={key}>{t(columnsMap.get(key))}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!loading ? (
-            items.map((item) => (
-              <TableRow key={item.id}>
-                {columns.map((key) => (
-                  <TableCell key={key}>
-                    {key === 'captureTime' ? formatTime(item[key], 'date') : item[key]}
-                  </TableCell>
+
+        {/* Results List */}
+        <div className="flex flex-col gap-4 pb-10">
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="rounded-3xl p-5 shadow-md border flex flex-col gap-4 transition-colors duration-300"
+              style={{ background: theme.bgSecondary, borderColor: theme.borderCard }}
+            >
+              <div className="flex items-center gap-3">
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center shadow-inner"
+                  style={{ background: theme.bg, color: theme.accent }}
+                >
+                  <AssessmentIcon sx={{ fontSize: 18 }} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-tighter" style={{ color: theme.textPrimary }}>
+                    Registro Estatístico
+                  </span>
+                  <span className="text-[8px] font-bold uppercase tracking-widest mt-0.5" style={{ color: theme.textMuted }}>
+                    {formatTime(item.captureTime, 'date')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-1">
+                {columns.filter(c => c !== 'captureTime').map((key) => (
+                  <div key={key} className="p-3 rounded-2xl border shadow-inner" style={{ background: theme.bg, borderColor: theme.border }}>
+                    <p className="text-[7px] font-black uppercase mb-1" style={{ color: theme.textMuted }}>{t(columnsMap.get(key))}</p>
+                    <p className="text-[10px] font-black uppercase leading-none" style={{ color: theme.textPrimary }}>
+                      {item[key]}
+                    </p>
+                  </div>
                 ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableShimmer columns={columns.length} />
+              </div>
+            </div>
+          ))}
+
+          {!loading && items.length === 0 && (
+            <div className="py-20 flex flex-col items-center justify-center opacity-40 grayscale" style={{ color: theme.textMuted }}>
+              <TableRowsIcon sx={{ fontSize: 40, mb: 1 }} />
+              <span className="text-xs font-black uppercase tracking-widest">Nenhum dado</span>
+            </div>
           )}
-        </TableBody>
-      </Table>
-    </PageLayout>
+        </div>
+      </div>
+    </PwaPageLayout>
   );
 };
 

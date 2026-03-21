@@ -248,7 +248,10 @@ export const useTranslation = () => {
   const { data } = context.languages[context.language];
   const ptBrData = context.languages.pt_BR.data;
   const enData = context.languages.en.data;
-  return useMemo(() => (key) => data[key] || ptBrData[key] || enData[key], [data, ptBrData, enData]);
+  return useMemo(
+    () => (key) => data[key] || ptBrData[key] || enData[key],
+    [data, ptBrData, enData],
+  );
 };
 
 export const useTranslationKeys = (predicate) => {

@@ -83,10 +83,10 @@ const SocketController = ({ demoMode }) => {
         newEvents.forEach((e) => processedEventIdsRef.current.add(e.id));
         handleEvents(newEvents);
 
-        // Prune old event IDs to prevent memory leak (keep last 200)
-        if (processedEventIdsRef.current.size > 200) {
+        // Prune old event IDs to prevent memory leak (keep last 5000)
+        if (processedEventIdsRef.current.size > 5000) {
           const arr = Array.from(processedEventIdsRef.current);
-          processedEventIdsRef.current = new Set(arr.slice(-100));
+          processedEventIdsRef.current = new Set(arr.slice(-2500));
         }
       }
     } catch {
@@ -115,6 +115,11 @@ const SocketController = ({ demoMode }) => {
     }
   }, [dispatch, navigate, pollEvents]);
 
+  const pollDataRef = useRef();
+  useEffect(() => {
+    pollDataRef.current = pollData;
+  }, [pollData]);
+
   // Start polling when authenticated (skip in demo mode)
   useEffect(() => {
     if (authenticated && !demoMode) {
@@ -130,7 +135,9 @@ const SocketController = ({ demoMode }) => {
       };
 
       initialFetch();
-      pollingRef.current = setInterval(pollData, POLLING_INTERVAL);
+      pollingRef.current = setInterval(() => {
+        if (pollDataRef.current) pollDataRef.current();
+      }, POLLING_INTERVAL);
 
       return () => {
         if (pollingRef.current) {
@@ -144,20 +151,24 @@ const SocketController = ({ demoMode }) => {
       dispatch(sessionActions.updateSocket(true));
     }
     return undefined;
-  }, [authenticated, demoMode, pollData, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticated, demoMode]);
 
   // Reconnect on visibility change
   useEffect(() => {
     if (!authenticated || demoMode) return undefined;
     const onVisibility = () => {
       if (!document.hidden && !pollingRef.current) {
-        pollData();
-        pollingRef.current = setInterval(pollData, POLLING_INTERVAL);
+        if (pollDataRef.current) pollDataRef.current();
+        pollingRef.current = setInterval(() => {
+          if (pollDataRef.current) pollDataRef.current();
+        }, POLLING_INTERVAL);
       }
     };
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, [authenticated, demoMode, pollData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticated, demoMode]);
 
   const handleNativeNotification = useCatchCallback(
     async (message) => {

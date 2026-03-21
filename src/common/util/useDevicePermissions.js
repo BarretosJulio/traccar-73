@@ -46,10 +46,7 @@ const useDevicePermissions = () => {
   });
 
   const refreshPermissions = useCallback(async () => {
-    const [geo, cam] = await Promise.all([
-      getGeolocationStatus(),
-      getCameraStatus(),
-    ]);
+    const [geo, cam] = await Promise.all([getGeolocationStatus(), getCameraStatus()]);
 
     setPermissions({
       notification: getNotificationStatus(),

@@ -1,12 +1,12 @@
 /**
  * Custom MapLibre control for creating circle geofences.
- * 
+ *
  * Flow:
  * 1. User clicks the circle button → enters placement mode (cursor changes to crosshair)
  * 2. User clicks on the map → center is placed, enters radius mode
  * 3. User moves mouse → circle preview updates dynamically
  * 4. User clicks again → radius is confirmed, geofence is created
- * 
+ *
  * The circle is stored in Traccar's CIRCLE format: "CIRCLE (lat lon, radius_meters)"
  */
 import circle from '@turf/circle';
@@ -42,7 +42,8 @@ class CircleControl {
         <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
       </svg>
     `;
-    this._button.style.cssText = 'display:flex;align-items:center;justify-content:center;cursor:pointer;';
+    this._button.style.cssText =
+      'display:flex;align-items:center;justify-content:center;cursor:pointer;';
 
     this._button.addEventListener('click', () => this._toggleActive());
 

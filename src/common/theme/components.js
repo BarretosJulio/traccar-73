@@ -12,21 +12,21 @@ export default {
         backgroundImage: 'none',
       },
       rounded: {
-        borderRadius: 16,
+        borderRadius: 20,
       },
       elevation1: {
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        boxShadow: '4px 4px 10px rgba(0,0,0,0.3), -4px -4px 10px rgba(255,255,255,0.02)',
       },
       elevation3: {
-        boxShadow: '0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)',
+        boxShadow: '8px 8px 20px rgba(0,0,0,0.4), -8px -8px 20px rgba(255,255,255,0.02)',
       },
     },
   },
   MuiCard: {
     styleOverrides: {
       root: {
-        borderRadius: 16,
-        boxShadow: '0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)',
+        borderRadius: 20,
+        boxShadow: '6px 6px 15px rgba(0,0,0,0.3), -6px -6px 15px rgba(255,255,255,0.02)',
       },
     },
   },

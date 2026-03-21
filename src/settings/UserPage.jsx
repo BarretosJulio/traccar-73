@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   FormControlLabel,
@@ -20,11 +15,16 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
+  Collapse,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CachedIcon from '@mui/icons-material/Cached';
 import CloseIcon from '@mui/icons-material/Close';
+import PersonIcon from '@mui/icons-material/Person';
+import TuneIcon from '@mui/icons-material/Tune';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { useDispatch, useSelector } from 'react-redux';
 import EditItemView from './components/EditItemView';
 import EditAttributesAccordion from './components/EditAttributesAccordion';
@@ -32,20 +32,19 @@ import { useTranslation } from '../common/components/LocalizationProvider';
 import useUserAttributes from '../common/attributes/useUserAttributes';
 import { sessionActions } from '../store';
 import SelectField from '../common/components/SelectField';
-import SettingsMenu from './components/SettingsMenu';
 import useCommonUserAttributes from '../common/attributes/useCommonUserAttributes';
 import { useAdministrator, useRestriction, useManager } from '../common/util/permissions';
 import { useCatch } from '../reactHelper';
 import useMapStyles from '../map/core/useMapStyles';
 import { map } from '../map/core/MapView';
-import useSettingsStyles from './common/useSettingsStyles';
 import fetchOrThrow from '../common/util/fetchOrThrow';
+import { useHudTheme } from '../common/util/ThemeContext';
 
 const UserPage = () => {
-  const { classes } = useSettingsStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
+  const { theme } = useHudTheme();
 
   const admin = useAdministrator();
   const manager = useManager();
@@ -106,7 +105,6 @@ const UserPage = () => {
     if (item && attribute) {
       if (!item.attributes.hasOwnProperty(attribute)) {
         setItem({ ...item, attributes: { ...item.attributes, [attribute]: '' } });
-
         const newParams = new URLSearchParams(searchParams);
         newParams.delete('attribute');
         setSearchParams(newParams, { replace: true });
@@ -127,6 +125,41 @@ const UserPage = () => {
     (item.id || item.password) &&
     (admin || !totpForce || item.totpKey);
 
+  const NeumorphicSection = ({ title, icon: Icon, children, defaultOpen = false, error = false }) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    return (
+      <div 
+        className={`mb-4 rounded-3xl shadow-md border overflow-hidden transition-all duration-300`}
+        style={{ background: theme.bgSecondary, borderColor: error ? '#ef444455' : theme.border }}
+      >
+        <div
+          className="p-4 flex items-center justify-between cursor-pointer active:opacity-70 transition-all"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <div className="flex items-center gap-3">
+            <div 
+              className={`w-8 h-8 rounded-xl flex items-center justify-center shadow-inner`}
+              style={{ background: theme.bg, color: error ? '#ef4444' : theme.accent, border: `1px solid ${theme.border}` }}
+            >
+              <Icon sx={{ fontSize: 16 }} />
+            </div>
+            <h3 
+              className={`text-[11px] font-black uppercase tracking-widest`}
+              style={{ color: error ? '#f87171' : theme.textPrimary }}
+            >{title}</h3>
+          </div>
+          <ExpandMoreIcon sx={{ fontSize: 18 }} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} style={{ color: theme.textMuted }} />
+        </div>
+        <Collapse in={isOpen}>
+          <div className="p-4 pt-1 flex flex-col gap-4">
+            <div className="h-px mb-1 opacity-10" style={{ background: theme.textMuted }} />
+            {children}
+          </div>
+        </Collapse>
+      </div>
+    );
+  };
+
   return (
     <EditItemView
       endpoint="users"
@@ -135,376 +168,255 @@ const UserPage = () => {
       defaultItem={admin ? { deviceLimit: -1 } : {}}
       validate={validate}
       onItemSaved={onItemSaved}
-      menu={<SettingsMenu />}
-      breadcrumbs={['settingsTitle', 'settingsUser']}
+      title={t('settingsUser')}
     >
       {item && (
-        <>
-          <Accordion defaultExpanded={!attribute}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="subtitle1">{t('sharedRequired')}</Typography>
-            </AccordionSummary>
-            <AccordionDetails className={classes.details}>
+        <div className="flex flex-col gap-1 px-1">
+          <NeumorphicSection title={t('sharedRequired')} icon={PersonIcon} defaultOpen={!attribute}>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('sharedName')}</span>
               <TextField
                 value={item.name || ''}
                 onChange={(e) => setItem({ ...item, name: e.target.value })}
-                label={t('sharedName')}
+                fullWidth
+                size="small"
+                sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('userEmail')}</span>
               <TextField
                 value={item.email || ''}
                 onChange={(e) => setItem({ ...item, email: e.target.value })}
-                label={t('userEmail')}
                 disabled={fixedEmail && item.id === currentUser.id}
+                fullWidth
+                size="small"
+                sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
-              {!openIdForced && (
+            </div>
+            {!openIdForced && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('userPassword')}</span>
                 <TextField
                   type="password"
+                  autoComplete="new-password"
                   onChange={(e) => setItem({ ...item, password: e.target.value })}
-                  label={t('userPassword')}
+                  fullWidth
+                  size="small"
+                  sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
                 />
-              )}
-              {totpEnable && (
-                <FormControl>
-                  <InputLabel>{t('loginTotpKey')}</InputLabel>
-                  <OutlinedInput
-                    readOnly
-                    label={t('loginTotpKey')}
-                    value={item.totpKey || ''}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton size="small" edge="end" onClick={handleGenerateTotp}>
-                          <CachedIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          edge="end"
-                          onClick={() => setItem({ ...item, totpKey: null })}
-                        >
-                          <CloseIcon fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              )}
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="subtitle1">{t('sharedPreferences')}</Typography>
-            </AccordionSummary>
-            <AccordionDetails className={classes.details}>
+              </div>
+            )}
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] font-black uppercase px-1" style={{ color: theme.textMuted }}>{t('loginTotpKey')}</span>
+              <FormControl fullWidth size="small">
+                <OutlinedInput
+                  readOnly
+                  value={item.totpKey || ''}
+                  sx={{ 
+                    fontSize: '13px', 
+                    borderRadius: '12px',
+                    background: theme.bg,
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: theme.border }
+                  }}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton size="small" edge="end" onClick={handleGenerateTotp} style={{ color: theme.accent }}>
+                        <CachedIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        edge="end"
+                        onClick={() => setItem({ ...item, totpKey: null })}
+                        style={{ color: theme.textMuted }}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+            </div>
+          </NeumorphicSection>
+
+          <NeumorphicSection title={t('sharedPreferences')} icon={TuneIcon}>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('sharedPhone')}</span>
               <TextField
                 value={item.phone || ''}
                 onChange={(e) => setItem({ ...item, phone: e.target.value })}
-                label={t('sharedPhone')}
+                fullWidth
+                size="small"
+                sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
-              <FormControl>
-                <InputLabel>{t('mapDefault')}</InputLabel>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('mapDefault')}</span>
+              <FormControl fullWidth size="small">
                 <Select
-                  label={t('mapDefault')}
                   value={item.map || 'locationIqStreets'}
                   onChange={(e) => setItem({ ...item, map: e.target.value })}
+                  sx={{ fontSize: '13px', borderRadius: '12px' }}
                 >
-                  {mapStyles
-                    .filter((style) => style.available)
-                    .map((style) => (
-                      <MenuItem key={style.id} value={style.id}>
-                        <Typography component="span">{style.title}</Typography>
-                      </MenuItem>
-                    ))}
+                  {mapStyles.filter((style) => style.available).map((style) => (
+                    <MenuItem key={style.id} value={style.id}>{style.title}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
-              <FormControl>
-                <InputLabel>{t('settingsCoordinateFormat')}</InputLabel>
-                <Select
-                  label={t('settingsCoordinateFormat')}
-                  value={item.coordinateFormat || 'dd'}
-                  onChange={(e) => setItem({ ...item, coordinateFormat: e.target.value })}
-                >
-                  <MenuItem value="dd">{t('sharedDecimalDegrees')}</MenuItem>
-                  <MenuItem value="ddm">{t('sharedDegreesDecimalMinutes')}</MenuItem>
-                  <MenuItem value="dms">{t('sharedDegreesMinutesSeconds')}</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl>
-                <InputLabel>{t('settingsSpeedUnit')}</InputLabel>
-                <Select
-                  label={t('settingsSpeedUnit')}
-                  value={(item.attributes && item.attributes.speedUnit) || 'kn'}
-                  onChange={(e) =>
-                    setItem({
-                      ...item,
-                      attributes: { ...item.attributes, speedUnit: e.target.value },
-                    })
-                  }
-                >
-                  <MenuItem value="kn">{t('sharedKn')}</MenuItem>
-                  <MenuItem value="kmh">{t('sharedKmh')}</MenuItem>
-                  <MenuItem value="mph">{t('sharedMph')}</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl>
-                <InputLabel>{t('settingsDistanceUnit')}</InputLabel>
-                <Select
-                  label={t('settingsDistanceUnit')}
-                  value={(item.attributes && item.attributes.distanceUnit) || 'km'}
-                  onChange={(e) =>
-                    setItem({
-                      ...item,
-                      attributes: { ...item.attributes, distanceUnit: e.target.value },
-                    })
-                  }
-                >
-                  <MenuItem value="km">{t('sharedKm')}</MenuItem>
-                  <MenuItem value="mi">{t('sharedMi')}</MenuItem>
-                  <MenuItem value="nmi">{t('sharedNmi')}</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl>
-                <InputLabel>{t('settingsAltitudeUnit')}</InputLabel>
-                <Select
-                  label={t('settingsAltitudeUnit')}
-                  value={(item.attributes && item.attributes.altitudeUnit) || 'm'}
-                  onChange={(e) =>
-                    setItem({
-                      ...item,
-                      attributes: { ...item.attributes, altitudeUnit: e.target.value },
-                    })
-                  }
-                >
-                  <MenuItem value="m">{t('sharedMeters')}</MenuItem>
-                  <MenuItem value="ft">{t('sharedFeet')}</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl>
-                <InputLabel>{t('settingsVolumeUnit')}</InputLabel>
-                <Select
-                  label={t('settingsVolumeUnit')}
-                  value={(item.attributes && item.attributes.volumeUnit) || 'ltr'}
-                  onChange={(e) =>
-                    setItem({
-                      ...item,
-                      attributes: { ...item.attributes, volumeUnit: e.target.value },
-                    })
-                  }
-                >
-                  <MenuItem value="ltr">{t('sharedLiter')}</MenuItem>
-                  <MenuItem value="usGal">{t('sharedUsGallon')}</MenuItem>
-                  <MenuItem value="impGal">{t('sharedImpGallon')}</MenuItem>
-                </Select>
-              </FormControl>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('settingsSpeedUnit')}</span>
+                <FormControl fullWidth size="small">
+                  <Select
+                    value={(item.attributes && item.attributes.speedUnit) || 'kn'}
+                    onChange={(e) => setItem({ ...item, attributes: { ...item.attributes, speedUnit: e.target.value } })}
+                    sx={{ fontSize: '13px', borderRadius: '12px' }}
+                  >
+                    <MenuItem value="kn">{t('sharedKn')}</MenuItem>
+                    <MenuItem value="kmh">{t('sharedKmh')}</MenuItem>
+                    <MenuItem value="mph">{t('sharedMph')}</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('settingsDistanceUnit')}</span>
+                <FormControl fullWidth size="small">
+                  <Select
+                    value={(item.attributes && item.attributes.distanceUnit) || 'km'}
+                    onChange={(e) => setItem({ ...item, attributes: { ...item.attributes, distanceUnit: e.target.value } })}
+                    sx={{ fontSize: '13px', borderRadius: '12px' }}
+                  >
+                    <MenuItem value="km">{t('sharedKm')}</MenuItem>
+                    <MenuItem value="mi">{t('sharedMi')}</MenuItem>
+                    <MenuItem value="nmi">{t('sharedNmi')}</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('sharedTimezone')}</span>
               <SelectField
                 value={item.attributes && item.attributes.timezone}
-                onChange={(e) =>
-                  setItem({ ...item, attributes: { ...item.attributes, timezone: e.target.value } })
-                }
+                onChange={(e) => setItem({ ...item, attributes: { ...item.attributes, timezone: e.target.value } })}
                 endpoint="/api/server/timezones"
                 keyGetter={(it) => it}
                 titleGetter={(it) => it}
-                label={t('sharedTimezone')}
+                fullWidth
+                size="small"
+                sx={{ fontSize: '13px', borderRadius: '12px' }}
               />
+            </div>
+          </NeumorphicSection>
+
+          <NeumorphicSection title={t('sharedLocation')} icon={LocationOnIcon}>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[9px] font-black text-slate-500 uppercase px-1">Lat</span>
+                <TextField type="number" size="small" value={item.latitude || 0} onChange={(e) => setItem({ ...item, latitude: Number(e.target.value) })} sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[9px] font-black text-slate-500 uppercase px-1">Lon</span>
+                <TextField type="number" size="small" value={item.longitude || 0} onChange={(e) => setItem({ ...item, longitude: Number(e.target.value) })} sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }} />
+              </div>
+            </div>
+            <button
+              type="button"
+              className="py-2.5 rounded-xl border shadow-md text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all"
+              style={{ background: theme.bg, borderColor: theme.border, color: theme.accent }}
+              onClick={() => {
+                const { lng, lat } = map.getCenter();
+                setItem({ ...item, latitude: Number(lat.toFixed(6)), longitude: Number(lng.toFixed(6)), zoom: Number(map.getZoom().toFixed(1)) });
+              }}
+            >
+              {t('mapCurrentLocation')}
+            </button>
+          </NeumorphicSection>
+
+          <NeumorphicSection title={t('sharedPermissions')} icon={VpnKeyIcon}>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('userExpirationTime')}</span>
               <TextField
-                value={item.poiLayer || ''}
-                onChange={(e) => setItem({ ...item, poiLayer: e.target.value })}
-                label={t('mapPoiLayer')}
-              />
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="subtitle1">{t('sharedLocation')}</Typography>
-            </AccordionSummary>
-            <AccordionDetails className={classes.details}>
-              <TextField
-                type="number"
-                value={item.latitude || 0}
-                onChange={(e) => setItem({ ...item, latitude: Number(e.target.value) })}
-                label={t('positionLatitude')}
-              />
-              <TextField
-                type="number"
-                value={item.longitude || 0}
-                onChange={(e) => setItem({ ...item, longitude: Number(e.target.value) })}
-                label={t('positionLongitude')}
-              />
-              <TextField
-                type="number"
-                value={item.zoom || 0}
-                onChange={(e) => setItem({ ...item, zoom: Number(e.target.value) })}
-                label={t('serverZoom')}
-              />
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => {
-                  const { lng, lat } = map.getCenter();
-                  setItem({
-                    ...item,
-                    latitude: Number(lat.toFixed(6)),
-                    longitude: Number(lng.toFixed(6)),
-                    zoom: Number(map.getZoom().toFixed(1)),
-                  });
-                }}
-              >
-                {t('mapCurrentLocation')}
-              </Button>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="subtitle1">{t('sharedPermissions')}</Typography>
-            </AccordionSummary>
-            <AccordionDetails className={classes.details}>
-              <TextField
-                label={t('userExpirationTime')}
                 type="date"
+                size="small"
                 value={item.expirationTime ? item.expirationTime.split('T')[0] : '2099-01-01'}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setItem({ ...item, expirationTime: new Date(e.target.value).toISOString() });
-                  }
-                }}
+                onChange={(e) => { if (e.target.value) { setItem({ ...item, expirationTime: new Date(e.target.value).toISOString() }); } }}
                 disabled={!manager}
+                fullWidth
+                sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
-              <TextField
-                type="number"
-                value={item.deviceLimit || 0}
-                onChange={(e) => setItem({ ...item, deviceLimit: Number(e.target.value) })}
-                label={t('userDeviceLimit')}
-                disabled={!admin}
-              />
-              <TextField
-                type="number"
-                value={item.userLimit || 0}
-                onChange={(e) => setItem({ ...item, userLimit: Number(e.target.value) })}
-                label={t('userUserLimit')}
-                disabled={!admin}
-              />
-              <Button variant="outlined" color="primary" onClick={() => setRevokeDialogOpen(true)}>
-                {t('userRevokeToken')}
-              </Button>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.disabled}
-                      onChange={(e) => setItem({ ...item, disabled: e.target.checked })}
-                    />
-                  }
-                  label={t('sharedDisabled')}
-                  disabled={!manager}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.administrator}
-                      onChange={(e) => setItem({ ...item, administrator: e.target.checked })}
-                    />
-                  }
-                  label={t('userAdmin')}
-                  disabled={!admin}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.readonly}
-                      onChange={(e) => setItem({ ...item, readonly: e.target.checked })}
-                    />
-                  }
-                  label={t('serverReadonly')}
-                  disabled={!manager}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.deviceReadonly}
-                      onChange={(e) => setItem({ ...item, deviceReadonly: e.target.checked })}
-                    />
-                  }
-                  label={t('userDeviceReadonly')}
-                  disabled={!manager}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.limitCommands}
-                      onChange={(e) => setItem({ ...item, limitCommands: e.target.checked })}
-                    />
-                  }
-                  label={t('userLimitCommands')}
-                  disabled={!manager}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.disableReports}
-                      onChange={(e) => setItem({ ...item, disableReports: e.target.checked })}
-                    />
-                  }
-                  label={t('userDisableReports')}
-                  disabled={!manager}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.fixedEmail}
-                      onChange={(e) => setItem({ ...item, fixedEmail: e.target.checked })}
-                    />
-                  }
-                  label={t('userFixedEmail')}
-                  disabled={!manager}
-                />
-              </FormGroup>
-            </AccordionDetails>
-          </Accordion>
-          <EditAttributesAccordion
-            attribute={attribute}
-            attributes={item.attributes}
-            setAttributes={(attributes) => setItem({ ...item, attributes })}
-            definitions={{ ...commonUserAttributes, ...userAttributes }}
-            focusAttribute={attribute}
-          />
+            </div>
+            <FormGroup 
+              className="p-4 rounded-3xl border grid grid-cols-1 gap-1 shadow-inner"
+              style={{ background: `${theme.isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)'}`, borderColor: theme.border }}
+            >
+              <FormControlLabel control={<Checkbox size="small" checked={item.disabled} onChange={(e) => setItem({ ...item, disabled: e.target.checked })} sx={{ color: theme.accent, '&.Mui-checked': { color: theme.accent } }} />} label={<span className="text-[10px] font-black uppercase tracking-widest" style={{ color: theme.textPrimary }}>{t('sharedDisabled')}</span>} disabled={!manager} />
+              <FormControlLabel control={<Checkbox size="small" checked={item.administrator} onChange={(e) => setItem({ ...item, administrator: e.target.checked })} sx={{ color: theme.accent, '&.Mui-checked': { color: theme.accent } }} />} label={<span className="text-[10px] font-black uppercase tracking-widest" style={{ color: theme.textPrimary }}>{t('userAdmin')}</span>} disabled={!admin} />
+              <FormControlLabel control={<Checkbox size="small" checked={item.readonly} onChange={(e) => setItem({ ...item, readonly: e.target.checked })} sx={{ color: theme.accent, '&.Mui-checked': { color: theme.accent } }} />} label={<span className="text-[10px] font-black uppercase tracking-widest" style={{ color: theme.textPrimary }}>{t('serverReadonly')}</span>} disabled={!manager} />
+            </FormGroup>
+            <button
+              type="button"
+              className="py-2.5 rounded-xl border shadow-md text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all"
+              style={{ background: theme.bg, borderColor: theme.border, color: theme.textMuted }}
+              onClick={() => setRevokeDialogOpen(true)}
+            >
+              {t('userRevokeToken')}
+            </button>
+          </NeumorphicSection>
+
+          <div className="mb-4">
+            <EditAttributesAccordion
+              attribute={attribute}
+              attributes={item.attributes}
+              setAttributes={(attributes) => setItem({ ...item, attributes })}
+              definitions={{ ...commonUserAttributes, ...userAttributes }}
+              focusAttribute={attribute}
+            />
+          </div>
+
           {registrationEnabled && item.id === currentUser.id && !manager && (
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1" color="error">
-                  {t('userDeleteAccount')}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.details}>
+            <NeumorphicSection title={t('userDeleteAccount')} icon={DeleteForeverIcon} error>
+              <p className="text-[9px] text-slate-500 font-bold uppercase mb-2">Para confirmar, digite seu e-mail abaixo:</p>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[9px] font-black text-slate-500 uppercase px-1">{t('userEmail')}</span>
                 <TextField
                   value={deleteEmail}
                   onChange={(e) => setDeleteEmail(e.target.value)}
-                  label={t('userEmail')}
                   error={deleteFailed}
+                  fullWidth
+                  size="small"
+                  sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
                 />
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={handleDelete}
-                  startIcon={<DeleteForeverIcon />}
-                >
-                  {t('userDeleteAccount')}
-                </Button>
-              </AccordionDetails>
-            </Accordion>
+              </div>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest active:bg-red-500/20 transition-all"
+              >
+                {t('userDeleteAccount')}
+              </button>
+            </NeumorphicSection>
           )}
-        </>
+        </div>
       )}
-      <Dialog open={revokeDialogOpen} onClose={closeRevokeDialog} fullWidth maxWidth="xs">
-        <DialogContent className={classes.details}>
-          <TextField
-            value={revokeToken}
-            onChange={(e) => setRevokeToken(e.target.value)}
-            label={t('userToken')}
-            autoFocus
-            fullWidth
-          />
+      <Dialog open={revokeDialogOpen} onClose={closeRevokeDialog} fullWidth maxWidth="xs" PaperProps={{ sx: { background: theme.bgSecondary, borderRadius: '28px', border: `1px solid ${theme.border}`, boxShadow: theme.sidebarShadow } }}>
+        <DialogContent sx={{ p: 4 }}>
+          <h2 className="text-sm font-black uppercase tracking-widest mb-6" style={{ color: theme.textPrimary }}>Revogar Token</h2>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[9px] font-black uppercase px-1" style={{ color: theme.textMuted }}>{t('userToken')}</span>
+            <TextField
+              value={revokeToken}
+              onChange={(e) => setRevokeToken(e.target.value)}
+              autoFocus
+              fullWidth
+              size="small"
+              sx={{ '& .MuiInputBase-input': { fontSize: '13px' }, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+            />
+          </div>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={closeRevokeDialog}>{t('sharedCancel')}</Button>
-          <Button onClick={handleRevokeToken} disabled={!revokeToken} variant="contained">
+        <DialogActions sx={{ p: 3, gap: 2 }}>
+          <Button onClick={closeRevokeDialog} sx={{ color: theme.textMuted, fontBold: true, fontSize: '12px' }}>{t('sharedCancel')}</Button>
+          <Button onClick={handleRevokeToken} disabled={!revokeToken} variant="contained" sx={{ bgcolor: theme.accent, color: theme.isDark ? 'black' : 'white', borderRadius: '12px', fontBlack: true, fontSize: '12px', '&:hover': { bgcolor: theme.accent, opacity: 0.9 } }}>
             {t('userRevokeToken')}
           </Button>
         </DialogActions>

@@ -27,8 +27,11 @@ const ServerProvider = ({ children }) => {
         const tenantSlug = localStorage.getItem('tenantSlug') || DEFAULT_TENANT_SLUG;
 
         // Validate tenant has a real traccar_url before calling proxy
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://foifugnuaehjtjftpkrk.supabase.co';
-        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvaWZ1Z251YWVoanRqZnRwa3JrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDc5MjIsImV4cCI6MjA4ODM4MzkyMn0.4nYVYZu8FCN4-aJ1NxytL-jFRN07VHDZzFYT0dmEDDo';
+        const supabaseUrl =
+          import.meta.env.VITE_SUPABASE_URL || 'https://foifugnuaehjtjftpkrk.supabase.co';
+        const supabaseKey =
+          import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvaWZ1Z251YWVoanRqZnRwa3JrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDc5MjIsImV4cCI6MjA4ODM4MzkyMn0.4nYVYZu8FCN4-aJ1NxytL-jFRN07VHDZzFYT0dmEDDo';
         const tenantRes = await fetch(
           `${supabaseUrl}/rest/v1/tenants?slug=eq.${encodeURIComponent(tenantSlug)}&select=traccar_url&limit=1`,
           { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } },
@@ -36,7 +39,11 @@ const ServerProvider = ({ children }) => {
         if (tenantRes.ok) {
           const tenants = await tenantRes.json();
           const traccarUrl = tenants?.[0]?.traccar_url;
-          if (!traccarUrl || traccarUrl.includes('pending-setup') || traccarUrl.includes('example.com')) {
+          if (
+            !traccarUrl ||
+            traccarUrl.includes('pending-setup') ||
+            traccarUrl.includes('example.com')
+          ) {
             throw Error('Tracking server not configured yet. Please contact your administrator.');
           }
         }

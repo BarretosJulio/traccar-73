@@ -28,9 +28,7 @@ const MenuItem = ({ title, link, icon, selected, onClick }) => (
         },
       }}
     >
-      <ListItemIcon sx={{ minWidth: 36, color: 'inherit' }}>
-        {icon}
-      </ListItemIcon>
+      <ListItemIcon sx={{ minWidth: 36, color: 'inherit' }}>{icon}</ListItemIcon>
       <ListItemText
         primary={title}
         primaryTypographyProps={{

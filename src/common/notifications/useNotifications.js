@@ -1,9 +1,9 @@
 /**
  * Notifications React Hook Module
- * 
+ *
  * Connects the notification manager and event formatter to React components.
  * Manages permission state and provides a simple API for triggering notifications.
- * 
+ *
  * @module useNotifications
  */
 
@@ -21,7 +21,7 @@ import { formatEventNotification, shouldNotify } from './notificationEvents';
 
 /**
  * Hook that manages push notification permissions and event delivery.
- * 
+ *
  * @returns {{
  *   supported: boolean,
  *   permission: string,

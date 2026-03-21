@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMediaQuery, useTheme } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { List } from 'react-window';
 import { devicesActions } from '../store';
@@ -18,12 +19,14 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-const COMPACT_HEIGHT = 82;
-const EXPANDED_HEIGHT = 210;
+const COMPACT_HEIGHT = 88;
+const EXPANDED_HEIGHT = 88;
 
 const DeviceList = ({ devices }) => {
   const { classes } = useStyles();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const selectedId = useSelector((state) => state.devices.selectedId);
 
   const [, setTime] = useState(Date.now());
@@ -36,8 +39,14 @@ const DeviceList = ({ devices }) => {
   }, []);
 
   useEffectAsync(async () => {
+    if (window.sessionStorage.getItem('demoMode') === 'true') {
+      return;
+    }
     const response = await fetchOrThrow('/api/devices');
-    dispatch(devicesActions.refresh(await response.json()));
+    const data = await response.json();
+    if (Array.isArray(data)) {
+      dispatch(devicesActions.refresh(data));
+    }
   }, []);
 
   const getRowHeight = (index) => {
@@ -51,7 +60,7 @@ const DeviceList = ({ devices }) => {
       rowComponent={DeviceRow}
       rowCount={devices.length}
       rowHeight={getRowHeight}
-      rowProps={{ devices }}
+      rowProps={{ devices, desktop }}
       overscanCount={5}
     />
   );

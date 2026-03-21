@@ -9,7 +9,8 @@ export default (server, darkMode, direction, tenant) =>
     () =>
       createTheme({
         typography: {
-          fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          fontFamily:
+            '"Outfit", "Quicksand", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
           h6: {
             fontWeight: 700,
             letterSpacing: '-0.01em',

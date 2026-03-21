@@ -1,3 +1,4 @@
+import './index.css';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -12,6 +13,7 @@ import ServerProvider from './ServerProvider';
 import ErrorBoundary from './ErrorBoundary';
 import AppThemeProvider from './AppThemeProvider';
 import { TenantProvider } from './common/components/TenantProvider';
+import { ThemeProvider as HudThemeProvider } from './common/util/ThemeContext';
 
 preloadImages();
 
@@ -22,16 +24,18 @@ root.render(
       <LocalizationProvider>
         <StyledEngineProvider injectFirst>
           <AppThemeProvider>
-            <CssBaseline />
-            <TenantProvider>
-              <BrowserRouter>
-                <ServerProvider>
-                  <Navigation />
-                </ServerProvider>
-                <ErrorHandler />
-                <NativeInterface />
-              </BrowserRouter>
-            </TenantProvider>
+            <HudThemeProvider>
+              <CssBaseline />
+              <TenantProvider>
+                <BrowserRouter>
+                  <ServerProvider>
+                    <Navigation />
+                  </ServerProvider>
+                  <ErrorHandler />
+                  <NativeInterface />
+                </BrowserRouter>
+              </TenantProvider>
+            </HudThemeProvider>
           </AppThemeProvider>
         </StyledEngineProvider>
       </LocalizationProvider>

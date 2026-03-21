@@ -16,11 +16,11 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-const LogoImage = ({ color }) => {
+const LogoImage = ({ color, size, className, style }) => {
   const theme = useTheme();
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
 
-  const expanded = !useMediaQuery(theme.breakpoints.down('lg'));
+  const desktop = useMediaQuery(theme.breakpoints.up('lg'));
 
   const tenantCtx = useTenant();
   const tenantLogo = tenantCtx?.tenant?.logo_url;
@@ -32,13 +32,38 @@ const LogoImage = ({ color }) => {
   const effectiveLogo = tenantLogo || logo;
   const effectiveInverted = tenantLogo || logoInverted;
 
+  const imageStyle = {
+    height: size || 'auto',
+    ...style
+  };
+
   if (effectiveLogo) {
-    if (expanded && effectiveInverted) {
-      return <img className={classes.image} src={effectiveInverted} alt="" />;
+    if (desktop && effectiveInverted) {
+      return (
+        <img 
+          className={cx(classes.image, className)} 
+          src={effectiveInverted} 
+          alt="Logo" 
+          style={imageStyle} 
+        />
+      );
     }
-    return <img className={classes.image} src={effectiveLogo} alt="" />;
+    return (
+      <img 
+        className={cx(classes.image, className)} 
+        src={effectiveLogo} 
+        alt="Logo" 
+        style={imageStyle} 
+      />
+    );
   }
-  return <Logo className={classes.image} style={{ color }} />;
+
+  return (
+    <Logo 
+      className={cx(classes.image, className)} 
+      style={{ color: color || 'inherit', height: size || 28, ...style }} 
+    />
+  );
 };
 
 export default LogoImage;

@@ -52,9 +52,13 @@ const PermissionCard = ({ icon, label, status, onRequest, disabled }) => (
       '&:hover': { boxShadow: 4 },
     }}
   >
-    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, p: 2 }}>
+    <CardContent
+      sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, p: 2 }}
+    >
       {icon}
-      <Typography variant="body2" fontWeight={600}>{label}</Typography>
+      <Typography variant="body2" fontWeight={600}>
+        {label}
+      </Typography>
       <StatusChip status={status} />
       {status === 'prompt' && (
         <Button
@@ -77,9 +81,12 @@ const InstallPage = () => {
   const { t } = useLocalization();
   const { tenant } = useTenant();
   const { canInstall, isInstalled, promptInstall, isIos, isIosSafari } = usePwaInstallPrompt();
-  const { permissions, requestPermission, requestAllPermissions, PERMISSION_TYPES } = useDevicePermissions();
+  const { permissions, requestPermission, requestAllPermissions, PERMISSION_TYPES } =
+    useDevicePermissions();
 
-  const allGranted = Object.values(permissions).every((s) => s === 'granted' || s === 'unsupported');
+  const allGranted = Object.values(permissions).every(
+    (s) => s === 'granted' || s === 'unsupported',
+  );
 
   const handleInstall = async () => {
     const accepted = await promptInstall();
@@ -101,7 +108,15 @@ const InstallPage = () => {
     >
       <Container maxWidth="sm">
         <Card sx={{ borderRadius: 4, overflow: 'hidden' }}>
-          <CardContent sx={{ p: { xs: 3, sm: 4 }, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+          <CardContent
+            sx={{
+              p: { xs: 3, sm: 4 },
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+            }}
+          >
             {/* Logo */}
             {tenant?.logo_url && (
               <Box
@@ -121,7 +136,15 @@ const InstallPage = () => {
               variant="outlined"
               sx={{ width: '100%', borderRadius: 3, bgcolor: theme.palette.action.hover }}
             >
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, p: 3 }}>
+              <CardContent
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 2,
+                  p: 3,
+                }}
+              >
                 <PhoneIcon sx={{ fontSize: 48, color: theme.palette.primary.main }} />
 
                 {isInstalled ? (
@@ -151,7 +174,14 @@ const InstallPage = () => {
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                       {t('pwaIosInstructions')}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                      }}
+                    >
                       <ShareIcon color="primary" />
                       <Typography variant="body2" fontWeight={600}>
                         {t('pwaIosStep')}

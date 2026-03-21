@@ -1,4 +1,4 @@
-import { Tooltip, Box } from '@mui/material';
+import { Tooltip, Box, useMediaQuery, useTheme } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { useNavigate } from 'react-router-dom';
 import DevicesIcon from '@mui/icons-material/Devices';
@@ -18,41 +18,49 @@ import { useTranslation } from '../common/components/LocalizationProvider';
 import { useAdministrator } from '../common/util/permissions';
 import WhatsAppAlertsDialog from '../settings/WhatsAppAlertsDialog';
 
-const useStyles = makeStyles()((theme) => ({
-  root: {
-    position: 'fixed',
-    right: 60,
-    top: 10,
-    zIndex: 1000,
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 2,
-    padding: '4px 8px',
-    borderRadius: 12,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-    border: `1px solid ${theme.palette.divider}`,
-  },
-  item: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 36,
-    height: 36,
-    borderRadius: 9,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    color: theme.palette.text.secondary,
-    '&:hover': {
-      backgroundColor: `${theme.palette.primary.main}15`,
-      color: theme.palette.primary.main,
-      transform: 'scale(1.1)',
+const useStyles = makeStyles()((theme) => {
+  const desktop = theme.breakpoints.up('md');
+  return {
+    root: {
+      position: 'absolute',
+      left: 16,
+      bottom: 90,
+      zIndex: 1000,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: theme.spacing(1),
+      padding: '8px 6px',
+      borderRadius: 14,
+      backgroundColor: '#1e1f24cc',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+      border: '1px solid rgba(57,255,20,0.1)',
     },
-  },
-  icon: {
-    fontSize: '1.15rem',
-  },
-}));
+    item: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 38,
+      height: 38,
+      borderRadius: 10,
+      cursor: 'pointer',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      color: '#94a3b8',
+      background: '#12141844',
+      border: '1px solid transparent',
+      '&:hover': {
+        backgroundColor: '#39ff1411',
+        color: '#39ff14',
+        border: '1px solid #39ff1433',
+        boxShadow: '0 0 15px rgba(57,255,20,0.15)',
+        transform: 'translateY(-2px)',
+      },
+    },
+    icon: {
+      fontSize: '1.2rem',
+    },
+  };
+});
 
 const MapSideMenu = () => {
   const { classes } = useStyles();
@@ -62,31 +70,26 @@ const MapSideMenu = () => {
   const [whatsappOpen, setWhatsappOpen] = useState(false);
 
   const items = [
-    { label: 'Dashboard', icon: <DashboardIcon className={classes.icon} />, path: '/app' },
-    { label: t('deviceTitle'), icon: <DevicesIcon className={classes.icon} />, path: '/app/settings/devices' },
-    { label: t('settingsGroups'), icon: <GroupsIcon className={classes.icon} />, path: '/app/settings/groups' },
-    { label: t('sharedDrivers'), icon: <PersonIcon className={classes.icon} />, path: '/app/settings/drivers' },
+    { label: 'Mapa', icon: <DashboardIcon className={classes.icon} />, path: '/app' },
     { label: 'Cercas', icon: <FenceIcon className={classes.icon} />, path: '/app/geofences' },
-    { label: t('sharedNotifications'), icon: <NotificationsIcon className={classes.icon} />, path: '/app/settings/notifications' },
-    { label: t('sharedMaintenance'), icon: <BuildIcon className={classes.icon} />, path: '/app/settings/maintenances' },
-    { label: t('sharedPreferences'), icon: <SettingsIcon className={classes.icon} />, path: '/app/settings/preferences' },
-    { label: t('reportTitle'), icon: <DescriptionIcon className={classes.icon} />, path: '/app/reports/combined' },
-    ...(admin ? [
-      { label: t('settingsUsers'), icon: <PeopleIcon className={classes.icon} />, path: '/app/settings/users' },
-      { label: t('settingsServer'), icon: <StorageIcon className={classes.icon} />, path: '/app/settings/server' },
-      { label: t('whatsappSettings'), icon: <WhatsAppIcon className={classes.icon} />, onClick: () => setWhatsappOpen(true) },
-    ] : []),
+    {
+      label: t('reportTitle'),
+      icon: <DescriptionIcon className={classes.icon} />,
+      path: '/app/reports/combined',
+    },
+    {
+      label: t('sharedPreferences'),
+      icon: <SettingsIcon className={classes.icon} />,
+      path: '/app/settings/preferences',
+    },
   ];
 
   return (
     <>
       <div className={classes.root}>
         {items.map((item) => (
-          <Tooltip key={item.path || item.label} title={item.label} placement="left" arrow>
-            <Box
-              className={classes.item}
-              onClick={item.onClick || (() => navigate(item.path))}
-            >
+          <Tooltip key={item.path || item.label} title={item.label} placement="right" arrow>
+            <Box className={classes.item} onClick={item.onClick || (() => navigate(item.path))}>
               {item.icon}
             </Box>
           </Tooltip>

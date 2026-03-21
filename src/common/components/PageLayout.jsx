@@ -114,11 +114,20 @@ const MobilePageTitle = ({ breadcrumbs }) => {
   return (
     <Breadcrumbs>
       {breadcrumbs.slice(0, -1).map((breadcrumb) => (
-        <Typography variant="h6" color="inherit" key={breadcrumb} sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+        <Typography
+          variant="h6"
+          color="inherit"
+          key={breadcrumb}
+          sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
+        >
           {t(breadcrumb)}
         </Typography>
       ))}
-      <Typography variant="h6" color="textPrimary" sx={{ fontWeight: 700, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+      <Typography
+        variant="h6"
+        color="textPrimary"
+        sx={{ fontWeight: 700, fontSize: { xs: '1rem', sm: '1.25rem' } }}
+      >
         {t(breadcrumbs[breadcrumbs.length - 1])}
       </Typography>
     </Breadcrumbs>
@@ -145,39 +154,24 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
   if (desktop) {
     return (
       <div className={classes.overlay} onClick={handleClose}>
-        <Paper
-          className={classes.floatingCard}
-          elevation={24}
-          onClick={(e) => e.stopPropagation()}
-        >
+        <Paper className={classes.floatingCard} elevation={24} onClick={(e) => e.stopPropagation()}>
           <div className={classes.floatingHeader}>
             <Tooltip title={t('sharedBack')}>
-              <IconButton
-                size="small"
-                onClick={handleClose}
-                sx={{ mr: 1.5 }}
-              >
+              <IconButton size="small" onClick={handleClose} sx={{ mr: 1.5 }}>
                 <ArrowBackIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <PageTitle breadcrumbs={breadcrumbs} />
             <Box sx={{ flexGrow: 1 }} />
             <Tooltip title={t('sharedHide')}>
-              <IconButton
-                size="small"
-                onClick={handleClose}
-              >
+              <IconButton size="small" onClick={handleClose}>
                 <CloseIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           </div>
           <div className={classes.floatingBody}>
-            <div className={classes.floatingSidebar}>
-              {menu}
-            </div>
-            <div className={classes.floatingContent}>
-              {children}
-            </div>
+            <div className={classes.floatingSidebar}>{menu}</div>
+            <div className={classes.floatingContent}>{children}</div>
           </div>
         </Paper>
       </div>
@@ -194,27 +188,22 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
       >
         {menu}
       </Drawer>
-      <AppBar className={classes.mobileToolbar} position="static" color="inherit" elevation={0}
+      <AppBar
+        className={classes.mobileToolbar}
+        position="static"
+        color="inherit"
+        elevation={0}
         sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
       >
         <Toolbar sx={{ minHeight: { xs: 52, sm: 64 }, px: { xs: 1, sm: 2 } }}>
           <Tooltip title={t('sharedBack')}>
-            <IconButton
-              color="inherit"
-              edge="start"
-              sx={{ mr: 1 }}
-              onClick={() => navigate(-1)}
-            >
+            <IconButton color="inherit" edge="start" sx={{ mr: 1 }} onClick={() => navigate(-1)}>
               <ArrowBackIcon />
             </IconButton>
           </Tooltip>
           <MobilePageTitle breadcrumbs={breadcrumbs} />
           <Tooltip title={t('settingsTitle')}>
-            <IconButton
-              color="inherit"
-              sx={{ ml: 'auto' }}
-              onClick={() => setOpenDrawer(true)}
-            >
+            <IconButton color="inherit" sx={{ ml: 'auto' }} onClick={() => setOpenDrawer(true)}>
               <MenuIcon />
             </IconButton>
           </Tooltip>

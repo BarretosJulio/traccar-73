@@ -49,9 +49,7 @@ const SideNav = ({ routes }) => {
               },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 36, color: 'inherit' }}>
-              {route.icon}
-            </ListItemIcon>
+            <ListItemIcon sx={{ minWidth: 36, color: 'inherit' }}>{route.icon}</ListItemIcon>
             <ListItemText
               primary={route.name}
               primaryTypographyProps={{

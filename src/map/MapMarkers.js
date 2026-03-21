@@ -69,17 +69,19 @@ const MapMarkers = ({ markers, showTitles }) => {
   useEffect(() => {
     map.getSource(id)?.setData({
       type: 'FeatureCollection',
-      features: markers.map(({ latitude, longitude, image, title }) => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [longitude, latitude],
-        },
-        properties: {
-          image: image || 'default-neutral',
-          title: title || '',
-        },
-      })),
+      features: markers
+        .filter(({ latitude, longitude }) => typeof latitude === 'number' && !Number.isNaN(latitude) && typeof longitude === 'number' && !Number.isNaN(longitude))
+        .map(({ latitude, longitude, image, title }) => ({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          properties: {
+            image: image || 'default-neutral',
+            title: title || '',
+          },
+        })),
     });
   }, [showTitles, markers]);
 

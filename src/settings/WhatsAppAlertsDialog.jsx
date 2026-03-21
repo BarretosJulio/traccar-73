@@ -1,8 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, Switch, TextField, IconButton, Typography,
-  Box, Collapse, CircularProgress, Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Switch,
+  TextField,
+  IconButton,
+  Typography,
+  Box,
+  Collapse,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -12,15 +22,51 @@ import whatsappService from '../admin/whatsapp/whatsappService';
 import { useTranslation } from '../common/components/LocalizationProvider';
 
 const DEFAULT_ALERTS = [
-  { alert_type: 'alarm', label: '🆘 Alarme SOS', template: '⚠️ ALERTA SOS!\nDispositivo: {device}\nHorário: {time}' },
-  { alert_type: 'geofenceExit', label: '📍 Saída de Cerca', template: '🚨 {device} saiu da cerca virtual!\nHorário: {time}' },
-  { alert_type: 'geofenceEnter', label: '📍 Entrada em Cerca', template: '✅ {device} entrou na cerca virtual.\nHorário: {time}' },
-  { alert_type: 'speedLimit', label: '🏎️ Excesso de Velocidade', template: '⚡ {device} excedeu o limite de velocidade!\nHorário: {time}\n{data}' },
-  { alert_type: 'ignitionOn', label: '🔑 Ignição Ligada', template: '🟢 {device} ligou a ignição.\nHorário: {time}' },
-  { alert_type: 'ignitionOff', label: '🔑 Ignição Desligada', template: '🔴 {device} desligou a ignição.\nHorário: {time}' },
-  { alert_type: 'maintenance', label: '🔧 Manutenção', template: '🔧 {device} precisa de manutenção!\n{data}' },
-  { alert_type: 'deviceMoving', label: '🚗 Dispositivo em Movimento', template: '🚗 {device} começou a se mover.\nHorário: {time}' },
-  { alert_type: 'deviceStopped', label: '🛑 Dispositivo Parado', template: '🛑 {device} parou.\nHorário: {time}' },
+  {
+    alert_type: 'alarm',
+    label: '🆘 Alarme SOS',
+    template: '⚠️ ALERTA SOS!\nDispositivo: {device}\nHorário: {time}',
+  },
+  {
+    alert_type: 'geofenceExit',
+    label: '📍 Saída de Cerca',
+    template: '🚨 {device} saiu da cerca virtual!\nHorário: {time}',
+  },
+  {
+    alert_type: 'geofenceEnter',
+    label: '📍 Entrada em Cerca',
+    template: '✅ {device} entrou na cerca virtual.\nHorário: {time}',
+  },
+  {
+    alert_type: 'speedLimit',
+    label: '🏎️ Excesso de Velocidade',
+    template: '⚡ {device} excedeu o limite de velocidade!\nHorário: {time}\n{data}',
+  },
+  {
+    alert_type: 'ignitionOn',
+    label: '🔑 Ignição Ligada',
+    template: '🟢 {device} ligou a ignição.\nHorário: {time}',
+  },
+  {
+    alert_type: 'ignitionOff',
+    label: '🔑 Ignição Desligada',
+    template: '🔴 {device} desligou a ignição.\nHorário: {time}',
+  },
+  {
+    alert_type: 'maintenance',
+    label: '🔧 Manutenção',
+    template: '🔧 {device} precisa de manutenção!\n{data}',
+  },
+  {
+    alert_type: 'deviceMoving',
+    label: '🚗 Dispositivo em Movimento',
+    template: '🚗 {device} começou a se mover.\nHorário: {time}',
+  },
+  {
+    alert_type: 'deviceStopped',
+    label: '🛑 Dispositivo Parado',
+    template: '🛑 {device} parou.\nHorário: {time}',
+  },
 ];
 
 const WhatsAppAlertsDialog = ({ open, onClose }) => {
@@ -36,19 +82,26 @@ const WhatsAppAlertsDialog = ({ open, onClose }) => {
     try {
       const res = await whatsappService.getAlerts();
       const saved = res.data || [];
-      setAlerts(DEFAULT_ALERTS.map((def) => {
-        const existing = saved.find((s) => s.alert_type === def.alert_type);
-        return {
-          alert_type: def.alert_type,
-          label: def.label,
-          enabled: existing?.enabled || false,
-          template_message: existing?.template_message || def.template,
-        };
-      }));
+      setAlerts(
+        DEFAULT_ALERTS.map((def) => {
+          const existing = saved.find((s) => s.alert_type === def.alert_type);
+          return {
+            alert_type: def.alert_type,
+            label: def.label,
+            enabled: existing?.enabled || false,
+            template_message: existing?.template_message || def.template,
+          };
+        }),
+      );
     } catch {
-      setAlerts(DEFAULT_ALERTS.map((d) => ({
-        alert_type: d.alert_type, label: d.label, enabled: false, template_message: d.template,
-      })));
+      setAlerts(
+        DEFAULT_ALERTS.map((d) => ({
+          alert_type: d.alert_type,
+          label: d.label,
+          enabled: false,
+          template_message: d.template,
+        })),
+      );
     } finally {
       setLoading(false);
     }
@@ -59,20 +112,28 @@ const WhatsAppAlertsDialog = ({ open, onClose }) => {
   }, [open, loadAlerts]);
 
   const toggleAlert = (type) => {
-    setAlerts((prev) => prev.map((a) => a.alert_type === type ? { ...a, enabled: !a.enabled } : a));
+    setAlerts((prev) =>
+      prev.map((a) => (a.alert_type === type ? { ...a, enabled: !a.enabled } : a)),
+    );
   };
 
   const updateTemplate = (type, value) => {
-    setAlerts((prev) => prev.map((a) => a.alert_type === type ? { ...a, template_message: value } : a));
+    setAlerts((prev) =>
+      prev.map((a) => (a.alert_type === type ? { ...a, template_message: value } : a)),
+    );
   };
 
   const handleSave = async () => {
     setSaving(true);
     setMessage(null);
     try {
-      await whatsappService.saveAlerts(alerts.map(({ alert_type, enabled, template_message }) => ({
-        alert_type, enabled, template_message,
-      })));
+      await whatsappService.saveAlerts(
+        alerts.map(({ alert_type, enabled, template_message }) => ({
+          alert_type,
+          enabled,
+          template_message,
+        })),
+      );
       setMessage({ type: 'success', text: t('whatsappAlertsSaved') || '✅ Configurações salvas!' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err) {
@@ -88,12 +149,15 @@ const WhatsAppAlertsDialog = ({ open, onClose }) => {
         <Typography variant="h6" component="span">
           🔔 {t('whatsappAlerts') || 'Configuração de Alertas WhatsApp'}
         </Typography>
-        <IconButton onClick={onClose} size="small"><CloseIcon /></IconButton>
+        <IconButton onClick={onClose} size="small">
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
 
       <DialogContent dividers>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Selecione quais alertas serão enviados via WhatsApp. Use {'{device}'}, {'{event}'}, {'{time}'}, {'{data}'} nos templates.
+          Selecione quais alertas serão enviados via WhatsApp. Use {'{device}'}, {'{event}'},{' '}
+          {'{time}'}, {'{data}'} nos templates.
         </Typography>
 
         {message && (
@@ -120,7 +184,15 @@ const WhatsAppAlertsDialog = ({ open, onClose }) => {
                   bgcolor: alert.enabled ? 'action.selected' : 'transparent',
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    px: 2,
+                    py: 1,
+                  }}
+                >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                     <Switch
                       checked={alert.enabled}
@@ -134,7 +206,9 @@ const WhatsAppAlertsDialog = ({ open, onClose }) => {
                   </Box>
                   <IconButton
                     size="small"
-                    onClick={() => setExpandedType(expandedType === alert.alert_type ? null : alert.alert_type)}
+                    onClick={() =>
+                      setExpandedType(expandedType === alert.alert_type ? null : alert.alert_type)
+                    }
                   >
                     {expandedType === alert.alert_type ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                   </IconButton>
@@ -151,7 +225,11 @@ const WhatsAppAlertsDialog = ({ open, onClose }) => {
                       value={alert.template_message}
                       onChange={(e) => updateTemplate(alert.alert_type, e.target.value)}
                     />
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ mt: 0.5, display: 'block' }}
+                    >
                       Variáveis: {'{device}'} {'{event}'} {'{time}'} {'{data}'}
                     </Typography>
                   </Box>
@@ -163,7 +241,9 @@ const WhatsAppAlertsDialog = ({ open, onClose }) => {
       </DialogContent>
 
       <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button onClick={onClose} color="inherit">Fechar</Button>
+        <Button onClick={onClose} color="inherit">
+          Fechar
+        </Button>
         <Button
           onClick={handleSave}
           variant="contained"
